@@ -5,4 +5,12 @@
             <script src="https://cdn.tailwindcss.com"></script>
         </xpath>
     </template>
+
+    <!-- Include navbar components -->
+    <template id="navbar_components" inherit_id="website.layout" name="Navbar Components">
+        <xpath expr="//head" position="inside">
+            <link rel="stylesheet" href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
+        </xpath>
+    </template>
 </odoo>

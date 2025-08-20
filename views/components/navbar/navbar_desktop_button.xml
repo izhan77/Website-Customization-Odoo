@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="navbar_desktop_button" name="Navbar Desktop Button">
+        <a class="bg-white text-orange-500 border-2 border-white font-semibold px-6 py-2 rounded-full hover:bg-orange-50 hover:scale-110 hover:shadow-lg transition-all duration-300" href="/contactus">
+            Contact Us
+        </a>
+    </template>
+</odoo>
