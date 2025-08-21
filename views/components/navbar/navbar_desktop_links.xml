@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="navbar_desktop_links" name="Navbar Desktop Links">
-        <a class="text-white font-medium px-6 py-2 rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300" href="/">Home</a>
-        <a class="text-white font-medium px-6 py-2 rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300" href="/about">About Us</a>
-        <a class="text-white font-medium px-6 py-2 rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300" href="/menu">Menu</a>
-        <a class="text-white font-medium px-6 py-2 rounded-full hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300" href="/services">Services</a>
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
+           href="/"
+           style="color: white !important;"
+           onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
+           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
+            Home
+        </a>
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
+           href="/about"
+           style="color: white !important;"
+           onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
+           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
+            About Us
+        </a>
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
+           href="/menu"
+           style="color: white !important;"
+           onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
+           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
+            Menu
+        </a>
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
+           href="/services"
+           style="color: white !important;"
+           onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
+           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
+            Services
+        </a>
     </template>
 </odoo>
