@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="restaurant_popup" inherit_id="website.layout" name="Restaurant Popup">
+        <xpath expr="//body" position="inside">
+            <div id="popup-overlay">
+                <div id="popup-box">
+
+                    <!-- Logo -->
+                    <img src="/restaurant/static/src/img/logo.webp" alt="Logo" class="popup-logo"/>
+
+                    <!-- Title -->
+                    <h3 class="popup-title">Select your order type</h3>
+
+                    <!-- Toggle Buttons -->
+                    <div class="popup-toggle">
+                        <button class="popup-btn active" data-type="delivery">DELIVERY</button>
+                        <button class="popup-btn" data-type="pickup">PICKUP</button>
+                    </div>
+
+                    <!-- Subtitle -->
+                    <p class="popup-subtitle" id="popup-subtitle">Which outlet would you like to pick-up from?</p>
+
+                    <!-- Current Location Button (only for delivery) -->
+                    <button class="popup-location-btn" id="location-btn">
+                        <img src="/restaurant/static/src/img/icon.png" alt="Location" class="icon-img"/>
+                        <span>Use Current Location</span>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <select class="popup-select" id="location-select">
+                        <option value="">Alarahi Tipu Sultan</option>
+                        <option value="dha">DHA Phase 2</option>
+                        <option value="gulshan">Gulshan-e-Iqbal</option>
+                        <option value="bahadurabad">Bahadurabad</option>
+                        <option value="clifton">Clifton</option>
+                    </select>
+
+                    <!-- Location Details -->
+                    <div class="location-details" id="location-details">
+                        <p>
+                            <strong>Location:</strong> Plot 27/47 Modern housing cooperative Society ltd, Block 7 and 8, Tipu sultan road</p>
+                        <button class="directions-btn">Get Directions</button>
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="popup-submit">Select</button>
+
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

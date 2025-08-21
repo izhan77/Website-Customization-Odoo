@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Popup Animations
+   ========================================================================== */
+
+/* Lighter overlay as requested */
+#order-popup-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.3) !important; /* Lighter overlay */
+}
+
+#order-popup-overlay.show {
+    opacity: 1;
+}
+
+/* Container scale animation */
+#order-popup-container {
+    transform: scale(0.9);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#order-popup-overlay.show #order-popup-container {
+    transform: scale(1);
+}
+
+/* Maps popup styles */
+#maps-popup-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#maps-popup-container {
+    transform: scale(0.95);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   Toggle Button Animations
+   ========================================================================== */
+
+/* Smooth toggle button transitions */
+.order-type-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ripple effect on button click */
+.order-type-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    pointer-events: none;
+}
+
+.order-type-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Smooth color transition for active state */
+.order-type-btn.active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(122, 191, 186, 0.3);
+}
+
+/* ==========================================================================
+   Dropdown Animations
+   ========================================================================== */
+
+/* Custom dropdown styling with smooth transitions */
+#location-dropdown {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg fill='%23666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#location-dropdown:focus {
+    border-color: #7abfba;
+    box-shadow: 0 0 0 3px rgba(122, 191, 186, 0.2);
+}
