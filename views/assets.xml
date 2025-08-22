@@ -30,6 +30,12 @@
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
 
+            <!-- Order Method Selector Assets -->
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/order_method_selector/order_method_animations.css"/>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_toggle.js"></script>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_location.js"></script>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_main.js"></script>
+
             <!-- Force font loading -->
             <style>
                 * {

@@ -1,0 +1,193 @@
+    /* Overlay */
+            #popup-overlay {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                backdrop-filter: blur(6px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                padding: 15px;
+            }
+
+            /* Popup Box */
+            #popup-box {
+                background: #fff;
+                border-radius: 18px;
+                padding: 25px;
+                width: 100%;
+                max-width: 420px;
+                text-align: center;
+                box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+            }
+
+            /* Logo */
+            .popup-logo {
+                width: 100px;
+                height: auto;
+                margin-bottom: 15px;
+            }
+
+            /* Title */
+            .popup-title {
+                font-size: 1rem;
+                font-weight: 500;
+                color: #222;
+                margin-bottom: 15px;
+            }
+
+            /* Toggle Buttons */
+            .popup-toggle {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+                gap: 8px;
+                background: #f2f2f2;
+                padding: 5px;
+                border-radius: 20px;
+            }
+
+            .popup-btn {
+                flex: 1;
+                padding: 8px 0;
+                border: none;
+                border-radius: 18px;
+                font-size: 0.85rem;
+                font-weight: 500;
+                cursor: pointer;
+                background: transparent;
+                transition: 0.3s;
+                color: #666;
+            }
+
+            .popup-btn.active {
+                background: #42A2C0;
+                color: white;
+            }
+
+            /* Subtitle */
+            .popup-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+                color: #333;
+            }
+
+            /* Current Location Button */
+            .popup-location-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                margin-bottom: 15px;
+                padding: 10px 15px;
+                background: #42A2C0;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            .popup-location-btn:hover {
+                background: #42A2C0;
+            }
+
+            /* Dropdown */
+            .popup-select {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 18px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                color: #555;
+                appearance: none;
+                background: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%23666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 10px center;
+                background-color: #fff;
+                background-size: 18px;
+                cursor: pointer;
+            }
+            .icon-img {
+                width: 20px;   /* adjust as needed */
+                height: 20px;  /* keep it equal for square icon */
+                margin-right: 6px; /* spacing between icon and text */
+                vertical-align: middle; /* align with text */
+}
+
+            /* Location Details */
+            .location-details {
+                background: #f9f9f9;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 18px;
+                text-align: left;
+                font-size: 0.85rem;
+                color: #666;
+                display: none;
+            }
+
+            .location-details.show {
+                display: block;
+            }
+
+            .directions-btn {
+                background: #003366;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                font-size: 0.8rem;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: 0.3s;
+            }
+
+            .directions-btn:hover {
+                background: #003366;
+            }
+
+            /* Submit */
+            .popup-submit {
+                width: 100%;
+                padding: 12px;
+                background: #42A2C0;
+                color: white;
+                font-size: 0.95rem;
+                font-weight: 500;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            .popup-submit:hover {
+                background: #003366;
+            }
+
+            /* Hidden state for location button */
+            .popup-location-btn.hidden {
+                display: none !important;
+            }
+
+            /* Responsive tweaks */
+            @media (max-width: 480px) {
+                #popup-box {
+                    padding: 20px;
+                }
+                .popup-logo {
+                    width: 75px;
+                }
+                .popup-title {
+                    font-size: 0.9rem;
+                }
+                .popup-btn {
+                    font-size: 0.75rem;
+                    padding: 6px 0;
+                }
+                .popup-location-btn {
+                    font-size: 0.8rem;
+                    padding: 8px 12px;
+                }
+            }
