@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="promo_section" name="Promo Code Section">
+        <div class="promo-section mb-6">
+            <div class="promo-notice text-sm text-gray-600 mb-3">Have a promo code? Enter it below</div>
+            <div class="promo-input flex">
+                <input type="text" id="promoCode" placeholder="Enter promo code"
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"/>
+                <button class="apply-promo bg-primary hover:bg-primary-hover text-white px-6 py-2 rounded-r-lg transition-colors text-sm font-medium">
+                    Apply
+                </button>
+            </div>
+            
+            <!-- Success/Error Messages -->
+            <div class="promo-message mt-2 text-sm hidden">
+                <div class="promo-success text-green-600 hidden">
+                    <i class="fas fa-check-circle mr-1"></i>
+                    Promo code applied successfully!
+                </div>
+                <div class="promo-error text-red-600 hidden">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    Invalid promo code. Please try again.
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

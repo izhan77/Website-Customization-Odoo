@@ -3,9 +3,9 @@
     'version': '1.0',
     'summary': 'Custom CSS and JS for website animations and order method selector',
     'category': 'Website',
-    'depends': ['web', 'website'],
+    'depends': ['web', 'website', 'website_sale'],
     'data': [
-        'views/assets.xml',
+        # 'views/assets.xml',
 
         # Navbar Components
         'views/components/navbar/navbar_base.xml',
@@ -19,10 +19,26 @@
         'views/components/order_method_selector/order_method_selector_base.xml',
         'views/components/order_method_selector/order_method_toggle.xml',
         'views/components/order_method_selector/order_method_location.xml',
+
+        # Checkout Components
+        'views/components/checkout/checkout_main.xml',
+        'views/components/checkout/checkout_header.xml',
+        'views/components/checkout/checkout_steps.xml',
+        'views/components/checkout/customer_details.xml', 
+        'views/components/checkout/delivery_info.xml',
+        'views/components/checkout/payment_methods.xml',
+        'views/components/checkout/special_instructions.xml',
+        'views/components/checkout/order_summary.xml',
+        'views/components/checkout/order_totals.xml',
+        'views/components/checkout/promo_section.xml',
+        'views/components/checkout/action_buttons.xml',
+        'views/components/checkout/card_payment_form.xml',
+        'views/components/checkout/cart_items.xml',
     ],
     'assets': {
         'web.assets_frontend': [
             # Tailwind CSS + JS
+            'https://cdn.tailwindcss.com',
             'website_customizations/static/src/js/tailwind_config.js',
             'website_customizations/static/src/css/tailwind_input.css',
 
@@ -35,6 +51,9 @@
             'website_customizations/static/src/js/components/order_method_selector/order_method_toggle.js',
             'website_customizations/static/src/js/components/order_method_selector/order_method_location.js',
             'website_customizations/static/src/js/components/order_method_selector/order_method_main.js',
+
+            # Checkout CSS + JS
+            'website_customizations/static/src/js/components/checkout/checkout.js',
         ],
     },
     'installable': True,

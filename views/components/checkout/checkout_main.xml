@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="checkout_main" name="Checkout Main Container">
+        <div id="checkout-page" class="checkout-page font-montserrat bg-gray-50 min-h-screen">
+            <!-- Include Header Component -->
+            <t t-call="website_customizations.checkout_header"/>
+
+            <!-- Main Checkout Content -->
+            <main class="checkout-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Side: Customer Information (2/3 width) -->
+                    <div class="checkout-left lg:col-span-2 space-y-8">
+                        <!-- Include Customer Details Component -->
+                        <t t-call="website_customizations.customer_details"/>
+
+                        <!-- Include Delivery Info Component -->
+                        <t t-call="website_customizations.delivery_info"/>
+
+                        <!-- Include Special Instructions Component -->
+                        <t t-call="website_customizations.special_instructions"/>
+
+                        <!-- Include Payment Methods Component -->
+                        <t t-call="website_customizations.payment_methods"/>
+                    </div>
+
+                    <!-- Right Side: Order Summary (1/3 width) -->
+                    <div class="checkout-right lg:col-span-1">
+                        <!-- Include Order Summary Component -->
+                        <t t-call="website_customizations.order_summary"/>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+    </template>
+</odoo>

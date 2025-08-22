@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="special_instructions" name="Special Instructions Section">
+        <section class="special-instructions-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 class="section-title text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-comment-dots text-primary mr-3"></i>
+                Special Instructions
+            </h2>
+            <div class="form-group">
+                <textarea id="instructions" name="instructions" rows="3" placeholder="Any special instructions for your order (e.g., extra spicy, no onions, etc.)" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"></textarea>
+            </div>
+        </section>
+    </template>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="checkout_header" name="Checkout Header">
+        <header class="checkout-header bg-white shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-4">
+                        <button class="back-to-menu text-primary hover:text-primary-hover transition-colors p-2 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </button>
+                        <nav class="breadcrumb flex items-center space-x-2 text-sm">
+                            <span class="text-primary font-semibold">Kababjees</span>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                            <span class="text-gray-600">Checkout</span>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </template>
+</odoo>

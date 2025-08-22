@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="order_summary" name="Order Summary">
+        <div class="order-summary bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
+            <h2 class="summary-title text-2xl font-bold text-gray-800 mb-6">Order Summary</h2>
+
+            <!-- Include Checkout Steps Component -->
+            <t t-call="website_customizations.checkout_steps"/>
+
+            <!-- Include Cart Items Component -->
+            <t t-call="website_customizations.cart_items"/>
+
+            <!-- Add More Items Button -->
+            <button class="add-more-items w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors mb-6 flex items-center justify-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Add more items to your order</span>
+            </button>
+
+            <!-- Include Promo Section Component -->
+            <t t-call="website_customizations.promo_section"/>
+
+            <!-- Include Order Totals Component -->
+            <t t-call="website_customizations.order_totals"/>
+
+            <!-- Include Action Buttons Component -->
+            <t t-call="website_customizations.action_buttons"/>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="checkout_steps" name="Checkout Steps Progress">
+        <div class="checkout-steps mb-8">
+            <div class="flex items-center justify-between">
+                <div class="step active flex flex-col items-center">
+                    <div class="step-icon bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mb-2">
+                        <i class="fas fa-shopping-cart text-sm"></i>
+                    </div>
+                    <div class="step-info text-center">
+                        <div class="step-number text-xs text-gray-500">Step 1</div>
+                        <div class="step-label text-sm font-medium text-gray-800">Review</div>
+                    </div>
+                </div>
+                <div class="flex-1 h-px bg-gray-200 mx-2"></div>
+                <div class="step flex flex-col items-center">
+                    <div class="step-icon bg-gray-200 text-gray-400 w-10 h-10 rounded-full flex items-center justify-center mb-2">
+                        <i class="fas fa-credit-card text-sm"></i>
+                    </div>
+                    <div class="step-info text-center">
+                        <div class="step-number text-xs text-gray-500">Step 2</div>
+                        <div class="step-label text-sm font-medium text-gray-600">Payment</div>
+                    </div>
+                </div>
+                <div class="flex-1 h-px bg-gray-200 mx-2"></div>
+                <div class="step flex flex-col items-center">
+                    <div class="step-icon bg-gray-200 text-gray-400 w-10 h-10 rounded-full flex items-center justify-center mb-2">
+                        <i class="fas fa-check text-sm"></i>
+                    </div>
+                    <div class="step-info text-center">
+                        <div class="step-number text-xs text-gray-500">Step 3</div>
+                        <div class="step-label text-sm font-medium text-gray-600">Confirm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

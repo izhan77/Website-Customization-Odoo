@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="card_payment_form" name="Card Payment Form">
+        <div class="card-payment-form hidden">
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-800 mb-4">Card Information</h3>
+
+                <div class="card-icons flex space-x-2 mb-6">
+                    <img src="https://cdnjs.cloudflare.com/ajax/libs/payment-icons/1.2.5/visa.svg" alt="Visa" class="h-8"/>
+                    <img src="https://cdnjs.cloudflare.com/ajax/libs/payment-icons/1.2.5/mastercard.svg" alt="Mastercard" class="h-8"/>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                            Card Number <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"/>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label for="cardName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Cardholder Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="cardName" name="cardName" placeholder="John Doe"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                Expiry Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"/>
+                        </div>
+                        <div class="form-group relative">
+                            <label for="cvv" class="block text-sm font-medium text-gray-700 mb-2">
+                                CVV <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="cvv" name="cvv" placeholder="123" maxlength="4"
+                                       class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"/>
+                                <button type="button" class="cvv-toggle absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-options space-y-4">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" id="saveCard" name="saveCard" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"/>
+                            <span class="text-sm text-gray-700">Save this payment method for future orders</span>
+                        </label>
+
+                        <div class="payment-notice flex items-center space-x-2 text-sm text-gray-600 bg-green-50 p-3 rounded-lg">
+                            <i class="fas fa-shield-alt text-green-600"></i>
+                            <span>Your payment information is encrypted and secure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cart_items" name="Cart Items Display">
+        <div class="checkout-cart-items space-y-4 mb-6">
+            <!-- Dynamic cart items will be populated by JavaScript or server-side -->
+            <!-- Sample Static Items for Display -->
+            <div class="cart-item flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+                <img src="https://via.placeholder.com/60x60" alt="Item" class="w-15 h-15 object-cover rounded-lg"/>
+                <div class="flex-1">
+                    <h4 class="font-medium text-gray-800">Chicken Biryani</h4>
+                    <p class="text-sm text-gray-600">Quantity: 2</p>
+                </div>
+                <div class="text-right">
+                    <div class="font-semibold text-gray-800">Rs. 1,299</div>
+                </div>
+            </div>
+            
+            <div class="cart-item flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+                <img src="https://via.placeholder.com/60x60" alt="Item" class="w-15 h-15 object-cover rounded-lg"/>
+                <div class="flex-1">
+                    <h4 class="font-medium text-gray-800">Seekh Kabab</h4>
+                    <p class="text-sm text-gray-600">Quantity: 1</p>
+                </div>
+                <div class="text-right">
+                    <div class="font-semibold text-gray-800">Rs. 400</div>
+                </div>
+            </div>
+
+            <!-- Dynamic Template for Cart Items (use t-foreach when implementing) -->
+            <!--
+            <t t-foreach="cart_items" t-as="item">
+                <div class="cart-item flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+                    <img t-att-src="item.image" t-att-alt="item.name" class="w-15 h-15 object-cover rounded-lg"/>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-800" t-esc="item.name"></h4>
+                        <p class="text-sm text-gray-600">Quantity: <span t-esc="item.quantity"></span></p>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold text-gray-800">Rs. <span t-esc="item.total_price"></span></div>
+                    </div>
+                </div>
+            </t>
+            -->
+        </div>
+    </template>
+</odoo>

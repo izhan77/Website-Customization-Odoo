@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="order_totals" name="Order Totals">
+        <div class="order-totals space-y-3 mb-8">
+            <div class="total-line flex justify-between text-sm">
+                <span class="text-gray-600">Subtotal</span>
+                <span class="subtotal-amount font-medium">Rs. 1,699</span>
+            </div>
+            <div class="total-line flex justify-between text-sm">
+                <span class="text-gray-600">Delivery Fee</span>
+                <span class="delivery-amount font-medium">Rs. 150</span>
+            </div>
+            <div class="total-line flex justify-between text-sm">
+                <span class="text-gray-600">Tax (15%)</span>
+                <span class="tax-amount font-medium">Rs. 277</span>
+            </div>
+            
+            <!-- Discount Line (hidden by default, shown when promo applied) -->
+            <div class="total-line discount-line flex justify-between text-sm text-green-600 hidden">
+                <span>Discount</span>
+                <span class="discount-amount font-medium">- Rs. 0</span>
+            </div>
+            
+            <hr class="border-gray-200"/>
+            <div class="total-line grand-total flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span class="grand-total-amount text-primary">Rs. 2,126</span>
+            </div>
+        </div>
+    </template>
+</odoo>
