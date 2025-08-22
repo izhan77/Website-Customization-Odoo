@@ -9,13 +9,6 @@
             Home
         </a>
         <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
-           href="/about"
-           style="color: white !important;"
-           onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
-           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
-            About Us
-        </a>
-        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
            href="/menu"
            style="color: white !important;"
            onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
@@ -23,11 +16,11 @@
             Menu
         </a>
         <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300"
-           href="/services"
+           href="/about"
            style="color: white !important;"
            onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
            onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
-            Services
+            About Us
         </a>
     </template>
 </odoo>

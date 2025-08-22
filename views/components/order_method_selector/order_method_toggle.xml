@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    Order Method Toggle Component Template
+    File: views/components/order_method_selector/order_method_toggle.xml
+    Purpose: Handles the delivery/pickup toggle buttons functionality
+    -->
+    <template id="order_method_toggle_component" name="Order Method Toggle Buttons">
+        <!-- This template extends the base popup to add toggle functionality -->
+        <div class="order-toggle-wrapper">
+            <!-- Toggle Button Container -->
+            <div class="toggle-button-container bg-gray-100 p-1 rounded-full flex">
+                <!-- Delivery Toggle Button -->
+                <button
+                    class="toggle-btn delivery-toggle flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300"
+                    data-order-type="delivery"
+                    data-active="true">
+                    <span class="toggle-text">DELIVERY</span>
+                </button>
+
+                <!-- Pickup Toggle Button -->
+                <button
+                    class="toggle-btn pickup-toggle flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300"
+                    data-order-type="pickup"
+                    data-active="false">
+                    <span class="toggle-text">PICKUP</span>
+                </button>
+            </div>
+        </div>
+    </template>
+</odoo>

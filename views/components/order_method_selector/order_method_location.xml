@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="order_location_selector_component" name="Order Location Selector">
+        <div class="location-selector-wrapper">
+            <!-- Current Location Button Template -->
+            <div class="current-location-container mb-4">
+                <button
+                    class="current-location-btn inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
+                    id="use-current-location">
+                    <svg class="location-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="location-btn-text">Use Current Location</span>
+                </button>
+            </div>
+
+            <!-- Location Dropdown Template -->
+            <div class="location-dropdown-container mb-4">
+                <select class="location-dropdown w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white appearance-none cursor-pointer">
+                    <!-- FIXED: Added explicit values for boolean attributes -->
+                    <option value="" disabled="true" selected="true">Select location...</option>
+                </select>
+
+                <!-- Custom Dropdown Arrow -->
+                <div class="dropdown-arrow-wrapper absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Location Details Card Template -->
+            <div class="location-details-card hidden bg-gray-50 p-4 rounded-lg text-left">
+                <div class="location-details-content">
+                    <h4 class="location-name font-medium text-gray-800 mb-2"></h4>
+                    <p class="location-address text-sm text-gray-600 mb-3"></p>
+                    <button class="directions-btn bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
+                        Get Directions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

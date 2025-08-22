@@ -17,8 +17,18 @@
             <script type="text/javascript" src="/website_customizations/static/src/js/tailwind_config.js"></script>
 
             <!-- Navbar specific assets -->
-            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
+
+            <!-- Category Strip Assets -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/category_strip/category_strip_scroll.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
 
             <!-- Force font loading -->
             <style>
@@ -26,6 +36,16 @@
                     font-family: 'Montserrat', sans-serif !important;
                 }
             </style>
+        </xpath>
+    </template>
+
+    <!-- Add Category Strip to Website Layout -->
+    <template id="add_category_strip" inherit_id="website.layout" name="Add Category Strip">
+        <xpath expr="//header" position="after">
+            <!-- Add the category strip -->
+            <t t-call="website_customizations.category_strip_base"/>
+            <!-- Add the menu sections (FIXED TEMPLATE NAME) -->
+            <t t-call="website_customizations.sample_menu_sections"/>
         </xpath>
     </template>
 </odoo>

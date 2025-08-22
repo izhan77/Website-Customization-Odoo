@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="category_strip_base" name="Category Strip Base">
+        <!-- Sticky Category Strip -->
+        <div id="category-strip" class="category-strip-container bg-[#7abfba] transition-all duration-300 z-40">
+            <div class="container mx-auto px-4">
+                <t t-call="website_customizations.category_strip_container"/>
+            </div>
+        </div>
+    </template>
+</odoo>
