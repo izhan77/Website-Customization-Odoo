@@ -14,9 +14,10 @@ class CategoryStripComplete {
         this.currentTransform = 0;
         this.isSticky = false;
         this.originalTop = 0;
-        this.hasUserScrolled = false; // Track if user has interacted with arrows
+        this.hasUserScrolled = false;
         this.isScrolling = false;
         this.scrollAnimation = null;
+        this.navbarHeight = 0;
 
         this.init();
     }
@@ -43,7 +44,7 @@ class CategoryStripComplete {
         }
 
         this.originalTop = this.categoryStrip.offsetTop;
-        this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 80;
+        this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
 
         this.createPlaceholder();
         this.setupHorizontalScroll();
@@ -62,8 +63,6 @@ class CategoryStripComplete {
         if (!placeholder) {
             placeholder = document.createElement('div');
             placeholder.className = 'category-strip-placeholder';
-            placeholder.style.height = '0px';
-            placeholder.style.display = 'none';
             this.categoryStrip.parentNode.insertBefore(placeholder, this.categoryStrip.nextSibling);
         }
         this.placeholder = placeholder;
@@ -83,7 +82,7 @@ class CategoryStripComplete {
         });
 
         this.setupTouchScrolling();
-        this.setupWheelScrolling(); // Add wheel/trackpad scrolling
+        this.setupWheelScrolling();
         window.addEventListener('resize', () => this.updateArrowStates());
     }
 
@@ -141,16 +140,11 @@ class CategoryStripComplete {
     }
 
     setupWheelScrolling() {
-        // Handle trackpad/touchpad horizontal scrolling
         this.scrollContainer.addEventListener('wheel', (e) => {
-            // Check if this is a horizontal scroll event
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault();
+                this.currentTransform -= e.deltaX * 1.5;
 
-                // Fixed direction - now scrolling left moves content left, right moves content right
-                this.currentTransform -= e.deltaX * 1.5; // Increased multiplier for smoother feel
-
-                // Apply boundaries
                 const containerWidth = this.scrollContainer.parentElement.offsetWidth;
                 const contentWidth = this.scrollContainer.scrollWidth;
                 const maxScroll = -(contentWidth - containerWidth);
@@ -182,7 +176,7 @@ class CategoryStripComplete {
 
         const startPosition = this.currentTransform;
         const distance = targetPosition - startPosition;
-        const duration = 300; // ms
+        const duration = 300;
         let startTime = null;
 
         const animateScroll = (currentTime) => {
@@ -190,7 +184,6 @@ class CategoryStripComplete {
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
 
-            // Easing function for smooth animation
             const ease = this.easeOutCubic(progress);
             this.currentTransform = startPosition + (distance * ease);
 
@@ -225,27 +218,23 @@ class CategoryStripComplete {
         if (this.currentTransform >= 0) {
             this.leftArrow.classList.add('disabled');
             this.leftArrow.disabled = true;
-            // Hide left arrow if user hasn't scrolled or is back at start
             if (!this.hasUserScrolled || this.currentTransform === 0) {
                 this.leftArrow.style.display = 'none';
             }
         } else {
             this.leftArrow.classList.remove('disabled');
             this.leftArrow.disabled = false;
-            // Show left arrow when scrolled to the right
             this.leftArrow.style.display = 'flex';
         }
 
         // Right arrow
-        if (Math.abs(this.currentTransform) >= contentWidth - containerWidth - 5) { // Added small buffer for rounding errors
+        if (Math.abs(this.currentTransform) >= contentWidth - containerWidth - 5) {
             this.rightArrow.classList.add('disabled');
             this.rightArrow.disabled = true;
-            // Hide right arrow when at the end
             this.rightArrow.style.display = 'none';
         } else {
             this.rightArrow.classList.remove('disabled');
             this.rightArrow.disabled = false;
-            // Show right arrow when not at the end
             this.rightArrow.style.display = 'flex';
         }
     }
@@ -264,7 +253,7 @@ class CategoryStripComplete {
 
         window.addEventListener('resize', () => {
             this.originalTop = this.categoryStrip.offsetTop;
-            this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 80;
+            this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
             this.updateArrowStates();
         });
     }
@@ -336,7 +325,7 @@ class CategoryStripComplete {
         }
 
         if (targetElement) {
-            const offset = this.navbarHeight + 80; // navbar + category strip height
+            const offset = this.navbarHeight + 80;
             const elementPosition = targetElement.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - offset;
 

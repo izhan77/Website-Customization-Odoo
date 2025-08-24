@@ -1,7 +1,7 @@
 {
     'name': 'Website Customizations',
     'version': '1.0',
-    'summary': 'Custom CSS and JS for website with Category Strip Navigation and Hero Carousel',
+    'summary': 'Custom CSS and JS for website',
     'category': 'Website',
     'author': 'eaxeesoft',
     'depends': ['web', 'website'],
@@ -24,22 +24,16 @@
         'views/components/hero_section/hero_carousel_controls.xml',
         'views/components/hero_section/hero_carousel_indicators.xml',
 
-        # Legacy Hero Section (can be removed after migration)
-        # 'views/components/hero_section/hero_carousel.xml',
-
         # Product Cards Components
-        # 'views/components/product_cards/product_grid.xml',
-        # 'views/components/product_cards/product_card_items.xml',
-        # 'views/components/product_cards/single_product_card.xml',
-
-        # Homepage Components
-        'views/pages/homepage.xml',
-        'views/components/card_section/card_section.xml',
+        'views/components/product_cards/product_grid.xml',
+        'views/components/product_cards/single_product_card.xml',
 
         # Category Strip Components - NEWLY RESTRUCTURED
         'views/components/category_strip/category_strip_complete.xml',
-        'views/components/category_strip/category_strip_base.xml',
-        # 'views/components/category_strip/menu_sections.xml',
+
+        # Homepage Components
+        'views/pages/homepage.xml',
+
     ],
     'assets': {
         'web.assets_frontend': [
@@ -62,11 +56,13 @@
 
             # Category Strip CSS + JS - NEWLY RESTRUCTURED MODULAR COMPONENTS
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
+            # 'website_customizations/static/src/css/components/category_strip/category_strip_responsive.css',
+            # 'website_customizations/static/src/css/components/category_strip/category_strip_sticky.css',
             'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
 
             # Product Cards CSS + JS
-            # 'website_customizations/static/src/css/components/product_cards/product_grid.css',
-            # 'website_customizations/static/src/js/components/product_cards/product_grid.js',
+            'website_customizations/static/src/css/components/product_cards/product_grid.css',
+            'website_customizations/static/src/js/components/product_cards/product_grid.js',
         ],
     },
     'installable': True,

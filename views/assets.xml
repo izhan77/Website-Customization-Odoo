@@ -17,51 +17,30 @@
             <script type="text/javascript" src="/website_customizations/static/src/js/tailwind_config.js"></script>
 
             <!-- Navbar specific assets -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
-            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/navbar/menu_popup.css"/>-->
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
-            <!--            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>-->
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
 
-            <!-- =================================
-                  HERO SECTION MODULAR COMPONENTS
-                  ================================= -->
-            <!-- Hero Section Base Styles -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_base.css"/>
+            <!-- ================================= HERO SECTION MODULAR COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/hero_section/hero_carousel_base.css"/>
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css"/>
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css"/>
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css"/>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
 
-            <!-- Hero Section Indicators Styles -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css"/>
-
-            <!-- Hero Section Controls Styles -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css"/>
-
-            <!-- Hero Section Responsive Styles -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css"/>
-
-            <!-- Hero Section JavaScript Configuration -->
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
-
-
-            <!-- =================================
-                  CATEGORY STRIP MODULAR COMPONENTS
-                  ================================= -->
-            <!-- Category Strip CSS Files -->
+            <!-- ================================= CATEGORY STRIP MODULAR COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
-
-            <!-- Category Strip JavaScript Files - Load in dependency order -->
+<!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_responsive.css"/>-->
+<!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_sticky.css"/>-->
             <script type="text/javascript" src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
 
+            <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/product_cards/product_grid.css"/>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/product_cards/product_grid.js"></script>
 
             <!-- Force font loading -->
             <style>
                 * {
-                font-family: 'Montserrat', sans-serif !important;
+                    font-family: 'Montserrat', sans-serif !important;
                 }
             </style>
         </xpath>

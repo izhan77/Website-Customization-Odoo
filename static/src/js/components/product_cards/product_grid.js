@@ -1,259 +1,148 @@
-// File: website_customizations/static/src/js/components/product_cards/product_grid.js
-
-document.addEventListener('DOMContentLoaded', function() {
+odoo.define('website_customizations.product_cards', function (require) {
     'use strict';
 
-    // Product Grid Functionality
-    class ProductGrid {
-        constructor() {
-            this.productCards = document.querySelectorAll('.product-card');
-            this.addButtons = document.querySelectorAll('.add-button');
+    const publicWidget = require('web.public.widget');
 
-            this.init();
-        }
+    publicWidget.registry.ProductCard = publicWidget.Widget.extend({
+        selector: '.product-card',
+        events: {
+            'click .add-to-cart-btn': '_onAddToCart',
+        },
 
-        init() {
-            this.setupCardAnimations();
-            this.setupAddButtonEvents();
-            this.setupImageLazyLoading();
-            this.setupScrollAnimations();
-        }
+        start: function () {
+            this._setupZIndex();
+            return this._super.apply(this, arguments);
+        },
 
-        setupCardAnimations() {
-            // Add entrance animations to cards
-            this.productCards.forEach((card, index) => {
-                // Initial state
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-
-                // Animate in with delay
+        _setupZIndex: function () {
+            const $card = this.$el;
+            $card.on('mouseenter', function() {
+                $(this).css('z-index', '999');
+            });
+            $card.on('mouseleave', function() {
                 setTimeout(() => {
-                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 150); // Stagger animation
+                    $(this).css('z-index', '2');
+                }, 1000);
             });
-        }
+        },
 
-        setupAddButtonEvents() {
-            this.addButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.handleAddToCart(button);
-                });
+        _onAddToCart: function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
 
-                // Add ripple effect
-                button.addEventListener('click', (e) => {
-                    this.createRippleEffect(e, button);
-                });
-            });
-        }
+            const $button = $(ev.currentTarget);
+            const $card = $button.closest('.product-card');
+            const productId = $card.data('product-id');
+            const productName = $card.find('.product-title').text();
+            const productPrice = $card.find('.discounted-price').text();
 
-        handleAddToCart(button) {
-            // Prevent multiple clicks
-            if (button.classList.contains('loading')) {
+            if ($button.hasClass('processing')) {
                 return;
             }
 
-            // Add loading state
-            button.classList.add('loading');
-            button.disabled = true;
+            $button.addClass('processing');
+            this._showAddFeedback($button);
 
-            // Get product data
-            const productCard = button.closest('.product-card');
-            const productName = productCard.querySelector('.product-title')?.textContent;
-            const productPrice = productCard.querySelector('.price-current')?.textContent;
+            console.log(`Added to cart: ${productName} (ID: ${productId}) - ${productPrice}`);
 
-            // Simulate add to cart API call
-            setTimeout(() => {
-                this.showAddToCartSuccess(button, productName);
-            }, 1500);
-
-            // You can replace this with actual API call:
-            // this.addToCartAPI(productData).then(() => {
-            //     this.showAddToCartSuccess(button, productName);
-            // }).catch(() => {
-            //     this.showAddToCartError(button);
-            // });
-        }
-
-        showAddToCartSuccess(button, productName) {
-            button.classList.remove('loading');
-            button.disabled = false;
-
-            // Temporarily change button text
-            const originalText = button.textContent;
-            button.textContent = 'ADDED!';
-            button.style.background = '#10b981'; // Success green
-
-            // Add success animation
-            button.style.transform = 'scale(1.1)';
+            // Here you can add actual cart functionality
+            // this._addToCartAPI(productId);
 
             setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = '#7abfba';
-                button.style.transform = 'scale(1)';
-            }, 2000);
+                $button.removeClass('processing');
+            }, 1000);
+        },
 
-            // Show toast notification (optional)
-            this.showToast(`${productName} added to cart!`, 'success');
-        }
+        _showAddFeedback: function ($button) {
+            const originalText = $button.text();
+            const originalBg = $button.css('background-color');
 
-        showAddToCartError(button) {
-            button.classList.remove('loading');
-            button.disabled = false;
-
-            // Show error state
-            const originalText = button.textContent;
-            button.textContent = 'ERROR';
-            button.style.background = '#ef4444'; // Error red
+            $button.text('ADDING...');
+            $button.css('background-color', '#f59e0b');
 
             setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = '#7abfba';
-            }, 2000);
-
-            this.showToast('Error adding to cart. Please try again.', 'error');
-        }
-
-        createRippleEffect(event, button) {
-            const ripple = document.createElement('span');
-            const rect = button.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-
-            // Add ripple styles
-            ripple.style.position = 'absolute';
-            ripple.style.borderRadius = '50%';
-            ripple.style.background = 'rgba(255, 255, 255, 0.5)';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.animation = 'ripple 0.6s linear';
-            ripple.style.pointerEvents = 'none';
-
-            // Add CSS animation keyframes if not exists
-            if (!document.querySelector('#ripple-keyframes')) {
-                const style = document.createElement('style');
-                style.id = 'ripple-keyframes';
-                style.textContent = `
-                    @keyframes ripple {
-                        to {
-                            transform: scale(4);
-                            opacity: 0;
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-
-            button.style.position = 'relative';
-            button.style.overflow = 'hidden';
-            button.appendChild(ripple);
+                $button.text('ADDED ✓');
+                $button.css('background-color', '#10b981');
+            }, 1000);
 
             setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        }
-
-        setupImageLazyLoading() {
-            // Lazy load product images
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.classList.remove('lazy');
-                            observer.unobserve(img);
-                        }
-                    }
-                });
-            });
-
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-
-        setupScrollAnimations() {
-            // Animate cards on scroll
-            const scrollObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            this.productCards.forEach(card => {
-                scrollObserver.observe(card);
-            });
-        }
-
-        showToast(message, type = 'success') {
-            // Create toast notification
-            const toast = document.createElement('div');
-            toast.className = `toast-notification toast-${type}`;
-            toast.textContent = message;
-
-            // Toast styles
-            toast.style.position = 'fixed';
-            toast.style.top = '20px';
-            toast.style.right = '20px';
-            toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
-            toast.style.color = 'white';
-            toast.style.padding = '12px 20px';
-            toast.style.borderRadius = '8px';
-            toast.style.zIndex = '9999';
-            toast.style.transform = 'translateX(400px)';
-            toast.style.transition = 'transform 0.3s ease';
-
-            document.body.appendChild(toast);
-
-            // Animate in
-            setTimeout(() => {
-                toast.style.transform = 'translateX(0)';
-            }, 100);
-
-            // Auto remove
-            setTimeout(() => {
-                toast.style.transform = 'translateX(400px)';
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 300);
+                $button.text(originalText);
+                $button.css('background-color', originalBg);
             }, 3000);
-        }
-    }
+        },
 
-    // Initialize Product Grid
-    new ProductGrid();
-
-    // Add CSS animations if not exists
-    if (!document.querySelector('#product-animations')) {
-        const style = document.createElement('style');
-        style.id = 'product-animations';
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
+        // Optional: Add actual cart integration
+        _addToCartAPI: function (productId) {
+            // Uncomment and modify this when you want real cart functionality
+            /*
+            this._rpc({
+                route: '/shop/cart/update',
+                params: {
+                    product_id: productId,
+                    add_qty: 1,
                 }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+            }).then((data) => {
+                console.log('Successfully added to cart:', data);
+            }).catch((error) => {
+                console.error('Error adding to cart:', error);
+            });
+            */
+        },
+    });
 
-            .lazy {
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-        `;
-        document.head.appendChild(style);
-    }
+    publicWidget.registry.ProductGrid = publicWidget.Widget.extend({
+        selector: '.product-grid-section',
+
+        start: function () {
+            this._initializeGrid();
+            this._setupViewMoreButton();
+            return this._super.apply(this, arguments);
+        },
+
+        _initializeGrid: function () {
+            const $cards = this.$('.product-card');
+
+            $cards.each(function (index) {
+                const $card = $(this);
+                $card.css('opacity', '0');
+
+                setTimeout(() => {
+                    $card.animate({
+                        opacity: 1
+                    }, 600);
+                }, index * 100);
+            });
+        },
+
+        _setupViewMoreButton: function () {
+            const $viewMoreBtn = this.$('.view-more-btn');
+
+            $viewMoreBtn.on('click', (ev) => {
+                ev.preventDefault();
+                this._loadMoreProducts();
+            });
+        },
+
+        _loadMoreProducts: function () {
+            const $button = this.$('.view-more-btn');
+            const originalText = $button.text();
+
+            $button.text('Loading...');
+            $button.prop('disabled', true);
+
+            // Simulate loading more products
+            setTimeout(() => {
+                console.log('Loading more products...');
+                // Here you would typically make an AJAX call to load more products
+
+                $button.text(originalText);
+                $button.prop('disabled', false);
+            }, 1500);
+        },
+    });
+
+    return {
+        ProductCard: publicWidget.registry.ProductCard,
+        ProductGrid: publicWidget.registry.ProductGrid,
+    };
 });

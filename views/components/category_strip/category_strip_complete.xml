@@ -83,6 +83,6 @@
         </div>
 
         <!-- Placeholder for sticky positioning -->
-        <div class="category-strip-placeholder" style="height: 0px; display: none;"></div>
+        <div class="category-strip-placeholder"></div>
     </template>
 </odoo>
