@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Complete Category Strip Template -->
+    <template id="category_strip_complete" name="Category Strip Complete">
+        <!-- Category Strip Container -->
+        <div id="category-strip-wrapper" class="category-strip-container">
+            <div class="category-strip-inner">
+                <div class="flex items-center justify-center relative">
+
+                    <!-- Left Arrow Button -->
+                    <button id="scroll-left" class="category-arrow category-arrow-left" type="button" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+
+                    <!-- Categories Wrapper with Overflow Hidden -->
+                    <div id="categories-wrapper" class="flex-1 overflow-hidden relative">
+                        <!-- Categories Container - This will slide left/right -->
+                        <div id="categories-container" class="flex gap-3 transition-transform duration-500 ease-in-out">
+
+                            <!-- Category Items -->
+                            <a href="#rice-box-section" class="category-item" data-section="rice-box-section">
+                                Rice Box
+                            </a>
+
+                            <a href="#ala-delivery-box-section" class="category-item" data-section="ala-delivery-box-section">
+                                Ala Delivery Box
+                            </a>
+
+                            <a href="#hadiya-premium-box-section" class="category-item" data-section="hadiya-premium-box-section">
+                                Hadiya Premium Box
+                            </a>
+
+                            <a href="#turkish-feast-section" class="category-item" data-section="turkish-feast-section">
+                                Turkish Feast
+                            </a>
+
+                            <a href="#ronaq-e-dastarkhwan-section" class="category-item" data-section="ronaq-e-dastarkhwan-section">
+                                Ronaq E Dastarkhwan
+                            </a>
+
+                            <a href="#new-arrivals-section" class="category-item" data-section="new-arrivals-section">
+                                New Arrivals
+                            </a>
+
+                            <a href="#soups-and-salads-section" class="category-item" data-section="soups-and-salads-section">
+                                Soups And Salads
+                            </a>
+
+                            <a href="#cold-drinks-section" class="category-item" data-section="cold-drinks-section">
+                                Cold Mezzes
+                            </a>
+
+                            <a href="#hot-beverages-section" class="category-item" data-section="hot-beverages-section">
+                                Hot Starters
+                            </a>
+
+                            <a href="#main-course-section" class="category-item" data-section="main-course-section">
+                                Main Course
+                            </a>
+
+                            <a href="#desserts-section" class="category-item" data-section="desserts-section">
+                                Desserts
+                            </a>
+
+                            <a href="#bbq-section" class="category-item" data-section="bbq-section">
+                                BBQ
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Arrow Button -->
+                    <button id="scroll-right" class="category-arrow category-arrow-right" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder for sticky positioning -->
+        <div class="category-strip-placeholder" style="height: 0px; display: none;"></div>
+    </template>
+</odoo>

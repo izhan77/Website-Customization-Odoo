@@ -17,19 +17,51 @@
             <script type="text/javascript" src="/website_customizations/static/src/js/tailwind_config.js"></script>
 
             <!-- Navbar specific assets -->
-            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
+            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/navbar/menu_popup.css"/>-->
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
+            <!--            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>-->
 
-            <!-- Order Method Selector Assets -->
-            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/order_method_selector/order_method_animations.css"/>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_toggle.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_location.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_main.js"></script>
+            <!-- =================================
+                  HERO SECTION MODULAR COMPONENTS
+                  ================================= -->
+            <!-- Hero Section Base Styles -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_base.css"/>
+
+            <!-- Hero Section Indicators Styles -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css"/>
+
+            <!-- Hero Section Controls Styles -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css"/>
+
+            <!-- Hero Section Responsive Styles -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css"/>
+
+            <!-- Hero Section JavaScript Configuration -->
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
+
+
+            <!-- =================================
+                  CATEGORY STRIP MODULAR COMPONENTS
+                  ================================= -->
+            <!-- Category Strip CSS Files -->
+            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
+
+            <!-- Category Strip JavaScript Files - Load in dependency order -->
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
+
 
             <!-- Force font loading -->
             <style>
                 * {
-                    font-family: 'Montserrat', sans-serif !important;
+                font-family: 'Montserrat', sans-serif !important;
                 }
             </style>
         </xpath>

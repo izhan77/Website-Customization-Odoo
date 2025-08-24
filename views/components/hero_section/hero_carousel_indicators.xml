@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+=============================================================================
+HERO CAROUSEL - INDICATORS COMPONENT
+Navigation dots for carousel slides
+=============================================================================
+-->
+<odoo>
+    <template id="hero_carousel_indicators" name="Hero Carousel Indicators">
+        <!-- Carousel Indicators (4 dots) -->
+        <div class="carousel-indicators absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+            <button type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to="0"
+                    class="active w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    aria-current="true"
+                    aria-label="Slide 1">
+            </button>
+            <button type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to="1"
+                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    aria-label="Slide 2">
+            </button>
+            <button type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to="2"
+                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    aria-label="Slide 3">
+            </button>
+            <button type="button"
+                    data-bs-target="#heroCarousel"
+                    data-bs-slide-to="3"
+                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    aria-label="Slide 4">
+            </button>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="card_section" name="Card Section">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                <!-- Card 1 - Kebsa Chicken -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl group">
+                    <div class="relative overflow-hidden">
+                        <img src="/website_customizations/static/src/images/product1.jpg"
+                             alt="Kebsa Chicken"
+                             class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"/>
+                        <!-- Optional overlay on hover -->
+                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    <div class="p-4">
+                        <h5 class="text-lg font-bold text-gray-800 mb-2">Kebsa Chicken</h5>
+                        <p class="text-sm text-gray-600 mb-4 line-clamp-3">
+                            All New Single Person Serving, Quarter Chicken Baked To Perfection Served With Kebsa
+                        </p>
+                        <!-- Price with strikethrough -->
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-sm text-gray-400 line-through">Rs. 1295</span>
+                            <span class="text-lg font-bold text-[#7abfba]">Rs. 999</span>
+                        </div>
+                        <!-- Add Button -->
+                        <button class="w-full bg-[#7abfba] hover:bg-[#66a39e] text-white font-semibold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95">
+                            ADD
+                        </button>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </template>
+</odoo>

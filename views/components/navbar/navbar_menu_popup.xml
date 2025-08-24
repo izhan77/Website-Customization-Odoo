@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="navbar_menu_popup" name="Navbar Menu Popup">
+        <!-- Menu Categories Popup (Hidden by default) -->
+        <div id="menu-categories-popup" class="menu-categories-popup">
+            <div class="menu-popup-grid">
+                <!-- Rice Box -->
+                <a href="#rice-box-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 2v20"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Rice Box</h3>
+                </a>
+
+                <!-- Ala Delivery Box -->
+                <a href="#ala-delivery-box-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M16 3h5v5"/>
+                            <path d="M8 3H3v5"/>
+                            <path d="M12 22V8"/>
+                            <path d="m15 11-3-3-3 3"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Ala Delivery</h3>
+                </a>
+
+                <!-- Hadiya Premium Box -->
+                <a href="#hadiya-premium-box-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M20 13V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+                            <path d="M4 10v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10"/>
+                            <path d="M12 6v2"/>
+                            <path d="M12 14v2"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Hadiya Premium</h3>
+                </a>
+
+                <!-- Turkish Feast -->
+                <a href="#turkish-feast-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M17 3a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10Z"/>
+                            <path d="M7 3v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3"/>
+                            <path d="M12 12v4"/>
+                            <path d="M12 6v2"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Turkish Feast</h3>
+                </a>
+
+                <!-- Ronaq E Dastarkhwan -->
+                <a href="#ronaq-e-dastarkhwan-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 2v20"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            <circle cx="12" cy="12" r="5"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Ronaq E Dastarkhwan</h3>
+                </a>
+
+                <!-- New Arrivals -->
+                <a href="#new-arrivals-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">New Arrivals</h3>
+                </a>
+
+                <!-- Soups And Salads -->
+                <a href="#soups-and-salads-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 2v20"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            <path d="M20 12H4"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Soups and Salads</h3>
+                </a>
+
+                <!-- Cold Drinks -->
+                <a href="#cold-drinks-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M10 2v4"/>
+                            <path d="M14 2v4"/>
+                            <path d="M16 8v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8"/>
+                            <path d="M4 8h16"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Cold Drinks</h3>
+                </a>
+
+                <!-- Hot Beverages -->
+                <a href="#hot-beverages-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M10 2v3"/>
+                            <path d="M14 2v3"/>
+                            <path d="M16 8v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8"/>
+                            <path d="M4 8h16"/>
+                            <path d="M18 15v3"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Hot Beverages</h3>
+                </a>
+
+                <!-- Desserts -->
+                <a href="#desserts-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M6 13h12"/>
+                            <path d="M6 7h12"/>
+                            <path d="M12 2v20"/>
+                            <circle cx="12" cy="12" r="10"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Desserts</h3>
+                </a>
+
+                <!-- BBQ -->
+                <a href="#bbq-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M17 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/>
+                            <path d="M12 5v14"/>
+                            <path d="M7 12h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">BBQ</h3>
+                </a>
+
+                <!-- Fast Food -->
+                <a href="#fast-food-section" class="menu-popup-item group">
+                    <div class="menu-popup-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M16 3h5v5"/>
+                            <path d="M8 3H3v5"/>
+                            <path d="M12 12v9"/>
+                            <path d="m15 6-3-3-3 3"/>
+                        </svg>
+                    </div>
+                    <h3 class="menu-popup-title">Fast Food</h3>
+                </a>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,17 @@
+/* Card Section specific styles */
+.card-item {
+    transition: all 0.3s ease;
+}
+
+.card-item:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.add-to-cart {
+    box-shadow: 0 4px 6px rgba(122, 191, 186, 0.2);
+}
+
+.add-to-cart:hover {
+    box-shadow: 0 6px 8px rgba(122, 191, 186, 0.3);
+    transform: translateY(-2px);
+}
