@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="category_strip_items" name="Category Strip Items">
+        <!-- Category Items -->
+        <a href="#rice-box" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Rice Box
+        </a>
+        <a href="#ala-delivery-box" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Ala Delivery Box
+        </a>
+        <a href="#hadiya-premium-box" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Hadiya Premium Box
+        </a>
+        <a href="#turkish-feast" class="category-item flex-shrink-0 px-6 py-2 bg-[#f39c12] text-black rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer active">
+            Turkish Feast
+        </a>
+        <a href="#ronaq-e-dastarkhwan" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Ronaq E Dastarkhwan
+        </a>
+        <a href="#new-arrivals" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            New Arrivals
+        </a>
+        <a href="#soups-and-salads" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Soups And Salads
+        </a>
+        <a href="#cold-drinks" class="category-item flex-shrink-0 px-6 py-2 bg-[#34495e] hover:bg-[#f39c12] text-white rounded-full font-medium transition-all duration-300 whitespace-nowrap cursor-pointer">
+            Cold Drinks
+        </a>
+    </template>
+</odoo>

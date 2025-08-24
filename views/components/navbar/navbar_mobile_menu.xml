@@ -3,7 +3,7 @@
     <template id="navbar_mobile_menu" name="Navbar Mobile Menu">
         <!-- Dark Overlay Background -->
         <div id="mobile-menu"
-             class="lg:hidden hidden fixed top-0 left-0 h-full w-full bg-black/30 backdrop-blur-sm z-[998] transition-all duration-500 ease-in-out"
+             class="md:hidden hidden fixed top-0 left-0 h-full w-full bg-black/30 backdrop-blur-sm z-[998] transition-all duration-500 ease-in-out"
              style="display: none;">
             <!-- Menu Content Container -->
             <div style="background-color: #7abfba !important;" id="menu-content-container" class="menu-content-container fixed top-0 left-0 w-full h-[65%] bg-[#B8D8D6] rounded-bl-[4rem] rounded-br-[4rem] z-[999] pt-16">

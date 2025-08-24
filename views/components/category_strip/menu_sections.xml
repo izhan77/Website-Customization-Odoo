@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sample sections that category strip can navigate to -->
+    <template id="sample_menu_sections" name="Sample Menu Sections">
+        <!-- Rice Box Section -->
+        <section id="rice-box" class="py-16 px-4" data-section="rice-box">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Rice Box</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Chicken Rice Box</h3>
+                        <p class="text-gray-600">Delicious chicken served with aromatic basmati rice...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 450</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Beef Rice Box</h3>
+                        <p class="text-gray-600">Tender beef pieces with perfectly cooked rice...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 520</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ala Delivery Box Section -->
+        <section id="ala-delivery-box" class="py-16 px-4 bg-gray-50" data-section="ala-delivery-box">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Ala Delivery Box</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Mixed Grill Box</h3>
+                        <p class="text-gray-600">Variety of grilled meats in our signature box...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 650</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hadiya Premium Box Section -->
+        <section id="hadiya-premium-box" class="py-16 px-4" data-section="hadiya-premium-box">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Hadiya Premium Box</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Premium Special</h3>
+                        <p class="text-gray-600">Our finest selection in premium packaging...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 850</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Turkish Feast Section (Active by default) -->
+        <section id="turkish-feast" class="py-16 px-4 bg-gray-50" data-section="turkish-feast">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Turkish Feast</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Beyti Kebab (1-2 Person)</h3>
+                        <p class="text-gray-600">Famous Turkish dish consisting of juicy marinated chicken or lamb...</p>
+                        <span class="text-[#f39c12] font-bold">From Rs. 1695</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Iskender Kebab (1-2 Person)</h3>
+                        <p class="text-gray-600">Renowned Turkish dish made with sliced doner kebab...</p>
+                        <span class="text-[#f39c12] font-bold">From Rs. 1995</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Laham Batatas</h3>
+                        <p class="text-gray-600">Creamy baked mashed potatoes served with unique...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 2395</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ronaq E Dastarkhwan Section -->
+        <section id="ronaq-e-dastarkhwan" class="py-16 px-4" data-section="ronaq-e-dastarkhwan">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Ronaq E Dastarkhwan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Traditional Platter</h3>
+                        <p class="text-gray-600">Authentic Pakistani cuisine served traditionally...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 1250</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Arrivals Section -->
+        <section id="new-arrivals" class="py-16 px-4 bg-gray-50" data-section="new-arrivals">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">New Arrivals</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Latest Special</h3>
+                        <p class="text-gray-600">Try our newest addition to the menu...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 750</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Soups And Salads Section -->
+        <section id="soups-and-salads" class="py-16 px-4" data-section="soups-and-salads">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Soups And Salads</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Chicken Corn Soup</h3>
+                        <p class="text-gray-600">Hearty soup with tender chicken and sweet corn...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 350</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Caesar Salad</h3>
+                        <p class="text-gray-600">Fresh greens with our signature caesar dressing...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 450</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cold Drinks Section -->
+        <section id="cold-drinks" class="py-16 px-4 bg-gray-50" data-section="cold-drinks">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-8 text-[#2c4a4e]">Cold Drinks</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Fresh Juice</h3>
+                        <p class="text-gray-600">Freshly squeezed seasonal fruit juices...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 180</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold mb-2">Soft Drinks</h3>
+                        <p class="text-gray-600">Variety of carbonated beverages...</p>
+                        <span class="text-[#f39c12] font-bold">Rs. 120</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>
