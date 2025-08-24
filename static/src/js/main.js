@@ -1,4 +1,4 @@
-odoo.define("website_customizations.main", [], function (require) {
+odoo.define("website_customizations.main", function (require) {
   "use strict";
 
   // Simple debug log

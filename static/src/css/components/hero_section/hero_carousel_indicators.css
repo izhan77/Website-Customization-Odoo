@@ -1,0 +1,53 @@
+/* ==========================================================================
+   HERO CAROUSEL - INDICATORS COMPONENT
+   Styling for carousel navigation dots
+   ========================================================================== */
+
+/* Carousel Indicators - Perfect Circles at Bottom Center */
+.carousel-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carousel-indicators button {
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: rgba(255, 255, 255, 1) !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+.carousel-indicators button:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  transform: scale(1.1);
+}
+
+.carousel-indicators button.active {
+  background-color: #7abfba !important;
+  opacity: 1 !important;
+  transform: scale(1.2);
+}
+
+@media (max-width: 640px) {
+  /* Mobile indicators adjustment */
+  .carousel-indicators {
+    bottom: 15px;
+  }
+
+  .carousel-indicators button {
+    width: 8px !important;
+    height: 8px !important;
+  }
+}
