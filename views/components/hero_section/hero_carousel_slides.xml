@@ -9,30 +9,30 @@ Individual carousel slides with images
     <template id="hero_carousel_slides" name="Hero Carousel Slides">
         <div class="carousel-inner h-[335px]">
             <!-- Slide 1 - Active by default -->
-            <div class="carousel-item active h-full">
+            <div class="carousel-item active h-full transition-transform duration-500 ease-in-out">
                 <img src="/website_customizations/static/src/images/hero1.jpg"
-                     class="d-block w-full h-full object-cover"
+                     class="d-block w-full h-[400px] object-cover object-center"
                      alt="Slide 1"/>
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item h-full">
+            <div class="carousel-item h-full transition-transform duration-500 ease-in-out">
                 <img src="/website_customizations/static/src/images/hero2.jpg"
-                     class="d-block w-full h-full object-cover"
+                     class="d-block w-full h-[400px] object-cover object-center"
                      alt="Slide 2"/>
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item h-full">
+            <div class="carousel-item h-full transition-transform duration-500 ease-in-out">
                 <img src="/website_customizations/static/src/images/hero3.jpg"
-                     class="d-block w-full h-full object-cover"
+                     class="d-block w-full h-[400px] object-cover object-center"
                      alt="Slide 3"/>
             </div>
 
             <!-- Slide 4 -->
-            <div class="carousel-item h-full">
+            <div class="carousel-item h-full transition-transform duration-500 ease-in-out">
                 <img src="/website_customizations/static/src/images/hero4.png"
-                     class="d-block w-full h-full object-cover"
+                     class="d-block w-full h-[400px] object-cover object-center"
                      alt="Slide 4"/>
             </div>
         </div>

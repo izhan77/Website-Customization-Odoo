@@ -8,30 +8,30 @@ Navigation dots for carousel slides
 <odoo>
     <template id="hero_carousel_indicators" name="Hero Carousel Indicators">
         <!-- Carousel Indicators (4 dots) -->
-        <div class="carousel-indicators absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+        <div class="carousel-indicators absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 transform gap-1.5 sm:bottom-4">
             <button type="button"
                     data-bs-target="#heroCarousel"
                     data-bs-slide-to="0"
-                    class="active w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    class="active h-2.5 w-2.5 rounded-full bg-white transition-all duration-300 hover:scale-110 sm:h-2 sm:w-2"
                     aria-current="true"
                     aria-label="Slide 1">
             </button>
             <button type="button"
                     data-bs-target="#heroCarousel"
                     data-bs-slide-to="1"
-                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    class="h-2.5 w-2.5 rounded-full bg-white transition-all duration-300 hover:scale-110 sm:h-2 sm:w-2"
                     aria-label="Slide 2">
             </button>
             <button type="button"
                     data-bs-target="#heroCarousel"
                     data-bs-slide-to="2"
-                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    class="h-2.5 w-2.5 rounded-full bg-white transition-all duration-300 hover:scale-110 sm:h-2 sm:w-2"
                     aria-label="Slide 3">
             </button>
             <button type="button"
                     data-bs-target="#heroCarousel"
                     data-bs-slide-to="3"
-                    class="w-3 h-3 rounded-full bg-white opacity-70 hover:opacity-100 transition-opacity duration-300"
+                    class="h-2.5 w-2.5 rounded-full bg-white transition-all duration-300 hover:scale-110 sm:h-2 sm:w-2"
                     aria-label="Slide 4">
             </button>
         </div>

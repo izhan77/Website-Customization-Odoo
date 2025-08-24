@@ -53,15 +53,13 @@
             'website_customizations/static/src/js/components/navbar/navbar.js',
             # 'website_customizations/static/src/js/components/navbar/menu_popup.js',
 
-            # Hero Section CSS + JS - NEWLY ADDED MODULAR COMPONENTS
-            'website_customizations/static/src/css/components/hero_section/hero_carousel_base.css',
-            'website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css',
-            'website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css',
-            'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
+            # Hero Section JS - NEWLY ADDED MODULAR COMPONENTS
             'website_customizations/static/src/js/components/hero_section/hero_carousel_config.js',
 
             # Category Strip CSS + JS - NEWLY RESTRUCTURED MODULAR COMPONENTS
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
+            'website_customizations/static/src/css/components/category_strip/category_strip_responsive.css',
+            'website_customizations/static/src/css/components/category_strip/category_strip_sticky.css',
             'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
 
             # Product Cards CSS + JS

@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-=============================================================================
-HERO CAROUSEL - NAVIGATION CONTROLS COMPONENT
-Previous and Next navigation arrows
-=============================================================================
--->
 <odoo>
     <template id="hero_carousel_controls" name="Hero Carousel Controls">
         <!-- Previous Button -->
-        <button class="carousel-control-prev absolute top-1/2 left-4 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full flex items-center justify-center transition-all duration-300 z-10"
-                type="button"
-                data-bs-target="#heroCarousel"
-                data-bs-slide="prev">
-            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button 
+            class="carousel-control-prev absolute top-1/2 left-4 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full bg-white/80 flex items-center justify-center transition-all duration-300 hover:bg-white hover:scale-110 outline-none active:outline-none focus:outline-none focus:ring-0 ring-0 ring-offset-0 border-0 focus:border-0
+                   md:h-9 md:w-9
+                   sm:left-3 sm:h-8 sm:w-8"
+            type="button"
+            data-bs-target="#heroCarousel"
+            data-bs-slide="prev"
+            aria-label="Previous slide">
+            <svg class="w-5 h-5 text-gray-800 md:w-4.5 md:h-4.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </button>
 
         <!-- Next Button -->
-        <button class="carousel-control-next absolute top-1/2 right-4 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full flex items-center justify-center transition-all duration-300 z-10"
-                type="button"
-                data-bs-target="#heroCarousel"
-                data-bs-slide="next">
-            <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button 
+            class="carousel-control-next absolute top-1/2 right-4 z-10 h-10 w-10 -translate-y-1/2 transform rounded-full bg-white/80 flex items-center justify-center transition-all duration-300 hover:bg-white hover:scale-110 outline-none active:outline-none focus:outline-none focus:ring-0 ring-0 ring-offset-0 border-0 focus:border-0
+                   md:h-9 md:w-9
+                   sm:right-3 sm:h-8 sm:w-8"
+            type="button"
+            data-bs-target="#heroCarousel"
+            data-bs-slide="next"
+            aria-label="Next slide">
+            <svg class="w-5 h-5 text-gray-800 md:w-4.5 md:h-4.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
         </button>
