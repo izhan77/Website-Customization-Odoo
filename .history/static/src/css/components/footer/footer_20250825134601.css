@@ -11,10 +11,3 @@ footer#custom_footer a {
 footer#custom_footer a:hover {
     color: #66a39e !important;
 }
-
-/* Hide Odoo's default copyright */
-.o_footer_copyright,
-.o_footer .container,
-.o_footer_copyright.o_colored_level {
-    display: none !important;
-}

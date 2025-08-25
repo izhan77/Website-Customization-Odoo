@@ -17,4 +17,9 @@
             </footer>
         </xpath>
     </template>
+
+    <!-- Kill leftover copyright block (safe for all versions) -->
+    <template id="remove_odoo_footer" inherit_id="website.layout">
+        <xpath expr="//div[contains(@class,'o_footer_copyright')]" position="replace"/>
+    </template>
 </odoo>
