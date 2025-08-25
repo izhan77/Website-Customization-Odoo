@@ -24,21 +24,11 @@
         'views/components/hero_section/hero_carousel_controls.xml',
         'views/components/hero_section/hero_carousel_indicators.xml',
 
-        # Legacy Hero Section (can be removed after migration)
-        # 'views/components/hero_section/hero_carousel.xml',
-
-        # Product Cards Components
-        # 'views/components/product_cards/product_grid.xml',
-        # 'views/components/product_cards/product_card_items.xml',
-        # 'views/components/product_cards/single_product_card.xml',
-
         # Homepage Components
         'views/pages/homepage.xml',
-        'views/components/card_section/card_section.xml',
 
         # Category Strip Components - NEWLY RESTRUCTURED
         'views/components/category_strip/category_strip_complete.xml',
-        # 'views/components/category_strip/menu_sections.xml',
     ],
     'assets': {
         'web.assets_frontend': [
@@ -60,10 +50,6 @@
             # Category Strip CSS + JS - NEWLY RESTRUCTURED MODULAR COMPONENTS
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
             'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
-
-            # Product Cards CSS + JS
-            # 'website_customizations/static/src/css/components/product_cards/product_grid.css',
-            # 'website_customizations/static/src/js/components/product_cards/product_grid.js',
         ],
     },
     'installable': True,

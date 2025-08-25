@@ -6,7 +6,7 @@
              class="md:hidden hidden fixed top-0 left-0 h-full w-full bg-black/30 backdrop-blur-sm z-[998] transition-all duration-500 ease-in-out"
              style="display: none;">
             <!-- Menu Content Container -->
-            <div style="background-color: #7abfba !important;" id="menu-content-container" class="menu-content-container fixed top-0 left-0 w-full h-[65%] bg-[#B8D8D6] rounded-bl-[4rem] rounded-br-[4rem] z-[999] pt-16">
+            <div style="background-color: var(--color-primary) !important;" id="menu-content-container" class="menu-content-container fixed top-0 left-0 w-full h-[65%] bg-[#B8D8D6] rounded-bl-[4rem] rounded-br-[4rem] z-[999] pt-16">
                 <!-- Menu Links - Moved Down -->
                 <div class="flex items-center justify-center h-full pt-8">
                     <div class="flex flex-col text-4xl md:text-5xl font-bold leading-[1.15] tracking-tight text-center">

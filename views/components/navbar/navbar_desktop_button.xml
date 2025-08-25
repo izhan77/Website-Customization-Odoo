@@ -2,18 +2,18 @@
 <odoo>
     <template id="navbar_desktop_button" name="Navbar Desktop Button">
         <div class="space-x-4 flex flex-row">
-            <a class="bg-white text-[#66a39e] font-semibold px-6 py-2 rounded-full transition-all duration-300"
+            <a class="bg-white text-[var(--color-accent)] font-semibold px-6 py-2 rounded-full transition-all duration-300"
                href="/contactus"
-               style="background-color: white !important; color: #66a39e !important;"
-               onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
-               onmouseout="this.style.setProperty('background-color', 'white', 'important'); this.style.setProperty('color', '#66a39e', 'important');">
+               style="background-color: white !important; color: var(--color-accent) !important;"
+               onmouseover="this.style.setProperty('background-color', 'var(--color-accent)', 'important'); this.style.setProperty('color', 'white', 'important');"
+               onmouseout="this.style.setProperty('background-color', 'white', 'important'); this.style.setProperty('color', 'var(--color-accent)', 'important');">
                 Contact Us
             </a>
-            <a class="bg-white text-[#66a39e] font-semibold px-6 py-2 rounded-full transition-all duration-300 flex items-center gap-2"
+            <a class="bg-white text-[var(--color-accent)] font-semibold px-6 py-2 rounded-full transition-all duration-300 flex items-center gap-2"
                href="/"
-               style="background-color: white !important; color: #66a39e !important;"
-               onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
-               onmouseout="this.style.setProperty('background-color', 'white', 'important'); this.style.setProperty('color', '#66a39e', 'important');">
+               style="background-color: white !important; color: var(--color-accent) !important;"
+               onmouseover="this.style.setProperty('background-color', 'var(--color-accent)', 'important'); this.style.setProperty('color', 'white', 'important');"
+               onmouseout="this.style.setProperty('background-color', 'white', 'important'); this.style.setProperty('color', 'var(--color-accent)', 'important');">
                 <!-- Location SVG Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

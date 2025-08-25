@@ -35,7 +35,7 @@
 }
 
 .carousel-indicators button.active {
-  background-color: #7abfba !important;
+  background-color: var(--color-primary) !important;
   opacity: 1 !important;
   transform: scale(1.2);
 }

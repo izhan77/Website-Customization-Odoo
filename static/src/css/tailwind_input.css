@@ -23,6 +23,13 @@ body {
     font-family: 'Montserrat', sans-serif !important;
 }
 
+:root {
+  --color-primary: #7abfba;       /* main brand / primary background */
+  --color-primary-dark: #8ab0ad; /* hover state */
+  --color-accent: #66a39e;           /* secondary/accent brand */
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
