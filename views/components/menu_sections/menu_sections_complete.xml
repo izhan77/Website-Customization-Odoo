@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ================================= MENU SECTIONS TEMPLATE ================================= -->
+    <template id="menu_sections_complete" name="Complete Menu Sections">
+
+        <!-- Rice Box Section -->
+        <section id="rice-box-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Rice Box</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Traditional rice dishes served in convenient boxes
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Rice Box Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'rice-box-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Chicken Biryani Box'"/>
+                        <t t-set="product_description" t-value="'Aromatic basmati rice with tender chicken pieces and traditional spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 950'"/>
+                        <t t-set="product_badge" t-value="'POPULAR'"/>
+                        <t t-set="product_category" t-value="'rice-box'"/>
+                    </t>
+                    <!-- Rice Box Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'rice-box-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Mutton Pulao Box'"/>
+                        <t t-set="product_description" t-value="'Fragrant rice with succulent mutton pieces and aromatic spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1500'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1250'"/>
+                        <t t-set="product_badge" t-value="'BEST SELLER'"/>
+                        <t t-set="product_category" t-value="'rice-box'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ala Delivery Box Section -->
+        <section id="ala-delivery-box-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Ala Delivery Box</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Premium delivery boxes with complete meals
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Ala Delivery Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'ala-delivery-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Executive Lunch Box'"/>
+                        <t t-set="product_description" t-value="'Complete meal with rice, curry, salad and dessert'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1800'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1450'"/>
+                        <t t-set="product_badge" t-value="'EXECUTIVE'"/>
+                        <t t-set="product_category" t-value="'ala-delivery'"/>
+                    </t>
+                    <!-- Ala Delivery Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'ala-delivery-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Family Feast Box'"/>
+                        <t t-set="product_description" t-value="'Large portion meal perfect for family sharing'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2500'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1999'"/>
+                        <t t-set="product_badge" t-value="'FAMILY SIZE'"/>
+                        <t t-set="product_category" t-value="'ala-delivery'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hadiya Premium Box Section -->
+        <section id="hadiya-premium-box-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Hadiya Premium Box</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Premium gift boxes with authentic flavors
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Hadiya Premium Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'hadiya-premium-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Premium Kebsa Box'"/>
+                        <t t-set="product_description" t-value="'Luxury kebsa with premium ingredients and presentation'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2200'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1850'"/>
+                        <t t-set="product_badge" t-value="'PREMIUM'"/>
+                        <t t-set="product_category" t-value="'hadiya-premium'"/>
+                    </t>
+                    <!-- Hadiya Premium Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'hadiya-premium-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Royal Mandi Box'"/>
+                        <t t-set="product_description" t-value="'Traditional mandi with royal spices and tender meat'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2800'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 2299'"/>
+                        <t t-set="product_badge" t-value="'ROYAL'"/>
+                        <t t-set="product_category" t-value="'hadiya-premium'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Turkish Feast Section -->
+        <section id="turkish-feast-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Turkish Feast</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Authentic Turkish cuisine with traditional flavors
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Turkish Feast Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'turkish-feast-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Turkish Kebab Platter'"/>
+                        <t t-set="product_description" t-value="'Mixed kebabs with rice, salad and authentic Turkish bread'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1900'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1599'"/>
+                        <t t-set="product_badge" t-value="'AUTHENTIC'"/>
+                        <t t-set="product_category" t-value="'turkish-feast'"/>
+                    </t>
+                    <!-- Turkish Feast Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'turkish-feast-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Ottoman Special'"/>
+                        <t t-set="product_description" t-value="'Royal Turkish feast with lamb, chicken and traditional sides'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2600'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 2199'"/>
+                        <t t-set="product_badge" t-value="'OTTOMAN'"/>
+                        <t t-set="product_category" t-value="'turkish-feast'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ronaq E Dastarkhwan Section -->
+        <section id="ronaq-e-dastarkhwan-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Ronaq E Dastarkhwan</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Traditional Pakistani cuisine celebrating our heritage
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Ronaq E Dastarkhwan Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'ronaq-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Desi Karahi Special'"/>
+                        <t t-set="product_description" t-value="'Traditional karahi with naan, rice and authentic desi flavors'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1600'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1299'"/>
+                        <t t-set="product_badge" t-value="'TRADITIONAL'"/>
+                        <t t-set="product_category" t-value="'ronaq-dastarkhwan'"/>
+                    </t>
+                    <!-- Ronaq E Dastarkhwan Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'ronaq-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Heritage Feast'"/>
+                        <t t-set="product_description" t-value="'Complete Pakistani meal with multiple traditional dishes'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2400'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1999'"/>
+                        <t t-set="product_badge" t-value="'HERITAGE'"/>
+                        <t t-set="product_category" t-value="'ronaq-dastarkhwan'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Arrivals Section -->
+        <section id="new-arrivals-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">New Arrivals</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Fresh additions to our menu with exciting new flavors
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- New Arrivals Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'new-arrival-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Fusion Delight Box'"/>
+                        <t t-set="product_description" t-value="'Modern twist on traditional flavors with international influences'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1400'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1199'"/>
+                        <t t-set="product_badge" t-value="'NEW'"/>
+                        <t t-set="product_category" t-value="'new-arrivals'"/>
+                    </t>
+                    <!-- New Arrivals Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'new-arrival-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Chef Special Innovation'"/>
+                        <t t-set="product_description" t-value="'Latest creation from our head chef combining traditional and modern'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1700'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1399'"/>
+                        <t t-set="product_badge" t-value="'CHEF SPECIAL'"/>
+                        <t t-set="product_category" t-value="'new-arrivals'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Soups and Salads Section -->
+        <section id="soups-and-salads-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Soups And Salads</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Fresh and healthy options to start your meal
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Soups and Salads Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'soup-salad-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Mediterranean Salad'"/>
+                        <t t-set="product_description" t-value="'Fresh greens with olives, feta cheese and Mediterranean dressing'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 800'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 650'"/>
+                        <t t-set="product_badge" t-value="'HEALTHY'"/>
+                        <t t-set="product_category" t-value="'soups-salads'"/>
+                    </t>
+                    <!-- Soups and Salads Product 2 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'soup-salad-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Turkish Lentil Soup'"/>
+                        <t t-set="product_description" t-value="'Hearty red lentil soup with traditional Turkish spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 600'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 499'"/>
+                        <t t-set="product_badge" t-value="'COMFORT'"/>
+                        <t t-set="product_category" t-value="'soups-salads'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Continue with remaining sections... -->
+        <!-- Cold Mezzes Section -->
+        <section id="cold-drinks-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Cold Mezzes</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Refreshing cold appetizers and mezzes
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Cold Mezzes Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'cold-mezze-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Hummus Platter'"/>
+                        <t t-set="product_description" t-value="'Creamy hummus with olive oil, served with fresh pita bread'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 700'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 599'"/>
+                        <t t-set="product_badge" t-value="'CLASSIC'"/>
+                        <t t-set="product_category" t-value="'cold-mezzes'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hot Starters Section -->
+        <section id="hot-beverages-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Hot Starters</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Hot and delicious appetizers to start your meal
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Hot Starters Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'hot-starter-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Cheese Sambosa'"/>
+                        <t t-set="product_description" t-value="'Crispy pastry filled with melted cheese and herbs'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 500'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 399'"/>
+                        <t t-set="product_badge" t-value="'HOT'"/>
+                        <t t-set="product_category" t-value="'hot-starters'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Course Section -->
+        <section id="main-course-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Main Course</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Hearty main dishes to satisfy your appetite
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Main Course Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'main-course-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Lamb Mandi'"/>
+                        <t t-set="product_description" t-value="'Slow-cooked lamb with aromatic rice and traditional spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2200'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1899'"/>
+                        <t t-set="product_badge" t-value="'SIGNATURE'"/>
+                        <t t-set="product_category" t-value="'main-course'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- Desserts Section -->
+        <section id="desserts-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Desserts</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Sweet endings to your perfect meal
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Desserts Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'dessert-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Baklava Special'"/>
+                        <t t-set="product_description" t-value="'Traditional layered pastry with nuts and honey syrup'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 600'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 499'"/>
+                        <t t-set="product_badge" t-value="'SWEET'"/>
+                        <t t-set="product_category" t-value="'desserts'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+
+        <!-- BBQ Section -->
+        <section id="bbq-section" class="menu-section py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">BBQ</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Grilled perfection with smoky flavors
+                    </p>
+                </div>
+                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- BBQ Product 1 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'bbq-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Mixed Grill Platter'"/>
+                        <t t-set="product_description" t-value="'Assorted grilled meats with rice, salad and sauces'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 2800'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 2399'"/>
+                        <t t-set="product_badge" t-value="'GRILLED'"/>
+                        <t t-set="product_category" t-value="'bbq'"/>
+                    </t>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+=============================================================================
+HERO CAROUSEL - MAIN COMPONENT
+Main carousel container that orchestrates all sub-components
+=============================================================================
+-->
+<odoo>
+    <template id="hero_section_carousel" name="Hero Section Carousel">
+        <div id="heroCarousel" class="carousel slide relative" data-bs-ride="carousel">
+            <!-- Include Indicators Component -->
+            <t t-call="website_customizations.hero_carousel_indicators"/>
+
+            <!-- Include Slides Component -->
+            <t t-call="website_customizations.hero_carousel_slides"/>
+
+            <!-- Include Navigation Controls Component -->
+            <t t-call="website_customizations.hero_carousel_controls"/>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,70 @@
+/* ==========================================================================
+   HERO CAROUSEL - RESPONSIVE STYLES
+   Mobile and tablet responsive adjustments
+   ========================================================================== */
+
+/* Responsive text adjustments */
+@media (max-width: 768px) {
+    .carousel-item h1 {
+        line-height: 1.2;
+    }
+
+    .carousel-item p {
+        font-size: 0.875rem;
+    }
+
+    /* Adjust control button size for tablets */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 35px;
+        height: 35px;
+    }
+
+    .carousel-control-prev svg,
+    .carousel-control-next svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 640px) {
+    .carousel-item h1 {
+        font-size: 2.5rem;
+        line-height: 1.1;
+    }
+
+    .carousel-item p {
+        font-size: 0.75rem;
+    }
+
+    /* Mobile control adjustments */
+    .carousel-control-prev {
+        left: 12px;
+    }
+
+    .carousel-control-next {
+        right: 12px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 30px;
+        height: 30px;
+    }
+
+    .carousel-control-prev svg,
+    .carousel-control-next svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Mobile indicators adjustment */
+    .carousel-indicators {
+        bottom: 15px;
+    }
+
+    .carousel-indicators button {
+        width: 8px !important;
+        height: 8px !important;
+    }
+}

@@ -22,36 +22,48 @@
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
 
-            <!-- Category Strip Assets -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/navbar/menu_popup.css"/>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
+
+            <!-- ================================= HERO SECTION MODULAR COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_base.css"/>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css"/>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css"/>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css"/>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
+
+            <!-- ================================= CATEGORY STRIP MODULAR COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css"
                   href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/category_strip/category_strip_scroll.js"></script>
+            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_responsive.css"/>-->
+            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_sticky.css"/>-->
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
 
-            <!-- Order Method Selector Assets -->
-            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/order_method_selector/order_method_animations.css"/>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_toggle.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_location.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/order_method_selector/order_method_main.js"></script>
+            <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/product_cards/product_grid.css"/>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/product_cards/product_grid.js"></script>
+
+
+            <!-- ================================= MENU SECTIONS COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/menu_sections/menu_sections.css"/>
 
             <!-- Force font loading -->
             <style>
                 * {
-                    font-family: 'Montserrat', sans-serif !important;
+                font-family: 'Montserrat', sans-serif !important;
                 }
             </style>
-        </xpath>
-    </template>
-
-    <!-- Add Category Strip to Website Layout -->
-    <template id="add_category_strip" inherit_id="website.layout" name="Add Category Strip">
-        <xpath expr="//header" position="after">
-            <!-- Add the category strip -->
-            <t t-call="website_customizations.category_strip_base"/>
-            <!-- Add the menu sections (FIXED TEMPLATE NAME) -->
-            <t t-call="website_customizations.sample_menu_sections"/>
         </xpath>
     </template>
 </odoo>

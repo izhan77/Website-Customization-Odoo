@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ================================= SINGLE PRODUCT CARD TEMPLATE ================================= -->
+    <template id="single_product_card" name="Single Product Card">
+        <!-- Product Card Container - ABSOLUTELY CLEAN -->
+        <div class="product-card"
+             t-att-data-product-id="product_id"
+             t-att-data-category="product_category">
+
+            <!-- Product Image Container - Square design like target -->
+            <div class="product-image-container">
+                <!-- Food Image - Square with rounded corners -->
+                <img t-att-src="product_image"
+                     t-att-alt="product_title"/>
+            </div>
+
+            <!-- Product Details Container -->
+            <div class="product-details">
+                <!-- Product Title -->
+                <h3 class="product-title" t-esc="product_title"/>
+
+                <!-- Product Description -->
+                <p class="product-description" t-esc="product_description"/>
+
+                <!-- Pricing Section -->
+                <div class="pricing-section">
+                    <div class="price-container">
+                        <!-- Original Price (crossed out) -->
+                        <span class="original-price" t-esc="product_original_price"/>
+                        <!-- Discounted Price -->
+                        <span class="discounted-price" t-esc="product_discounted_price"/>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <div class="add-to-cart-section">
+                    <button class="add-to-cart-btn" t-att-data-product-id="product_id">
+                        ADD TO CART
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

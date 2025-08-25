@@ -1,0 +1,45 @@
+/* ==========================================================================
+   HERO CAROUSEL - NAVIGATION CONTROLS
+   Styling for previous/next navigation arrows
+   ========================================================================== */
+
+/* Navigation Controls Base Styling */
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.carousel-control-prev {
+    left: 16px;
+}
+
+.carousel-control-next {
+    right: 16px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: rgba(255, 255, 255, 1.0);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Arrow Icons */
+.carousel-control-prev svg,
+.carousel-control-next svg {
+    width: 20px;
+    height: 20px;
+    color: #374151;
+}

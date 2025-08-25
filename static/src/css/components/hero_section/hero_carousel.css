@@ -1,0 +1,5 @@
+/* Import all hero carousel component styles */
+@import url('./components/hero_section/hero_carousel_base.css');
+@import url('./components/hero_section/hero_carousel_indicators.css');
+@import url('./components/hero_section/hero_carousel_controls.css');
+@import url('./components/hero_section/hero_carousel_responsive.css');
