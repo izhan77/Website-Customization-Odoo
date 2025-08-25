@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_base">
+        <div class="space-y-4">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-gray-800">Cravely</span>
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed">
+                Experience the joy of delicious, chef-crafted meals delivered right to your home with Cravely
+            </p>
+            <img src="/website_customizations/static/src/img/map.png"
+                 alt="Map" class="rounded-lg shadow-md"/>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_company">
+        <div>
+            <h3 class="font-semibold text-gray-800 mb-4">Company</h3>
+            <ul class="space-y-2 text-gray-600 text-sm">
+                <li><a href="/aboutus">About Us</a></li>
+                <li><a href="/menu">Menu</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/contactus">Contact</a></li>
+            </ul>
+        </div>
+    </template>
+</odoo>

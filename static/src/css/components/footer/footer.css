@@ -1,0 +1,13 @@
+#custom_footer {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+
+footer#custom_footer a {
+    color: #7abfba !important;
+    transition: color 0.3s ease;
+}
+
+footer#custom_footer a:hover {
+    color: #66a39e !important;
+}

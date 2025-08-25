@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_resources">
+        <div>
+            <h3 class="font-semibold text-gray-800 mb-4">Resources</h3>
+            <ul class="space-y-2 text-gray-600 text-sm">
+                <li><a href="/terms">Term of Services</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/refund">Refund Policy</a></li>
+                <li><a href="/faq">FAQ</a></li>
+            </ul>
+        </div>
+    </template>
+</odoo>
