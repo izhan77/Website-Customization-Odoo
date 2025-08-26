@@ -16,7 +16,7 @@
         'views/components/navbar/navbar_desktop_button.xml',
         'views/components/navbar/navbar_menu_button.xml',
         'views/components/navbar/navbar_mobile_menu.xml',
-        # 'views/components/navbar/navbar_menu_popup.xml',
+        'views/components/navbar/navbar_menu_popup.xml',
 
         # Hero Section Components - NEWLY ADDED
         'views/components/hero_section/hero_carousel_main.xml',
@@ -31,6 +31,9 @@
         # Category Strip Components - NEWLY RESTRUCTURED
         'views/components/category_strip/category_strip_complete.xml',
 
+        # Menu Sections Components - NEW ADDITION
+        'views/components/menu_sections/menu_sections_complete.xml',
+
         # Homepage Components
         'views/pages/homepage.xml',
 
@@ -43,9 +46,9 @@
 
             # Navbar CSS + JS
             'website_customizations/static/src/css/components/navbar/navbar.css',
-            # 'website_customizations/static/src/css/components/navbar/menu_popup.css',
             'website_customizations/static/src/js/components/navbar/navbar.js',
-            # 'website_customizations/static/src/js/components/navbar/menu_popup.js',
+            'website_customizations/static/src/css/components/navbar/menu_popup.css',
+            'website_customizations/static/src/js/components/navbar/menu_popup.js',
 
             # Hero Section CSS + JS - NEWLY ADDED MODULAR COMPONENTS
             'website_customizations/static/src/css/components/hero_section/hero_carousel_base.css',
@@ -56,13 +59,14 @@
 
             # Category Strip CSS + JS - NEWLY RESTRUCTURED MODULAR COMPONENTS
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
-            # 'website_customizations/static/src/css/components/category_strip/category_strip_responsive.css',
-            # 'website_customizations/static/src/css/components/category_strip/category_strip_sticky.css',
             'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
 
             # Product Cards CSS + JS
             'website_customizations/static/src/css/components/product_cards/product_grid.css',
             'website_customizations/static/src/js/components/product_cards/product_grid.js',
+
+            # Menu Sections CSS - NEW ADDITION
+            'website_customizations/static/src/css/components/menu_sections/menu_sections.css',
         ],
     },
     'installable': True,

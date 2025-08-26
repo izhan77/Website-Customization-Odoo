@@ -17,7 +17,7 @@
                 Menu
             </a>
             <!-- Menu Popup -->
-<!--            <t t-call="website_customizations.navbar_menu_popup"/>-->
+            <t t-call="website_customizations.navbar_menu_popup"/>
         </div>
 
         <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" href="/about"

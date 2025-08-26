@@ -1,21 +1,13 @@
-/* ================================= NUCLEAR CSS RESET - FORCE SMOOTH SCALING ================================= */
+/* ================================= SMART CSS RESET - PRESERVE TRANSITIONS ================================= */
 
-/* Step 1: Kill ALL existing transitions and transforms EXCEPT for product cards */
-*:not(.product-card):not(.product-card *) {
-    -webkit-transition: none !important;
-    -moz-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
-
-/* Step 2: Base card setup with reduced scaling */
+/* Instead of killing ALL transitions, only reset specific problematic ones */
 .product-card {
     /* Layout */
     background: #FFFFFF;
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 2px solid transparent;
+    border: 2px solid transparent; /* Initial border */
     position: relative;
     min-height: 450px;
     max-width: 350px;
@@ -33,10 +25,10 @@
     transform: scale(1) !important;
 
     /* THE ONLY TRANSITION RULE - Fixed with proper syntax */
-    -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    -moz-transition: -moz-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    -o-transition: -o-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
+    -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-width 0.3s ease !important;
+    -moz-transition: -moz-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-width 0.3s ease !important;
+    -o-transition: -o-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-width 0.3s ease !important;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), border-width 0.3s ease !important;
 
     /* Enable GPU acceleration for smoother animation */
     -webkit-backface-visibility: hidden;
@@ -46,7 +38,7 @@
     transform: translateZ(0);
 }
 
-/* Step 3: Hover state with REDUCED scaling (1.05 instead of 1.15) */
+/* Hover state with REDUCED scaling (1.05 instead of 1.15) */
 .product-card:hover {
     -webkit-transform: scale(1.05) translateZ(0) !important;
     -moz-transform: scale(1.05) translateZ(0) !important;
@@ -56,6 +48,7 @@
 
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2) !important;
     border-color: #7abfba !important;
+    border-width: 4px !important; /* Thicker border on hover */
     z-index: 999 !important;
 }
 
@@ -134,13 +127,20 @@
     flex-grow: 1;
 }
 
+/* Container for both price and button */
+.product-action-container {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 13px !important; /* Space between price and button */
+}
+
 /* Pricing Section - Now positioned right above button */
 .pricing-section {
-    margin-bottom: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: auto;
+    margin-bottom: 0; /* Remove previous margin */
 }
 
 .price-container {
@@ -149,6 +149,8 @@
     padding: 8px 16px;
     border-radius: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .original-price {
@@ -181,7 +183,6 @@
     letter-spacing: 1px;
     position: relative;
     overflow: hidden;
-    margin-top: auto;
 
     /* Button gets its own simple transition */
     transition: background-color 0.3s ease, transform 0.2s ease !important;
@@ -194,11 +195,6 @@
 
 .add-to-cart-btn:active {
     transform: translateY(0) scale(0.98);
-}
-
-.add-to-cart-section {
-    margin-top: auto;
-    padding-top: 16px;
 }
 
 /* View More Button */
@@ -232,6 +228,7 @@
         -ms-transform: scale(1.03) translateZ(0) !important;
         -o-transform: scale(1.03) translateZ(0) !important;
         transform: scale(1.03) translateZ(0) !important;
+        border-width: 3px !important; /* Slightly thinner border on mobile */
     }
 
     .product-image-container {
@@ -253,5 +250,9 @@
 
     .product-grid {
         padding: 0 0.5rem;
+    }
+
+    .product-action-container {
+        gap: 10px; /* Slightly smaller gap on mobile */
     }
 }

@@ -3,7 +3,7 @@
     <!-- ================================= SINGLE PRODUCT CARD TEMPLATE ================================= -->
     <template id="single_product_card" name="Single Product Card">
         <!-- Product Card Container - ABSOLUTELY CLEAN -->
-        <div class="product-card"
+        <div class="product-card "
              t-att-data-product-id="product_id"
              t-att-data-category="product_category">
 
@@ -15,7 +15,7 @@
             </div>
 
             <!-- Product Details Container -->
-            <div class="product-details">
+            <div class="product-details gap-y-4">
                 <!-- Product Title -->
                 <h3 class="product-title" t-esc="product_title"/>
 

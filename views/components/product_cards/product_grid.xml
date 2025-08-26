@@ -66,12 +66,6 @@
                     </t>
                 </div>
 
-                <!-- View More Button -->
-                <div class="text-center mt-12">
-                    <button class="view-more-btn bg-primary hover:bg-primaryHover text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                        View More Items
-                    </button>
-                </div>
             </div>
         </section>
     </template>

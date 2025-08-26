@@ -1,6 +1,6 @@
 /**
- * Complete Category Strip with Sticky Functionality
- * Handles scrolling, navigation, and sticky behavior
+ * Enhanced Category Strip with FIXED Scrolling Functionality
+ * FIXED: Precise scrolling to sections with accurate offset calculations
  */
 class CategoryStripComplete {
     constructor() {
@@ -18,6 +18,8 @@ class CategoryStripComplete {
         this.isScrolling = false;
         this.scrollAnimation = null;
         this.navbarHeight = 0;
+        this.isNavigating = false;
+        this.categoryStripHeight = 0;
 
         this.init();
     }
@@ -32,7 +34,7 @@ class CategoryStripComplete {
 
     setup() {
         this.categoryStrip = document.getElementById('category-strip-wrapper');
-        this.navbar = document.querySelector('header, .navbar, #main-navbar');
+        this.navbar = document.querySelector('header, .navbar, #main-navbar, nav');
         this.scrollContainer = document.getElementById('categories-container');
         this.leftArrow = document.getElementById('scroll-left');
         this.rightArrow = document.getElementById('scroll-right');
@@ -45,6 +47,7 @@ class CategoryStripComplete {
 
         this.originalTop = this.categoryStrip.offsetTop;
         this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
+        this.categoryStripHeight = this.categoryStrip.offsetHeight;
 
         this.createPlaceholder();
         this.setupHorizontalScroll();
@@ -52,10 +55,13 @@ class CategoryStripComplete {
         this.setupStickyBehavior();
         this.setupActiveStates();
 
-        // Update arrow states after a small delay to ensure proper calculation
+        // Update arrow states after initialization
         setTimeout(() => this.updateArrowStates(), 100);
 
-        console.log('Category strip initialized successfully!');
+        console.log('Enhanced Category Strip initialized successfully!');
+        console.log('Navbar height:', this.navbarHeight);
+        console.log('Category strip height:', this.categoryStripHeight);
+        console.log('Original top:', this.originalTop);
     }
 
     createPlaceholder() {
@@ -83,7 +89,17 @@ class CategoryStripComplete {
 
         this.setupTouchScrolling();
         this.setupWheelScrolling();
-        window.addEventListener('resize', () => this.updateArrowStates());
+        window.addEventListener('resize', () => {
+            this.updateDimensions();
+            this.updateArrowStates();
+        });
+    }
+
+    updateDimensions() {
+        this.originalTop = this.categoryStrip.offsetTop;
+        this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
+        this.categoryStripHeight = this.categoryStrip.offsetHeight;
+        console.log('Updated dimensions - Navbar:', this.navbarHeight, 'Strip:', this.categoryStripHeight);
     }
 
     setupTouchScrolling() {
@@ -92,6 +108,7 @@ class CategoryStripComplete {
         let scrollLeft;
 
         this.scrollContainer.addEventListener('mousedown', (e) => {
+            if (this.isNavigating) return;
             isDown = true;
             startX = e.pageX - this.scrollContainer.offsetLeft;
             scrollLeft = this.currentTransform;
@@ -109,7 +126,7 @@ class CategoryStripComplete {
         });
 
         this.scrollContainer.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
+            if (!isDown || this.isNavigating) return;
             e.preventDefault();
             const x = e.pageX - this.scrollContainer.offsetLeft;
             const walk = (x - startX) * 2;
@@ -120,6 +137,7 @@ class CategoryStripComplete {
 
         // Touch events
         this.scrollContainer.addEventListener('touchstart', (e) => {
+            if (this.isNavigating) return;
             isDown = true;
             startX = e.touches[0].pageX - this.scrollContainer.offsetLeft;
             scrollLeft = this.currentTransform;
@@ -130,7 +148,7 @@ class CategoryStripComplete {
         });
 
         this.scrollContainer.addEventListener('touchmove', (e) => {
-            if (!isDown) return;
+            if (!isDown || this.isNavigating) return;
             const x = e.touches[0].pageX - this.scrollContainer.offsetLeft;
             const walk = (x - startX) * 2;
             this.currentTransform = scrollLeft - walk;
@@ -141,6 +159,7 @@ class CategoryStripComplete {
 
     setupWheelScrolling() {
         this.scrollContainer.addEventListener('wheel', (e) => {
+            if (this.isNavigating) return;
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault();
                 this.currentTransform -= e.deltaX * 1.5;
@@ -252,8 +271,7 @@ class CategoryStripComplete {
         }, { passive: true });
 
         window.addEventListener('resize', () => {
-            this.originalTop = this.categoryStrip.offsetTop;
-            this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
+            this.updateDimensions();
             this.updateArrowStates();
         });
     }
@@ -262,7 +280,7 @@ class CategoryStripComplete {
         if (!this.categoryStrip) return;
 
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const shouldBeSticky = scrollTop > (this.originalTop - this.navbarHeight);
+        const shouldBeSticky = scrollTop >= this.originalTop;
 
         if (shouldBeSticky && !this.isSticky) {
             this.makeSticky();
@@ -304,68 +322,98 @@ class CategoryStripComplete {
         categoryItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
+                this.isNavigating = true;
+
                 const href = item.getAttribute('href');
                 if (href && href.startsWith('#')) {
                     const sectionId = href.substring(1);
+                    console.log('Clicked section ID:', sectionId);
                     this.scrollToSection(sectionId, item);
                 }
+
+                // Reset navigation flag after a delay
+                setTimeout(() => {
+                    this.isNavigating = false;
+                }, 1000);
             });
         });
     }
 
     scrollToSection(sectionId, clickedItem) {
+        // Set active category immediately
         this.setActiveCategory(clickedItem);
 
+        // Find the target section - FIXED LOGIC
         let targetElement = document.getElementById(sectionId);
+
+        console.log('Looking for section:', sectionId);
+        console.log('Found element:', targetElement);
+
         if (!targetElement) {
-            targetElement = document.querySelector(`[data-section="${sectionId}"]`);
-        }
-        if (!targetElement) {
-            targetElement = this.createPlaceholderSection(sectionId);
+            console.warn(`Section with ID "${sectionId}" not found`);
+            return;
         }
 
-        if (targetElement) {
-            const offset = this.navbarHeight + 80;
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
+        // FIXED: Calculate precise scroll position
+        this.scrollToExactSection(targetElement);
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+        // Update URL hash after scroll
+        setTimeout(() => {
+            history.replaceState(null, null, `#${sectionId}`);
+        }, 600);
 
-            setTimeout(() => {
-                history.replaceState(null, null, `#${sectionId}`);
-            }, 500);
-        }
+        // Scroll category into view in the strip
+        this.scrollCategoryIntoView(clickedItem);
     }
 
-    createPlaceholderSection(sectionId) {
-        const section = document.createElement('div');
-        section.id = sectionId;
-        section.className = 'menu-section py-16 bg-gray-50 min-h-[400px]';
-        section.innerHTML = `
-            <div class="container mx-auto px-4">
-                <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">${this.formatSectionTitle(sectionId)}</h2>
-                <div class="text-center">
-                    <p class="text-lg text-gray-600 mb-4">Menu items for ${this.formatSectionTitle(sectionId)} will be displayed here.</p>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(section);
-        return section;
+    scrollToExactSection(targetElement) {
+        // FIXED: More precise offset calculation
+        const offset = this.calculatePreciseScrollOffset();
+        const elementPosition = this.getElementTop(targetElement);
+        const offsetPosition = elementPosition - offset;
+
+        console.log('Element position:', elementPosition);
+        console.log('Calculated offset:', offset);
+        console.log('Final scroll position:', offsetPosition);
+
+        // Smooth scroll to section with precise positioning
+        window.scrollTo({
+            top: Math.max(0, offsetPosition), // Ensure we don't scroll to negative position
+            behavior: 'smooth'
+        });
     }
 
-    formatSectionTitle(sectionId) {
-        return sectionId.split('-').map(word =>
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
+    getElementTop(element) {
+        // More accurate way to get element's top position
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return rect.top + scrollTop;
+    }
+
+    calculatePreciseScrollOffset() {
+        // FIXED: Always calculate as if category strip will be sticky
+        let totalOffset = this.categoryStripHeight;
+
+        // Add navbar height if it exists and is visible
+        if (this.navbar) {
+            const navbarStyle = window.getComputedStyle(this.navbar);
+            if (navbarStyle.position === 'fixed' || navbarStyle.position === 'sticky') {
+                totalOffset += this.navbarHeight;
+            }
+        }
+
+        // Add a small buffer for perfect alignment (REDUCED from 20 to 10)
+        totalOffset += 10;
+
+        console.log('Calculated offset - Navbar:', this.navbarHeight, 'Strip:', this.categoryStripHeight, 'Total:', totalOffset);
+
+        return totalOffset;
     }
 
     setupActiveStates() {
         let ticking = false;
         window.addEventListener('scroll', () => {
-            if (!ticking) {
+            if (!ticking && !this.isNavigating) {
                 requestAnimationFrame(() => {
                     this.updateActiveStateOnScroll();
                     ticking = false;
@@ -376,32 +424,44 @@ class CategoryStripComplete {
     }
 
     updateActiveStateOnScroll() {
-        const sections = document.querySelectorAll('[data-section], .menu-section, [id*="-section"]');
-        const scrollTop = window.pageYOffset + this.navbarHeight + 100;
+        if (this.isNavigating) return;
+
+        // Look for sections with IDs that match your category links
+        const sections = document.querySelectorAll('section[id]');
+        const scrollTop = window.pageYOffset + this.calculatePreciseScrollOffset();
 
         let activeSection = null;
         let closestDistance = Infinity;
 
         sections.forEach(section => {
-            const top = section.getBoundingClientRect().top + window.pageYOffset;
+            if (!section.id) return;
+
+            const top = this.getElementTop(section);
             const distance = Math.abs(top - scrollTop);
 
-            if (distance < closestDistance && section.id) {
+            if (distance < closestDistance) {
                 closestDistance = distance;
                 activeSection = section.id;
             }
         });
 
         if (activeSection) {
+            // Find category item that matches the section ID exactly
             const activeItem = document.querySelector(`.category-item[href="#${activeSection}"]`);
+
             if (activeItem) {
                 this.setActiveCategory(activeItem);
-                this.scrollCategoryIntoView(activeItem);
+                // Only auto-scroll category strip if user hasn't manually scrolled it recently
+                if (!this.hasUserScrolled) {
+                    this.scrollCategoryIntoView(activeItem);
+                }
             }
         }
     }
 
     scrollCategoryIntoView(categoryItem) {
+        if (this.isNavigating) return;
+
         const wrapper = document.getElementById('categories-wrapper');
         if (!wrapper || !categoryItem) return;
 
@@ -423,13 +483,29 @@ class CategoryStripComplete {
     }
 
     setActiveCategory(activeItem) {
+        // Remove active class from all items
         document.querySelectorAll('.category-item').forEach(item => {
             item.classList.remove('active');
         });
 
+        // Add active class to current item
         if (activeItem) {
             activeItem.classList.add('active');
         }
+    }
+
+    // Public method to scroll to a specific section (can be called externally)
+    navigateToSection(sectionId) {
+        const categoryItem = document.querySelector(`.category-item[href="#${sectionId}"]`);
+        if (categoryItem) {
+            categoryItem.click();
+        }
+    }
+
+    // Public method to get current active section
+    getCurrentActiveSection() {
+        const activeItem = document.querySelector('.category-item.active');
+        return activeItem ? activeItem.getAttribute('href').substring(1) : null;
     }
 }
 
@@ -438,6 +514,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.categoryStripComplete = new CategoryStripComplete();
 });
 
+// Also initialize immediately if DOM is already loaded
 if (document.readyState !== 'loading') {
     window.categoryStripComplete = new CategoryStripComplete();
+}
+
+// Export for use in other scripts if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = CategoryStripComplete;
 }
