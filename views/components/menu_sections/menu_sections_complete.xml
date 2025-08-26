@@ -35,6 +35,17 @@
                         <t t-set="product_badge" t-value="'BEST SELLER'"/>
                         <t t-set="product_category" t-value="'rice-box'"/>
                     </t>
+                    <!-- Rice Box Product 3 -->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'rice-box-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Mutton Pulao Box'"/>
+                        <t t-set="product_description" t-value="'Fragrant rice with succulent mutton pieces and aromatic spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1500'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1250'"/>
+                        <t t-set="product_badge" t-value="'BEST SELLER'"/>
+                        <t t-set="product_category" t-value="'rice-box'"/>
+                    </t>
                 </div>
             </div>
         </section>

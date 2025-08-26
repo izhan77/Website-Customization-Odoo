@@ -8,6 +8,7 @@
                 <div class="menu-popup-header">
                     <h1>Categories</h1>
                 </div>
+
                 <div class="menu-popup-grid">
                 <!-- Rice Box -->
                 <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box">

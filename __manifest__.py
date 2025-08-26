@@ -46,6 +46,7 @@
 
             # Navbar CSS + JS
             'website_customizations/static/src/css/components/navbar/navbar.css',
+            'website_customizations/static/src/css/components/navbar/mobile_categories.css',
             'website_customizations/static/src/js/components/navbar/navbar.js',
             'website_customizations/static/src/css/components/navbar/menu_popup.css',
             'website_customizations/static/src/js/components/navbar/menu_popup.js',
