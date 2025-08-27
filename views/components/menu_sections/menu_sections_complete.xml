@@ -39,73 +39,62 @@
             </div>
         </section>
 
-        <!-- Ala Delivery Box Section -->
-        <section id="ala-delivery-box-section" class="menu-section py-16 bg-white">
+        <!-- Fish and Chips Section -->
+        <section id="fish-and-chips-section" class="menu-section py-16 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Ala Delivery Box</h2>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Fish &amp; Chips</h2>
                     <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Premium delivery boxes with complete meals
+                        Fresh and crispy fish with golden fries
                     </p>
                 </div>
                 <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <!-- Ala Delivery Product 1 -->
+                    <!-- Fish and Chips Product 1 -->
                     <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'ala-delivery-1'"/>
+                        <t t-set="product_id" t-value="'fish-chips-1'"/>
                         <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Executive Lunch Box'"/>
-                        <t t-set="product_description" t-value="'Complete meal with rice, curry, salad and dessert'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1800'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1450'"/>
-                        <t t-set="product_badge" t-value="'EXECUTIVE'"/>
-                        <t t-set="product_category" t-value="'ala-delivery'"/>
-                    </t>
-                    <!-- Ala Delivery Product 2 -->
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'ala-delivery-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Family Feast Box'"/>
-                        <t t-set="product_description" t-value="'Large portion meal perfect for family sharing'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 2500'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1999'"/>
-                        <t t-set="product_badge" t-value="'FAMILY SIZE'"/>
-                        <t t-set="product_category" t-value="'ala-delivery'"/>
+                        <t t-set="product_title" t-value="'Classic Fish and Chips'"/>
+                        <t t-set="product_description" t-value="'Crispy battered fish served with fries and tartar sauce'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 999'"/>
+                        <t t-set="product_badge" t-value="'CRISPY'"/>
+                        <t t-set="product_category" t-value="'fish-and-chips'"/>
                     </t>
                 </div>
             </div>
         </section>
 
-        <!-- Hadiya Premium Box Section -->
-        <section id="hadiya-premium-box-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+        <!-- Pasta Section -->
+        <section id="pasta-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Hadiya Premium Box</h2>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Pasta</h2>
                     <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Premium gift boxes with authentic flavors
+                        Premium pasta dishes with authentic sauces
                     </p>
                 </div>
                 <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <!-- Hadiya Premium Product 1 -->
+                    <!--Pasta Product 1 -->
                     <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'hadiya-premium-1'"/>
+                        <t t-set="product_id" t-value="'pasta-1'"/>
                         <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Premium Kebsa Box'"/>
-                        <t t-set="product_description" t-value="'Luxury kebsa with premium ingredients and presentation'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 2200'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1850'"/>
-                        <t t-set="product_badge" t-value="'PREMIUM'"/>
-                        <t t-set="product_category" t-value="'hadiya-premium'"/>
+                        <t t-set="product_title" t-value="'Creamy Alfredo Pasta'"/>
+                        <t t-set="product_description" t-value="'Rich and creamy Alfredo sauce with fettuccine pasta'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1400'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1150'"/>
+                        <t t-set="product_badge" t-value="'SPECIAL'"/>
+                        <t t-set="product_category" t-value="'pasta'"/>
                     </t>
-                    <!-- Hadiya Premium Product 2 -->
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'hadiya-premium-2'"/>
+                    <!-- Pasta Product 2 -->
+                     <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'pasta-1'"/>
                         <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Royal Mandi Box'"/>
-                        <t t-set="product_description" t-value="'Traditional mandi with royal spices and tender meat'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 2800'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 2299'"/>
-                        <t t-set="product_badge" t-value="'ROYAL'"/>
-                        <t t-set="product_category" t-value="'hadiya-premium'"/>
+                        <t t-set="product_title" t-value="'Creamy Alfredo Pasta'"/>
+                        <t t-set="product_description" t-value="'Rich and creamy Alfredo sauce with fettuccine pasta'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1400'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1150'"/>
+                        <t t-set="product_badge" t-value="'SPECIAL'"/>
+                        <t t-set="product_category" t-value="'pasta'"/>
                     </t>
                 </div>
             </div>
@@ -147,37 +136,26 @@
             </div>
         </section>
 
-        <!-- Ronaq E Dastarkhwan Section -->
-        <section id="ronaq-e-dastarkhwan-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <!-- Wraps & Rolls Section -->
+        <section id="wraps-rolls-section" class="menu-section py-16 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Ronaq E Dastarkhwan</h2>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Wraps &amp; Rolls</h2>
                     <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Traditional Pakistani cuisine celebrating our heritage
+                        Delicious wraps and rolls for a quick bite
                     </p>
                 </div>
                 <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <!-- Ronaq E Dastarkhwan Product 1 -->
+                    <!--Wraps & Rolls Product 1 -->
                     <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'ronaq-1'"/>
+                        <t t-set="product_id" t-value="'wrap-roll-1'"/>
                         <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Desi Karahi Special'"/>
-                        <t t-set="product_description" t-value="'Traditional karahi with naan, rice and authentic desi flavors'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1600'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1299'"/>
-                        <t t-set="product_badge" t-value="'TRADITIONAL'"/>
-                        <t t-set="product_category" t-value="'ronaq-dastarkhwan'"/>
-                    </t>
-                    <!-- Ronaq E Dastarkhwan Product 2 -->
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'ronaq-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Heritage Feast'"/>
-                        <t t-set="product_description" t-value="'Complete Pakistani meal with multiple traditional dishes'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 2400'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1999'"/>
-                        <t t-set="product_badge" t-value="'HERITAGE'"/>
-                        <t t-set="product_category" t-value="'ronaq-dastarkhwan'"/>
+                        <t t-set="product_title" t-value="'Chicken Shawarma Wrap'"/>
+                        <t t-set="product_description" t-value="'Grilled chicken wrapped in pita with garlic sauce'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 800'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 650'"/>
+                        <t t-set="product_badge" t-value="'POPULAR'"/>
+                        <t t-set="product_category" t-value="'wraps-rolls'"/>
                     </t>
                 </div>
             </div>

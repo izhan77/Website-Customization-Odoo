@@ -23,22 +23,24 @@
                             <a href="#rice-box-section" class="category-item" data-section="rice-box-section">
                                 Rice Box
                             </a>
+                            
+                            <a href="#fish-and-chips-section" class="category-item" data-section="fish-and-chips-section">
+                                 Fish and Chips
+                                 </a>
 
-                            <a href="#ala-delivery-box-section" class="category-item" data-section="ala-delivery-box-section">
-                                Ala Delivery Box
+
+                           <a href="#pasta-section" class="category-item" data-section="pasta-section">
+                             Pasta
                             </a>
 
-                            <a href="#hadiya-premium-box-section" class="category-item" data-section="hadiya-premium-box-section">
-                                Hadiya Premium Box
-                            </a>
 
                             <a href="#turkish-feast-section" class="category-item" data-section="turkish-feast-section">
                                 Turkish Feast
                             </a>
 
-                            <a href="#ronaq-e-dastarkhwan-section" class="category-item" data-section="ronaq-e-dastarkhwan-section">
-                                Ronaq E Dastarkhwan
-                            </a>
+                           <a href="#wraps-rolls-section" class="category-item" data-section="wraps-rolls-section">
+                             Wraps and Rolls
+                             </a>
 
                             <a href="#new-arrivals-section" class="category-item" data-section="new-arrivals-section">
                                 New Arrivals

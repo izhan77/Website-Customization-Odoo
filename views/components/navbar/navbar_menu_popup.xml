@@ -20,30 +20,32 @@
                         </div>
                     </div>
                 </a>
-
-                <!-- Ala Delivery Box -->
-                <a href="#ala-delivery-box-section" class="menu-popup-item group" data-category="ala-delivery">
+                
+                <!-- Fish and Chips -->
+                <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips">
                     <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Food &amp; Meals</div>
-                        <h3 class="menu-popup-title">ALA DELIVERY</h3>
+                        <div class="menu-popup-category-label">Fresh &amp; Crispy </div>
+                        <h3 class="menu-popup-title">FISH &amp; CHIPS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Ala Delivery"
-                                 class="menu-popup-image"/>
+                            <img src="/website_customizations/static/src/images/category-fish-and-chips.png" alt="Fish and Chips"
+                                class="menu-popup-image"/>
                         </div>
                     </div>
                 </a>
 
-                <!-- Hadiya Premium Box -->
-                <a href="#hadiya-premium-box-section" class="menu-popup-item group" data-category="hadiya-premium">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Premium &amp; Special</div>
-                        <h3 class="menu-popup-title">HADIYA PREMIUM</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png"
-                                 alt="Hadiya Premium" class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
+
+                        <!-- Pastas -->
+        <a href="#pasta-section" class="menu-popup-item group" data-category="pasta">
+            <div class="menu-popup-card">
+                <div class="menu-popup-category-label">Premium &amp; Special</div>
+                <h3 class="menu-popup-title">PASTA</h3>
+                <div class="menu-popup-image-container">
+                    <img src="/website_customizations/static/src/images/category-pasta.png"
+                        alt="Pasta" class="menu-popup-image"/>
+                </div>
+            </div>
+        </a>
+
 
                 <!-- Turkish Feast -->
                 <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast">
@@ -51,23 +53,23 @@
                         <div class="menu-popup-category-label">International &amp; Feast</div>
                         <h3 class="menu-popup-title">TURKISH FEAST</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Turkish Feast"
+                            <img src="/website_customizations/static/src/images/category-turkish-foods.png" alt="Turkish Feast"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
                 </a>
 
-                <!-- Ronaq E Dastarkhwan -->
-                <a href="#ronaq-e-dastarkhwan-section" class="menu-popup-item group" data-category="ronaq-dastarkhwan">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Traditional &amp; Special</div>
-                        <h3 class="menu-popup-title">RONAQ E DASTARKHWAN</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png"
-                                 alt="Ronaq E Dastarkhwan" class="menu-popup-image"/>
-                        </div>
+                        <!-- Wraps & Rolls -->
+            <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls">
+                <div class="menu-popup-card">
+                    <div class="menu-popup-category-label">Wraps &amp; Rolls</div>
+                    <h3 class="menu-popup-title">WRAPS &amp; ROLLS</h3>
+                    <div class="menu-popup-image-container">
+                        <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
+                            alt="Wraps and Rolls" class="menu-popup-image"/>
                     </div>
-                </a>
+                </div>
+            </a>
 
                 <!-- New Arrivals -->
                 <a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals">
@@ -75,7 +77,7 @@
                         <div class="menu-popup-category-label">Latest &amp; Fresh</div>
                         <h3 class="menu-popup-title">NEW ARRIVALS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="New Arrivals"
+                            <img src="/website_customizations/static/src/images/category-new-arrivals.png" alt="New Arrivals"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
@@ -87,7 +89,7 @@
                         <div class="menu-popup-category-label">Healthy &amp; Light</div>
                         <h3 class="menu-popup-title">SOUPS &amp; SALADS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png"
+                            <img src="/website_customizations/static/src/images/category-soups-salads.png"
                                  alt="Soups and Salads" class="menu-popup-image"/>
                         </div>
                     </div>
@@ -99,7 +101,7 @@
                         <div class="menu-popup-category-label">Beverages &amp; Drinks</div>
                         <h3 class="menu-popup-title">COLD DRINKS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Cold Drinks"
+                            <img src="/website_customizations/static/src/images/category-cold-drinks.png" alt="Cold Drinks"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
@@ -111,7 +113,7 @@
                         <div class="menu-popup-category-label">Hot &amp; Warm</div>
                         <h3 class="menu-popup-title">HOT BEVERAGES</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Hot Beverages"
+                            <img src="/website_customizations/static/src/images/category-hot-beverages.png" alt="Hot Beverages"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
@@ -123,7 +125,7 @@
                         <div class="menu-popup-category-label">Sweet &amp; Treats</div>
                         <h3 class="menu-popup-title">DESSERTS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Desserts"
+                            <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
@@ -135,7 +137,7 @@
                         <div class="menu-popup-category-label">Grilled &amp; BBQ</div>
                         <h3 class="menu-popup-title">BBQ SPECIALS</h3>
                         <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="BBQ"
+                            <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
                                  class="menu-popup-image"/>
                         </div>
                     </div>
