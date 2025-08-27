@@ -1,0 +1,71 @@
+/* Montserrat font faces */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/website_customizations/static/src/fonts/Montserrat-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/website_customizations/static/src/fonts/Montserrat-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/website_customizations/static/src/fonts/Montserrat-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+/* Roboto Condensed font faces */
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.roboto-condensed {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body .oe_website_sale .modal-content .btn.btn-primary[type="submit"],
+body .oe_website_sale button.btn-primary[type="submit"] {
+  background-color: #79b6b0 !important;
+  border-color: #79b6b0 !important;
+  color: white !important;
+}
+
+body .oe_website_sale button.btn-primary:hover {
+  background-color: #5b8d86 !important;
+  border-color: #5b8d86 !important;
+}
+
+
+

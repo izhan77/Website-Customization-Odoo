@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_resources">
+        <h3 class="column-title">Resources</h3>
+        <ul class="footer-nav">
+            <li><a href="/documentation">Documentation</a></li>
+            <li><a href="/tutorials">Tutorials</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/support">Support</a></li>
+        </ul>
+    </template>
+</odoo>

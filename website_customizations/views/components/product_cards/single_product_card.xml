@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ================================= SINGLE PRODUCT CARD TEMPLATE ================================= -->
+    <template id="single_product_card" name="Single Product Card">
+        <!-- Product Card Container -->
+        <div class="product-card"
+             t-att-data-product-id="product_id"
+             t-att-data-category="product_category">
+
+            <!-- Product Image Container -->
+            <div class="product-image-container">
+                <img t-att-src="product_image" t-att-alt="product_title"/>
+            </div>
+
+            <!-- Product Details Container -->
+            <div class="product-details gap-y-4">
+                <h3 class="product-title" t-esc="product_title"/>
+                <p class="product-description" t-esc="product_description"/>
+
+                <div class="pricing-section">
+                    <div class="price-container">
+                        <span class="original-price" t-esc="product_original_price"/>
+                        <span class="discounted-price" t-esc="product_discounted_price"/>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Form -->
+                <form action="/shop/cart/update" method="post" class="oe_website_sale add-to-cart-section">
+                    <!-- ✅ CSRF Token (required for POST forms) -->
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="product_id" t-att-value="product_id"/>
+                    <input type="hidden" name="add_qty" value="1"/>
+                    <button type="submit" class="add-to-cart-btn rounded-full bg-[#79b6b0] px-8 py-2 text-white hover:bg-[#5b8d86]">
+                        ADD TO CART
+                    </button>
+                </form>
+            </div>
+        </div>
+    </template>
+</odoo>

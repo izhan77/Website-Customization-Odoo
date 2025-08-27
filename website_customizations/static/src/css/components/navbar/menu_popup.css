@@ -1,0 +1,282 @@
+.menu-categories-popup .menu-popup-grid .menu-popup-item:hover{
+    box-shadow: none !important;
+    filter: none !important;
+    background: none !important;
+}
+
+/* Menu Categories Popup Styling - Beautiful Card Design */
+.menu-categories-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border-top: 3px solid #7abfba;
+    z-index: 999;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    padding: 30px 0 40px 0;
+}
+
+.menu-categories-popup.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.menu-categories-popup.positioned {
+    top: var(--navbar-height, 80px);
+}
+
+.menu-popup-content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.menu-popup-header {
+    margin-bottom: 30px;
+}
+
+.menu-popup-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 0;
+}
+
+.menu-popup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+/* Main Menu Item Container */
+.menu-popup-item {
+    text-decoration: none !important;
+    display: block;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    outline: none !important;
+}
+
+/* Card Container */
+.menu-popup-card {
+    position: relative;
+    background: #FFFFFF;
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px 20px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+/* Hover Effects */
+.menu-popup-item:hover .menu-popup-card {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-4px);
+}
+
+/* Category Label */
+.menu-popup-category-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    text-align: left;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.menu-popup-item:hover .menu-popup-category-label {
+    color: #4b5563;
+}
+
+/* Title */
+.menu-popup-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    text-align: left;
+    line-height: 1.1;
+    margin: 0 0 16px 0;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+}
+
+.menu-popup-item:hover .menu-popup-title {
+    color: #111827;
+}
+
+/* Image Container */
+.menu-popup-image-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+/* Image Styling */
+.menu-popup-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-popup-item:hover .menu-popup-image {
+    transform: scale(1.1) rotate(2deg);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .menu-popup-content-wrapper {
+        padding: 0 25px;
+    }
+
+    .menu-popup-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .menu-popup-content-wrapper {
+        padding: 0 20px;
+    }
+
+    .menu-popup-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .menu-popup-card {
+        height: 180px;
+        padding: 20px 16px;
+    }
+
+    .menu-popup-title {
+        font-size: 16px;
+    }
+
+    .menu-popup-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    .menu-popup-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .menu-popup-content-wrapper {
+        padding: 0 16px;
+    }
+
+    .menu-popup-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .menu-popup-card {
+        height: 160px;
+        padding: 16px 12px;
+    }
+
+    .menu-popup-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .menu-popup-category-label {
+        font-size: 10px;
+    }
+
+    .menu-popup-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .menu-categories-popup {
+        padding: 20px 0 30px 0;
+    }
+
+    .menu-popup-header h1 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-popup-content-wrapper {
+        padding: 0 12px;
+    }
+
+    .menu-popup-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .menu-popup-card {
+        height: 140px;
+        padding: 12px 8px;
+    }
+
+    .menu-popup-title {
+        font-size: 13px;
+    }
+
+    .menu-popup-image {
+        width: 50px;
+        height: 50px;
+    }
+
+    .menu-popup-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Improved hover detection area */
+.menu-hover-container {
+    position: static !important;
+}
+
+/* Animation for popup appearance */
+@keyframes slideDownFade {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.menu-categories-popup.show {
+    animation: slideDownFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Micro-interactions for better UX */
+.menu-popup-item:active .menu-popup-card {
+    transform: translateY(-2px) scale(0.98);
+}
+
+/* Focus states for accessibility */
+.menu-popup-item:focus {
+    outline: none;
+}
+
+.menu-popup-item:focus .menu-popup-card {
+    border-color: #7abfba;
+}

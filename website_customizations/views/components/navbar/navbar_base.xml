@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="navbar_base" inherit_id="website.layout" name="Custom Navbar">
+        <xpath expr="//header" position="replace">
+            <header class="bg-[#7abfba] shadow-lg relative z-50 custom-navbar" id="main-navbar">
+                <nav class="container mx-auto px-4 py-3">
+                    <div class="flex items-center justify-between">
+                        <!-- Logo -->
+                        <t t-call="website_customizations.navbar_logo"/>
+
+                        <!-- Desktop Navigation -->
+                        <div class="hidden lg:flex items-center space-x-8 flex-1 justify-center">
+                            <t t-call="website_customizations.navbar_desktop_links"/>
+                        </div>
+
+                        <!-- Contact button -->
+                        <div class="hidden lg:block">
+                            <t t-call="website_customizations.navbar_desktop_button"/>
+                        </div>
+
+                        <!-- Mobile menu button -->
+                        <t t-call="website_customizations.navbar_menu_button"/>
+                    </div>
+
+                    <!-- Mobile Navigation Menu -->
+                    <t t-call="website_customizations.navbar_mobile_menu"/>
+                </nav>
+            </header>
+        </xpath>
+    </template>
+</odoo>

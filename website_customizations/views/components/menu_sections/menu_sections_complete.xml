@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="menu_sections_complete" name="Complete Menu Sections">
+
+        <!-- Rice Box Section -->
+        <section id="rice-box-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Section Title -->
+                <div class="text-center mb-12">
+                    <h2 class="text-[3em] text-gray-900">RICE BOX</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Traditional rice dishes served in convenient boxes
+                    </p>
+                </div>
+
+                <!-- Dynamic Product Loading -->
+                <t t-set="category" t-value="request.env['product.public.category'].search([('name', '=', 'Rice Box')], limit=1)"/>
+                <t t-set="products" t-value="category and request.env['product.template'].with_context(website_id=request.website.id).sudo().search([
+                    ('public_categ_ids', 'in', [category.id]),
+                    ('sale_ok', '=', True),
+                    ('website_published', '=', True)
+                ]) or []"/>
+
+                <!-- Debug Messages -->
+                <t t-if="not products">
+                    <p class="text-center text-red-600">⚠️ No products found in Rice Box category.</p>
+                </t>
+                <t t-if="products">
+                    <p class="text-center text-green-600 mb-4">✅ Found <t t-esc="len(products)"/> product(s).</p>
+                </t>
+
+                <!-- Set category variable once here -->
+                <t t-set="prod_category" t-value="'rice-box'"/>
+
+                <!-- Product Grid -->
+                <div class="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-10">
+                    <t t-foreach="products" t-as="product">
+                        <t t-call="website_customizations.single_product_card">
+                            <t t-set="product_id" t-value="product.id"/>
+                            <t t-set="product_image" t-value="'/web/image/product.template/%s/image_512' % product.id"/>
+                            <t t-set="product_title" t-value="product.name"/>
+                            <t t-set="product_description" t-value="product.description_sale or ''"/>
+                            <t t-set="product_original_price" t-value="'Rs. %s' % (int(product.list_price) + 300)"/>
+                            <t t-set="product_discounted_price" t-value="'Rs. %s' % int(product.list_price)"/>
+                            <t t-if="'x_badge' in product._fields">
+                                <t t-set="product_badge" t-value="product.x_badge"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="product_badge" t-value="''"/>
+                            </t>
+                        </t>
+                    </t>
+                </div>
+
+                <!-- Section Divider -->
+                <img src="/website_customizations/static/src/images/seperator-line.png"
+                     class="w-full h-[3rem] object-cover mt-5"
+                     alt="Line Separator"/>
+
+            </div>
+        </section>
+
+        <!-- Ala Delivery Box Section -->
+        <section id="ala-delivery-box-section" class="menu-section py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Section Title -->
+                <div class="text-center mb-12">
+                    <h2 class="text-[3em] text-gray-900">ALA DELIVERY BOX</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Delicious delivery boxes tailored for your convenience
+                    </p>
+                </div>
+
+                <!-- Dynamic Product Loading -->
+                <t t-set="category" t-value="request.env['product.public.category'].search([('name', '=', 'Ala Delivery Box')], limit=1)"/>
+                <t t-set="products" t-value="category and request.env['product.template'].with_context(website_id=request.website.id).sudo().search([
+                    ('public_categ_ids', 'in', [category.id]),
+                    ('sale_ok', '=', True),
+                    ('website_published', '=', True)
+                ]) or []"/>
+
+                <!-- Debug Messages -->
+                <t t-if="not products">
+                    <p class="text-center text-red-600">⚠️ No products found in Ala Delivery Box category.</p>
+                </t>
+                <t t-if="products">
+                    <p class="text-center text-green-600 mb-4">✅ Found <t t-esc="len(products)"/> product(s).</p>
+                </t>
+
+                <!-- Set category variable once here -->
+                <t t-set="prod_category" t-value="'ala-delivery-box'"/>
+
+                <!-- Product Grid -->
+                <div class="product-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-10">
+                    <t t-foreach="products" t-as="product">
+                        <t t-call="website_customizations.single_product_card">
+                            <t t-set="product_id" t-value="product.id"/>
+                            <t t-set="product_image" t-value="'/web/image/product.template/%s/image_512' % product.id"/>
+                            <t t-set="product_title" t-value="product.name"/>
+                            <t t-set="product_description" t-value="product.description_sale or ''"/>
+                            <t t-set="product_original_price" t-value="'Rs. %s' % (int(product.list_price) + 300)"/>
+                            <t t-set="product_discounted_price" t-value="'Rs. %s' % int(product.list_price)"/>
+                            <t t-if="'x_badge' in product._fields">
+                                <t t-set="product_badge" t-value="product.x_badge"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="product_badge" t-value="''"/>
+                            </t>
+                        </t>
+                    </t>
+                </div>
+
+                <!-- Section Divider -->
+                <img src="/website_customizations/static/src/images/seperator-line.png"
+                     class="w-full h-[3rem] object-cover mt-5"
+                     alt="Line Separator"/>
+
+            </div>
+        </section>
+
+    </template>
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+=============================================================================
+HERO CAROUSEL - SLIDES COMPONENT
+Individual carousel slides with images
+=============================================================================
+-->
+<odoo>
+    <template id="hero_carousel_slides" name="Hero Carousel Slides">
+        <div class="carousel-inner h-[335px]">
+            <!-- Slide 1 - Active by default -->
+            <div class="carousel-item active h-full">
+                <img src="/website_customizations/static/src/images/hero1.jpg"
+                     class="d-block w-full h-full object-cover"
+                     alt="Slide 1"/>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item h-full">
+                <img src="/website_customizations/static/src/images/hero2.jpg"
+                     class="d-block w-full h-full object-cover"
+                     alt="Slide 2"/>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item h-full">
+                <img src="/website_customizations/static/src/images/hero3.jpg"
+                     class="d-block w-full h-full object-cover"
+                     alt="Slide 3"/>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="carousel-item h-full">
+                <img src="/website_customizations/static/src/images/hero4.png"
+                     class="d-block w-full h-full object-cover"
+                     alt="Slide 4"/>
+            </div>
+        </div>
+    </template>
+</odoo>

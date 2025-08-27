@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ================================= PRODUCT GRID MAIN TEMPLATE ================================= -->
+    <template id="product_grid" name="Product Grid Section">
+        <section class="product-grid-section bg-gray-50 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Rice Box</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Traditional rice dishes served in convenient boxes
+                    </p>
+                </div>
+
+                <!-- Dynamic Product Loading -->
+                <t t-set="category" t-value="request.env['product.public.category'].search([('name', '=', 'Rice Box')], limit=1)"/>
+                <t t-set="products" t-value="category and request.env['product.template'].with_context(website_id=request.website.id).sudo().search([
+                    ('public_categ_ids', 'in', [category.id]),
+                    ('sale_ok', '=', True),
+                    ('website_published', '=', True)
+                ], limit=6) or []"/>
+
+                <!-- No Products Message -->
+                <t t-if="not products">
+                    <p class="text-center text-red-600">⚠️ No products found in Rice Box category.</p>
+                </t>
+
+                <!-- Product Grid -->
+                <t t-if="products">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <t t-foreach="products" t-as="product">
+                            <div class="border rounded-lg shadow-sm bg-white flex flex-col overflow-hidden">
+                                <img t-att-src="'/web/image/product.template/%d/image_1920' % product.id"
+                                     t-att-alt="product.name" class="w-full h-48 object-cover"/>
+                                <div class="p-4 flex flex-col flex-grow">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2" t-esc="product.name"/>
+                                    <p class="text-gray-600 mb-4" t-esc="product.description_sale or 'No description'"/>
+                                    <div class="mt-auto">
+                                        <div class="flex justify-between items-center mb-4">
+                                            <span class="text-sm line-through text-gray-400">Rs. <t t-esc="int(product.list_price) + 300"/></span>
+                                            <span class="text-xl font-bold text-green-600">Rs. <t t-esc="int(product.list_price)"/></span>
+                                        </div>
+                                        <form action="/shop/cart/update" method="post" class="add-to-cart-form">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token"/>
+                                            <input type="hidden" name="product_id" t-att-value="product.id"/>
+                                            <input type="hidden" name="add_qty" value="1"/>
+                                            <button type="submit"
+                                                    class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-300">
+                                                Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </section>
+    </template>
+</odoo>
