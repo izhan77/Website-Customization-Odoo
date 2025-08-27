@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Update your custom_homepage template to include the category strip right after hero -->
+    <!-- ================================= UPDATED CUSTOM HOMEPAGE WITH CART SYSTEM ================================= -->
     <template id="custom_homepage" name="Custom Homepage" inherit_id="website.homepage">
         <xpath expr="//div[@id='wrap']" position="inside">
             <!-- Hero Section -->
@@ -11,6 +11,10 @@
 
             <!-- All Menu Sections -->
             <t t-call="website_customizations.menu_sections_complete"/>
+
+            <!-- Cart Popup Components  -->
+            <t t-call="website_customizations.cart_view_popup"/>
+            <t t-call="website_customizations.cart_sidebar"/>
 
         </xpath>
     </template>

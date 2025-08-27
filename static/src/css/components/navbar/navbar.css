@@ -110,21 +110,21 @@
 a[data-oe-model][data-oe-id][data-oe-field]:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: #8ab0ad !important;
+    background-color: none !important;
 }
 
 /* Target all navbar links specifically */
 .custom-navbar a:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: #8ab0ad !important;
+    background-color: none !important;
 }
 
 /* Add this if you need even more specificity */
 header.custom-navbar a:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: #8ab0ad !important;
+    background-color: none !important;
 }
 
 /* Remove underlines from all navbar links */

@@ -1,6 +1,5 @@
 /**
- * Enhanced Mobile Menu System with Categories Popup
- * Handles: Mobile menu toggle, Categories popup, Smooth scrolling, State management
+ * FIXED Mobile Menu System with Advanced Precision Scrolling
  * File: /website_customizations/static/src/js/components/navbar/navbar_mobile.js
  */
 (function() {
@@ -10,59 +9,213 @@
     let mobileMenuInitialized = false;
     let isMainMenuOpen = false;
     let isCategoriesPopupOpen = false;
+    let isScrolling = false;
 
-    // ================================= UTILITY FUNCTIONS =================================
+    // ================================= ADVANCED PRECISION SCROLL FUNCTIONS =================================
 
     /**
-     * Get the height of fixed elements (navbar + category strip)
+     * Get EXACT element position with all layout considerations
      */
-    function getFixedHeaderHeight() {
-        let total = 0;
+    function getExactElementTop(element) {
+        if (!element) return 0;
 
-        // Navbar height
+        // Force layout recalculation
+        element.offsetHeight;
+
+        // Get bounding rect after layout
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        return Math.round(rect.top + scrollTop);
+    }
+
+    /**
+     * Calculate PRECISE header heights with layout updates
+     */
+    function getPreciseHeaderHeight() {
+        let totalHeight = 0;
+
+        // Force layout recalculation
+        document.body.offsetHeight;
+
+        // Navbar height calculation
         const navbar = document.querySelector('header, .navbar, #main-navbar, nav');
         if (navbar) {
-            const pos = window.getComputedStyle(navbar).position;
-            if (pos === 'fixed' || pos === 'sticky') {
-                total += navbar.offsetHeight || 0;
+            navbar.offsetHeight; // Force layout
+
+            const computedStyle = window.getComputedStyle(navbar);
+            const position = computedStyle.position;
+
+            if (position === 'fixed' || position === 'sticky') {
+                const height = navbar.getBoundingClientRect().height;
+                totalHeight += Math.round(height);
+                console.log('Mobile - Navbar height:', Math.round(height));
             }
         }
 
-        // Category strip height
-        const strip = document.getElementById('category-strip-wrapper');
-        if (strip) {
-            total += strip.offsetHeight || 0;
+        // Category strip height calculation
+        const categoryStrip = document.querySelector('#category-strip-wrapper');
+        if (categoryStrip) {
+            categoryStrip.offsetHeight; // Force layout
+
+            const stripRect = categoryStrip.getBoundingClientRect();
+            const stripHeight = Math.round(stripRect.height);
+            totalHeight += stripHeight;
+            console.log('Mobile - Category strip height:', stripHeight);
         }
 
         // Buffer for perfect alignment
-        total += 8;
-        return total;
+        totalHeight += 15;
+
+        console.log('Mobile - Total header height:', totalHeight);
+        return totalHeight;
     }
 
     /**
-     * Get element's top position relative to document
+     * ADVANCED MOBILE PRECISION SCROLL - Multi-pass with error correction
      */
-    function getElementTop(element) {
-        const rect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return rect.top + scrollTop;
+    function scrollToElementWithPrecision(targetElement) {
+        if (!targetElement) {
+            console.error('Mobile - Target element is null');
+            return;
+        }
+
+        console.log('=== MOBILE PRECISION SCROLL START ===');
+        console.log('Mobile - Target element:', targetElement.id);
+
+        isScrolling = true;
+
+        // Step 1: Initial calculation and scroll
+        function performInitialScroll() {
+            return new Promise((resolve) => {
+                const headerHeight = getPreciseHeaderHeight();
+                const elementTop = getExactElementTop(targetElement);
+                const targetPosition = Math.max(0, elementTop - headerHeight);
+
+                console.log('Mobile - Initial scroll calculation:', {
+                    elementTop,
+                    headerHeight,
+                    targetPosition,
+                    currentScroll: window.pageYOffset
+                });
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                setTimeout(resolve, 400);
+            });
+        }
+
+        // Step 2: First correction pass
+        function performFirstCorrection() {
+            return new Promise((resolve) => {
+                const headerHeight = getPreciseHeaderHeight();
+                const elementTop = getExactElementTop(targetElement);
+                const targetPosition = Math.max(0, elementTop - headerHeight);
+                const currentScroll = window.pageYOffset;
+                const difference = Math.abs(currentScroll - targetPosition);
+
+                console.log('Mobile - First correction:', {
+                    elementTop,
+                    headerHeight,
+                    targetPosition,
+                    currentScroll,
+                    difference
+                });
+
+                if (difference > 3) {
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    setTimeout(resolve, 400);
+                } else {
+                    resolve();
+                }
+            });
+        }
+
+        // Step 3: Final precision correction
+        function performFinalCorrection() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const headerHeight = getPreciseHeaderHeight();
+                    const elementTop = getExactElementTop(targetElement);
+                    const targetPosition = Math.max(0, elementTop - headerHeight);
+                    const currentScroll = window.pageYOffset;
+                    const difference = Math.abs(currentScroll - targetPosition);
+
+                    console.log('Mobile - Final correction:', {
+                        elementTop,
+                        headerHeight,
+                        targetPosition,
+                        currentScroll,
+                        difference
+                    });
+
+                    if (difference > 2) {
+                        // Final precise scroll without animation
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'auto'
+                        });
+                    }
+
+                    resolve();
+                }, 200);
+            });
+        }
+
+        // Step 4: Pixel-perfect correction
+        function performPixelCorrection() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const headerHeight = getPreciseHeaderHeight();
+                    const elementTop = getExactElementTop(targetElement);
+                    const targetPosition = Math.max(0, elementTop - headerHeight);
+                    const currentScroll = window.pageYOffset;
+                    const difference = targetPosition - currentScroll;
+
+                    console.log('Mobile - Pixel correction:', {
+                        elementTop,
+                        headerHeight,
+                        targetPosition,
+                        currentScroll,
+                        difference
+                    });
+
+                    if (Math.abs(difference) > 1) {
+                        // Instantaneous pixel-perfect positioning
+                        window.scrollTo(0, targetPosition);
+                    }
+
+                    console.log('Mobile - Final position:', window.pageYOffset);
+                    console.log('=== MOBILE PRECISION SCROLL COMPLETE ===');
+
+                    resolve();
+                }, 100);
+            });
+        }
+
+        // Execute mobile scroll sequence
+        performInitialScroll()
+            .then(() => performFirstCorrection())
+            .then(() => performFinalCorrection())
+            .then(() => performPixelCorrection())
+            .then(() => {
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 300);
+            })
+            .catch((error) => {
+                console.error('Mobile scroll error:', error);
+                isScrolling = false;
+            });
     }
 
-    /**
-     * Smooth scroll to target element with precise positioning
-     */
-    function scrollPreciselyTo(targetEl) {
-        const firstTarget = Math.max(0, Math.round(getElementTop(targetEl) - getFixedHeaderHeight()));
-        window.scrollTo({ top: firstTarget, behavior: 'smooth' });
-
-        // Second pass correction after animation settles
-        setTimeout(() => {
-            const corrected = Math.max(0, Math.round(getElementTop(targetEl) - getFixedHeaderHeight()));
-            if (Math.abs(window.pageYOffset - corrected) > 2) {
-                window.scrollTo({ top: corrected });
-            }
-        }, 420);
-    }
+    // ================================= UTILITY FUNCTIONS =================================
 
     /**
      * Toggle body scroll lock
@@ -246,14 +399,15 @@
     }
 
     /**
-     * Handle category item click - scroll to section and close all menus
+     * FIXED: Handle category item click with advanced precision scroll
      */
     function handleCategoryClick(event, href) {
         event.preventDefault();
 
         if (!href || !href.startsWith('#')) return;
 
-        console.log('Category clicked:', href);
+        console.log('=== MOBILE CATEGORY CLICK ===');
+        console.log('Mobile - Category clicked:', href);
 
         // Visual feedback on the clicked item
         const clickedCard = event.currentTarget.querySelector('.mobile-category-card');
@@ -275,20 +429,36 @@
             closeMainMenu();
         }, 100);
 
-        // Scroll to target section after menus are closed
+        // FIXED: Use advanced precision scroll after menus are closed
         setTimeout(() => {
             const targetId = href.slice(1);
+            console.log('Mobile - Looking for section:', targetId);
+
             const targetElement = document.getElementById(targetId);
 
-            if (targetElement) {
-                scrollPreciselyTo(targetElement);
+            if (!targetElement) {
+                console.error('Mobile - Section not found:', targetId);
 
-                // Update URL after scroll completes
-                setTimeout(() => {
-                    history.replaceState(null, '', href);
-                }, 600);
+                // Debug: List available sections
+                const allSections = document.querySelectorAll('section[id], div[id], article[id]');
+                console.log('Mobile - Available sections:');
+                allSections.forEach(section => {
+                    console.log(`- ${section.id} (tag: ${section.tagName})`);
+                });
+                return;
             }
-        }, 200);
+
+            console.log('Mobile - Target found:', targetElement);
+
+            // Use advanced precision scroll
+            scrollToElementWithPrecision(targetElement);
+
+            // Update URL after scroll sequence completes
+            setTimeout(() => {
+                console.log('Mobile - Updating URL to:', href);
+                history.replaceState(null, '', href);
+            }, 1500);
+        }, 300);
     }
 
     // ================================= INITIALIZATION =================================
@@ -353,7 +523,7 @@
             });
         }
 
-        // Category items click handlers
+        // FIXED: Category items click handlers with advanced scroll
         if (categoriesPopup) {
             const categoryItems = categoriesPopup.querySelectorAll('.mobile-category-item');
             categoryItems.forEach(item => {
@@ -407,17 +577,19 @@
             }
         });
 
-        // Close menus on scroll
+        // Close menus on scroll (but not during our precision scroll)
         let scrollTimeout;
         window.addEventListener('scroll', function() {
-            if (isCategoriesPopupOpen || isMainMenuOpen) {
+            if ((isCategoriesPopupOpen || isMainMenuOpen) && !isScrolling) {
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {
-                    if (isCategoriesPopupOpen) {
-                        hideCategoriesPopup();
-                    }
-                    if (isMainMenuOpen) {
-                        closeMainMenu();
+                    if (!isScrolling) {
+                        if (isCategoriesPopupOpen) {
+                            hideCategoriesPopup();
+                        }
+                        if (isMainMenuOpen) {
+                            closeMainMenu();
+                        }
                     }
                 }, 100);
             }
@@ -488,5 +660,18 @@
             });
         }
     }, 500);
+
+    // Expose debug methods for mobile
+    window.mobileMenuDebug = {
+        scrollTo: function(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                console.log(`=== MOBILE DEBUG SCROLL TO: ${sectionId} ===`);
+                scrollToElementWithPrecision(element);
+            } else {
+                console.error(`Mobile - Section not found: ${sectionId}`);
+            }
+        }
+    };
 
 })();

@@ -1,152 +1,188 @@
-.menu-categories-popup .menu-popup-grid .menu-popup-item:hover{
+.menu-popup-grid .menu-popup-item .menu-popup-card:hover{
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
     box-shadow: none !important;
     filter: none !important;
-    background: none !important;
 }
 
-/* Menu Categories Popup Styling - Beautiful Card Design */
+/* ================================= FIXED MENU POPUP POSITIONING - BELOW NAVBAR ================================= */
+
+/* Menu Categories Popup - FIXED: Positioned below navbar */
 .menu-categories-popup {
     position: fixed;
-    top: 0;
+    top: var(--navbar-height, 80px); /* FIXED: Position below navbar instead of top: 0 */
     left: 0;
     width: 100%;
     background: white;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
     border-top: 3px solid #7abfba;
-    z-index: 999;
+    z-index: 998; /* FIXED: Lower z-index so it doesn't overlap navbar */
+
+    /* FIXED: Start hidden below navbar */
     transform: translateY(-100%);
     opacity: 0;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    visibility: hidden;
     pointer-events: none;
-    padding: 30px 0 40px 0;
+
+    /* FIXED: Smooth transitions without blinking
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.25s ease,
+                visibility 0s linear 0.35s; */
+
+    padding: 25px 0 35px 0;
+    max-height: calc(100vh - var(--navbar-height, 80px) - 20px);
+    overflow-y: auto;
 }
 
+/* FIXED: When popup shows - animate from below navbar
 .menu-categories-popup.show {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
     pointer-events: all;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease,
+                visibility 0s linear 0s; No delay when showing
 }
+*/
 
-.menu-categories-popup.positioned {
-    top: var(--navbar-height, 80px);
-}
-
+/* Content wrapper */
 .menu-popup-content-wrapper {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 30px;
+    position: relative;
 }
 
+/* Header styling */
 .menu-popup-header {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
 .menu-popup-header h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: bold;
     color: #1f2937;
     margin: 0;
+    font-family: 'Roboto Condensed', sans-serif;
+    letter-spacing: -0.05em;
 }
 
+/* Grid layout - IMPROVED responsive design */
 .menu-popup-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+    max-width: 100%;
 }
 
-/* Main Menu Item Container */
+/* Menu item - FIXED: Remove background color conflicts */
 .menu-popup-item {
     text-decoration: none !important;
     display: block;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     outline: none !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
 }
 
-/* Card Container */
+.menu-popup-item:hover,
+.menu-popup-item:focus,
+.menu-popup-item:active {
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Card styling - FIXED: Clean design */
 .menu-popup-card {
-    position: relative;
-    background: #FFFFFF;
-    border: 2px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px 20px;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
+    padding: 16px;
+    text-align: center;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    transition: transform 0.25s ease;
+}
+
+.menu-popup-item:hover .menu-popup-card {
+    transform: translateY(-3px);
+    background: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Image circle container */
+.menu-popup-img-circle {
+    width: 120px;
+    height: 120px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 12px auto;
+    border-radius: 50%;
+    background: #d0e2e2 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 }
 
-/* Hover Effects */
-.menu-popup-item:hover .menu-popup-card {
-    background: #f3f4f6;
-    border-color: #d1d5db;
-    transform: translateY(-4px);
-}
-
-/* Category Label */
-.menu-popup-category-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    text-align: left;
-    line-height: 1.2;
-    transition: color 0.3s ease;
-}
-
-.menu-popup-item:hover .menu-popup-category-label {
-    color: #4b5563;
-}
-
-/* Title */
-.menu-popup-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1f2937;
-    text-align: left;
-    line-height: 1.1;
-    margin: 0 0 16px 0;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-    text-transform: uppercase;
-}
-
-.menu-popup-item:hover .menu-popup-title {
-    color: #111827;
-}
-
-/* Image Container */
-.menu-popup-image-container {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-}
-
-/* Image Styling */
+/* Image styling */
 .menu-popup-image {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 110px;
     object-fit: contain;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover effects for image */
+.menu-popup-item:hover .menu-popup-img-circle {
+    background: #c3e0e0;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(122, 191, 186, 0.2);
 }
 
 .menu-popup-item:hover .menu-popup-image {
     transform: scale(1.1) rotate(2deg);
 }
 
-/* Responsive Design */
+/* Title styling */
+.menu-popup-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+/* FIXED: Responsive design improvements */
 @media (max-width: 1200px) {
-    .menu-popup-content-wrapper {
-        padding: 0 25px;
+    .menu-popup-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 18px;
     }
 
-    .menu-popup-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+    .menu-popup-img-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .menu-popup-image {
+        width: 60px;
+        height: 70px;
+    }
+
+    .menu-popup-title {
+        font-size: 13px;
     }
 }
 
@@ -156,70 +192,61 @@
     }
 
     .menu-popup-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 16px;
     }
 
-    .menu-popup-card {
-        height: 180px;
-        padding: 20px 16px;
-    }
-
-    .menu-popup-title {
-        font-size: 16px;
+    .menu-popup-img-circle {
+        width: 75px;
+        height: 75px;
     }
 
     .menu-popup-image {
-        width: 70px;
-        height: 70px;
+        width: 55px;
+        height: 65px;
+    }
+
+    .menu-popup-title {
+        font-size: 12px;
     }
 
     .menu-popup-header h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-popup-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .menu-popup-img-circle {
+        width: 65px;
+        height: 65px;
+    }
+
+    .menu-popup-image {
+        width: 45px;
+        height: 55px;
+    }
+
+    .menu-popup-title {
+        font-size: 11px;
+    }
+
+    .menu-popup-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .menu-categories-popup {
+        padding: 20px 0 25px 0;
     }
 }
 
 @media (max-width: 600px) {
     .menu-popup-content-wrapper {
-        padding: 0 16px;
-    }
-
-    .menu-popup-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-
-    .menu-popup-card {
-        height: 160px;
-        padding: 16px 12px;
-    }
-
-    .menu-popup-title {
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-
-    .menu-popup-category-label {
-        font-size: 10px;
-    }
-
-    .menu-popup-image {
-        width: 60px;
-        height: 60px;
-    }
-
-    .menu-categories-popup {
-        padding: 20px 0 30px 0;
-    }
-
-    .menu-popup-header h1 {
-        font-size: 1.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .menu-popup-content-wrapper {
-        padding: 0 12px;
+        padding: 0 15px;
     }
 
     .menu-popup-grid {
@@ -227,32 +254,31 @@
         gap: 12px;
     }
 
-    .menu-popup-card {
-        height: 140px;
-        padding: 12px 8px;
-    }
-
-    .menu-popup-title {
-        font-size: 13px;
+    .menu-popup-img-circle {
+        width: 60px;
+        height: 60px;
     }
 
     .menu-popup-image {
-        width: 50px;
+        width: 40px;
         height: 50px;
     }
 
+    .menu-popup-title {
+        font-size: 10px;
+    }
+
+    .menu-popup-header {
+        margin-bottom: 20px;
+    }
+
     .menu-popup-header h1 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 }
 
-/* Improved hover detection area */
-.menu-hover-container {
-    position: static !important;
-}
-
-/* Animation for popup appearance */
-@keyframes slideDownFade {
+/* FIXED: Animation for popup entrance - no blinking */
+@keyframes slideDownFadeFixed {
     0% {
         transform: translateY(-20px);
         opacity: 0;
@@ -264,19 +290,41 @@
 }
 
 .menu-categories-popup.show {
-    animation: slideDownFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideDownFadeFixed 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Micro-interactions for better UX */
-.menu-popup-item:active .menu-popup-card {
-    transform: translateY(-2px) scale(0.98);
+/* FIXED: Scrollbar styling for overflow content */
+.menu-categories-popup::-webkit-scrollbar {
+    width: 6px;
 }
 
-/* Focus states for accessibility */
-.menu-popup-item:focus {
-    outline: none;
+.menu-categories-popup::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
 }
 
-.menu-popup-item:focus .menu-popup-card {
-    border-color: #7abfba;
+.menu-categories-popup::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.menu-categories-popup::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* FIXED: Ensure no background color conflicts */
+.menu-popup-grid .menu-popup-item .menu-popup-card {
+    box-shadow: none !important;
+    filter: none !important;
+    background: none !important;
+    background-color: transparent !important;
+}
+
+.menu-popup-grid .menu-popup-item:hover .menu-popup-card,
+.menu-popup-grid .menu-popup-item:focus .menu-popup-card,
+.menu-popup-grid .menu-popup-item:active .menu-popup-card {
+    box-shadow: none !important;
+    filter: none !important;
+    background: none !important;
+    background-color: transparent !important;
 }

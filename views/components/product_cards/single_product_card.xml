@@ -1,44 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- ================================= SINGLE PRODUCT CARD TEMPLATE ================================= -->
+    <!-- ================================= FIXED SINGLE PRODUCT CARD - NO BADGES ================================= -->
     <template id="single_product_card" name="Single Product Card">
-        <!-- Product Card Container - ABSOLUTELY CLEAN -->
-        <div class="product-card "
-             t-att-data-product-id="product_id"
-             t-att-data-category="product_category">
+        <!-- Product Card Container -->
+        <div class="product-card"
+             t-att-data-product-id="product_id or ('product-' + str(int(random.random() * 1000000)))"
+             t-att-data-category="product_category or 'general'"
+             t-att-data-name="product_title"
+             t-att-data-price="product_discounted_price"
+             t-att-data-original-price="product_original_price"
+             t-att-data-image="product_image">
 
-            <!-- Product Image Container - Square design like target -->
+            <!-- Product Image Container -->
             <div class="product-image-container">
-                <!-- Food Image - Square with rounded corners -->
-                <img t-att-src="product_image"
-                     t-att-alt="product_title"/>
+                <!-- Food Image -->
+                <img t-att-src="product_image or '/website_customizations/static/src/images/product_1.jpg'"
+                     t-att-alt="product_title or 'Product Image'"
+                     loading="lazy"/>
+
+                <!-- Out of stock overlay (if needed) -->
+                <div class="stock-overlay hidden" t-if="product_out_of_stock">
+                    <span class="stock-text">Out of Stock</span>
+                </div>
             </div>
 
             <!-- Product Details Container -->
-            <div class="product-details gap-y-4">
+            <div class="product-details">
                 <!-- Product Title -->
-                <h3 class="product-title" t-esc="product_title"/>
+                <h3 class="product-title" t-esc="product_title or 'Delicious Food Item'"/>
 
                 <!-- Product Description -->
-                <p class="product-description" t-esc="product_description"/>
+                <p class="product-description" t-esc="product_description or 'Fresh and delicious food prepared with love'"/>
 
-                <!-- Pricing Section -->
+                <!-- FIXED: Pricing Section with better spacing -->
                 <div class="pricing-section">
                     <div class="price-container">
-                        <!-- Original Price (crossed out) -->
-                        <span class="original-price" t-esc="product_original_price"/>
+                        <!-- Original Price (crossed out) - Only show if different from discounted -->
+                        <span class="original-price"
+                              t-if="product_original_price and product_original_price != product_discounted_price"
+                              t-esc="product_original_price or 'Rs. 0'"/>
                         <!-- Discounted Price -->
-                        <span class="discounted-price" t-esc="product_discounted_price"/>
+                        <span class="discounted-price" t-esc="product_discounted_price or 'Rs. 0'"/>
                     </div>
                 </div>
 
-                <!-- Add to Cart Button -->
-                <div class="add-to-cart-section">
-                    <button class="add-to-cart-btn" t-att-data-product-id="product_id">
-                        ADD TO CART
+                <!-- FIXED: Cart Action Section with proper spacing -->
+                <div class="cart-action-section">
+                    <!-- Default Add to Cart Button -->
+                    <button class="add-to-cart-btn"
+                            t-att-data-product-id="product_id or ('product-' + str(int(random.random() * 1000000)))">
+                        <span class="add-text">ADD TO CART</span>
+                        <div class="loading-spinner hidden">
+                            <div class="spinner"></div>
+                        </div>
                     </button>
+
+                    <!-- Quantity Controls Bar - Hidden by default -->
+                    <div class="quantity-controls-bar hidden">
+                        <!-- Remove/Decrease Button -->
+                        <button class="quantity-decrease-btn"
+                                t-att-data-product-id="product_id or ('product-' + str(int(random.random() * 1000000)))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+
+                        <!-- Quantity Display -->
+                        <span class="quantity-display">1</span>
+
+                        <!-- Add/Increase Button -->
+                        <button class="quantity-increase-btn"
+                                t-att-data-product-id="product_id or ('product-' + str(int(random.random() * 1000000)))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <!-- FIXED: COMPLETELY REMOVED ALL BADGES -->
+            <!-- No product badge -->
+            <!-- No discount badge -->
         </div>
     </template>
 </odoo>

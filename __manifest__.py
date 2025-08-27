@@ -25,7 +25,6 @@
         'views/components/hero_section/hero_carousel_indicators.xml',
 
         # Product Cards Components
-        'views/components/product_cards/product_grid.xml',
         'views/components/product_cards/single_product_card.xml',
 
         # Category Strip Components - NEWLY RESTRUCTURED
@@ -34,8 +33,14 @@
         # Menu Sections Components - NEW ADDITION
         'views/components/menu_sections/menu_sections_complete.xml',
 
+        # Cart Popup Components - NEWLY ADDED
+        'views/components/cart_popup/cart_popup_components.xml',
+
         # Homepage Components
         'views/pages/homepage.xml',
+
+        # Checkout Components
+        # 'views/pages/checkout_page.xml',
 
         # Footer Components
         'views/components/footer/footer_base.xml',
@@ -71,11 +76,18 @@
             'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
 
             # Product Cards CSS + JS
-            'website_customizations/static/src/css/components/product_cards/product_grid.css',
-            'website_customizations/static/src/js/components/product_cards/product_grid.js',
+            'website_customizations/static/src/css/components/product_cards/single_product_card.css',
 
             # Menu Sections CSS - NEW ADDITION
             'website_customizations/static/src/css/components/menu_sections/menu_sections.css',
+
+            # Cart Popup CSS + JS - NEWLY ADDED CART SYSTEM
+            'website_customizations/static/src/css/components/cart_popup/cart_popup.css',
+            'website_customizations/static/src/js/components/cart_popup/cart_popup.js',
+
+            # Checkout Page Assets
+            # 'website_customizations/static/src/css/components/checkout/checkout.css',
+            # 'website_customizations/static/src/js/components/checkout/checkout.js',
 
             # Footer specific files
             'website_customizations/static/src/css/components/footer/footer.css',

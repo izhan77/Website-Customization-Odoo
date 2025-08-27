@@ -46,14 +46,14 @@
             </div>
         </div>
 
-        <!-- Mobile Categories Popup - NEW ADDITION -->
-        <div id="mobile-categories-popup" class="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[1001] hidden opacity-0 transition-all duration-300">
+        <!-- Mobile Categories Popup - IMPROVED CENTERING AND RESPONSIVE DESIGN -->
+        <div id="mobile-categories-popup" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1001] hidden opacity-0 transition-all duration-300 flex items-center justify-center p-4">
 
-            <!-- White Container Box -->
-            <div class="mobile-categories-container fixed inset-4 bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-all duration-300">
+            <!-- White Container Box - BETTER RESPONSIVE SIZING -->
+            <div class="mobile-categories-container bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-all duration-300 w-full max-w-sm mx-auto my-auto">
 
                 <!-- Header with Close Button -->
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
                     <h2 class="text-2xl font-bold text-gray-900">Categories</h2>
                     <button id="mobile-categories-close" class="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,161 +64,161 @@
                 </div>
 
                 <!-- Scrollable Categories Grid -->
-                <div class="flex-1 overflow-y-auto p-6">
-                    <div class="mobile-categories-grid grid grid-cols-2 gap-4">
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="mobile-categories-grid space-y-3">
 
                         <!-- Rice Box -->
                         <a href="#rice-box-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-rice-box.png" alt="Rice Box" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">FOOD &amp; MEALS</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">RICE BOX</div>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Rice Box" class="w-12 h-12 object-contain"/>
+                            </div>
+                        </a>
+
+                        <!-- Fish and Chips -->
+                        <a href="#fish-and-chips-section" class="mobile-category-item block text-decoration-none">
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-fish-and-chips.png" alt="Fish and Chips" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">CRISPY &amp; GOLDEN</div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">FISH &amp; CHIPS</div>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Ala Delivery -->
-                        <a href="#ala-delivery-box-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">FOOD &amp; MEALS</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">ALA DELIVERY</div>
+                        <!-- Pasta -->
+                        <a href="#pasta-section" class="mobile-category-item block text-decoration-none">
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta" class="w-12 h-12 object-contain"/>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Ala Delivery" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Hadiya Premium -->
-                        <a href="#hadiya-premium-box-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">PREMIUM &amp; SPECIAL</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">HADIYA PREMIUM</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Hadiya Premium" class="w-12 h-12 object-contain"/>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">ITALIAN &amp; CLASSIC</div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">PASTA</div>
                                 </div>
                             </div>
                         </a>
 
                         <!-- Turkish Feast -->
                         <a href="#turkish-feast-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-turkish-foods.png" alt="Turkish Feast" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">INTERNATIONAL &amp; FEAST</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">TURKISH FEAST</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Turkish Feast" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Ronaq E Dastarkhwan -->
-                        <a href="#ronaq-e-dastarkhwan-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">TRADITIONAL &amp; SPECIAL</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">RONAQ E DASTARKHWAN</div>
+                        <!-- Wraps & Rolls -->
+                        <a href="#wraps-rolls-section" class="mobile-category-item block text-decoration-none">
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png" alt="Wraps and Rolls" class="w-12 h-12 object-contain"/>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Ronaq E Dastarkhwan" class="w-12 h-12 object-contain"/>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">WRAPPED &amp; ROLLED</div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">WRAPS &amp; ROLLS</div>
                                 </div>
                             </div>
                         </a>
 
                         <!-- New Arrivals -->
                         <a href="#new-arrivals-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-new-arrivals.png" alt="New Arrivals" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">LATEST &amp; FRESH</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">NEW ARRIVALS</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="New Arrivals" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
                         <!-- Soups & Salads -->
                         <a href="#soups-and-salads-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-soups-salads.png" alt="Soups &amp; Salads" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">HEALTHY &amp; LIGHT</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">SOUPS &amp; SALADS</div>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Soups &amp; Salads" class="w-12 h-12 object-contain"/>
-                                </div>
                             </div>
                         </a>
 
-                        <!-- Cold Mezzes -->
+                        <!-- Cold Drinks -->
                         <a href="#cold-drinks-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">BEVERAGES &amp; DRINKS</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">COLD MEZZES</div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-cold-drinks.png" alt="Cold Drinks" class="w-12 h-12 object-contain"/>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Cold Mezzes" class="w-12 h-12 object-contain"/>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">COLD &amp; REFRESHING</div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">COLD DRINKS</div>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Hot Starters -->
+                        <!-- Hot Beverages -->
                         <a href="#hot-beverages-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-hot-beverages.png" alt="Hot Beverages" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">HOT &amp; WARM</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">HOT STARTERS</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Hot Starters" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Main Course -->
-                        <a href="#main-course-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">MAIN &amp; HEARTY</div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">MAIN COURSE</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Main Course" class="w-12 h-12 object-contain"/>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">HOT BEVERAGES</div>
                                 </div>
                             </div>
                         </a>
 
                         <!-- Desserts -->
                         <a href="#desserts-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">SWEET &amp; TREATS</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">DESSERTS</div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Desserts" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
                         <!-- BBQ -->
                         <a href="#bbq-section" class="mobile-category-item block text-decoration-none">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">GRILLED &amp; BBQ</div>
                                     <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">BBQ SPECIALS</div>
                                 </div>
-                                <div class="flex justify-end">
-                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="BBQ" class="w-12 h-12 object-contain"/>
+                            </div>
+                        </a>
+
+                        <!-- Fast Food -->
+                        <a href="#fast-food-section" class="mobile-category-item block text-decoration-none">
+                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 flex items-center space-x-4 transition-all duration-300 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50">
+                                <div class="flex-shrink-0">
+                                    <img src="/website_customizations/static/src/images/category-burger.png" alt="Fast Food" class="w-12 h-12 object-contain"/>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">QUICK &amp; FAST</div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">FAST FOOD</div>
                                 </div>
                             </div>
                         </a>

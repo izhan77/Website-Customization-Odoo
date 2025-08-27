@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Complete Category Strip Template -->
+    <!-- Complete Category Strip Template - ALL CATEGORIES -->
     <template id="category_strip_complete" name="Category Strip Complete">
         <!-- Category Strip Container -->
         <div id="category-strip-wrapper" class="category-strip-container">
@@ -19,53 +19,66 @@
                         <!-- Categories Container - This will slide left/right -->
                         <div id="categories-container" class="flex gap-3 transition-transform duration-500 ease-in-out">
 
-                            <!-- Category Items -->
+                            <!-- Category Items - ALL FROM YOUR DOCUMENT -->
+
+                            <!-- Rice Box -->
                             <a href="#rice-box-section" class="category-item" data-section="rice-box-section">
                                 Rice Box
                             </a>
 
-                            <a href="#ala-delivery-box-section" class="category-item" data-section="ala-delivery-box-section">
-                                Ala Delivery Box
+                            <!-- Fish and Chips -->
+                            <a href="#fish-and-chips-section" class="category-item" data-section="fish-and-chips-section">
+                                Fish &amp; Chips
                             </a>
 
-                            <a href="#hadiya-premium-box-section" class="category-item" data-section="hadiya-premium-box-section">
-                                Hadiya Premium Box
+                            <!-- Pasta -->
+                            <a href="#pasta-section" class="category-item" data-section="pasta-section">
+                                Pasta
                             </a>
 
+                            <!-- Turkish Feast -->
                             <a href="#turkish-feast-section" class="category-item" data-section="turkish-feast-section">
                                 Turkish Feast
                             </a>
 
-                            <a href="#ronaq-e-dastarkhwan-section" class="category-item" data-section="ronaq-e-dastarkhwan-section">
-                                Ronaq E Dastarkhwan
+                            <!-- Wraps & Rolls -->
+                            <a href="#wraps-rolls-section" class="category-item" data-section="wraps-rolls-section">
+                                Wraps &amp; Rolls
                             </a>
 
+                            <!-- New Arrivals -->
                             <a href="#new-arrivals-section" class="category-item" data-section="new-arrivals-section">
                                 New Arrivals
                             </a>
 
+                            <!-- Soups And Salads -->
                             <a href="#soups-and-salads-section" class="category-item" data-section="soups-and-salads-section">
-                                Soups And Salads
+                                Soups &amp; Salads
                             </a>
 
+                            <!-- Cold Drinks -->
                             <a href="#cold-drinks-section" class="category-item" data-section="cold-drinks-section">
-                                Cold Mezzes
+                                Cold Drinks
                             </a>
 
+                            <!-- Hot Beverages -->
                             <a href="#hot-beverages-section" class="category-item" data-section="hot-beverages-section">
-                                Hot Starters
+                                Hot Beverages
                             </a>
 
-                            <a href="#main-course-section" class="category-item" data-section="main-course-section">
-                                Main Course
-                            </a>
-
+                            <!-- Desserts -->
                             <a href="#desserts-section" class="category-item" data-section="desserts-section">
                                 Desserts
                             </a>
 
+                            <!-- BBQ -->
                             <a href="#bbq-section" class="category-item" data-section="bbq-section">
-                                BBQ
+                                BBQ Specials
+                            </a>
+
+                            <!-- Fast Food -->
+                            <a href="#fast-food-section" class="category-item" data-section="fast-food-section">
+                                Fast Food
                             </a>
 
                         </div>
