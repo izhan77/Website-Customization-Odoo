@@ -1,3 +1,4 @@
+/* Montserrat font faces */
 @font-face {
     font-family: 'Montserrat';
     src: url('/website_customizations/static/src/fonts/Montserrat-Regular.ttf') format('truetype');
@@ -19,8 +20,35 @@
     font-style: normal;
 }
 
+
+/* Roboto Condensed font faces */
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('/website_customizations/static/src/fonts/RobotoCondensed-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
 body {
     font-family: 'Montserrat', sans-serif !important;
+}
+
+.roboto-condensed {
+    font-family: 'Roboto Condensed', sans-serif;
 }
 
 @tailwind base;

@@ -37,6 +37,14 @@
         # Homepage Components
         'views/pages/homepage.xml',
 
+        # Footer Components
+        'views/components/footer/footer_base.xml',
+        'views/components/footer/footer_company.xml',
+        'views/components/footer/footer_resources.xml',
+        'views/components/footer/footer_social.xml',
+        'views/components/footer/footer_bottom.xml',
+        'views/components/footer/footer.xml',
+
     ],
     'assets': {
         'web.assets_frontend': [
@@ -46,6 +54,7 @@
 
             # Navbar CSS + JS
             'website_customizations/static/src/css/components/navbar/navbar.css',
+            'website_customizations/static/src/css/components/navbar/mobile_categories.css',
             'website_customizations/static/src/js/components/navbar/navbar.js',
             'website_customizations/static/src/css/components/navbar/menu_popup.css',
             'website_customizations/static/src/js/components/navbar/menu_popup.js',
@@ -67,6 +76,9 @@
 
             # Menu Sections CSS - NEW ADDITION
             'website_customizations/static/src/css/components/menu_sections/menu_sections.css',
+
+            # Footer specific files
+            'website_customizations/static/src/css/components/footer/footer.css',
         ],
     },
     'installable': True,

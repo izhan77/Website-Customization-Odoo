@@ -9,11 +9,9 @@
             <!-- Category Strip - Right after hero -->
             <t t-call="website_customizations.category_strip_complete"/>
 
-            <!-- Product Cards Section - NEW STRUCTURE -->
-<!--            <t t-call="website_customizations.product_grid"/>-->
-
             <!-- All Menu Sections -->
             <t t-call="website_customizations.menu_sections_complete"/>
+
         </xpath>
     </template>
 </odoo>

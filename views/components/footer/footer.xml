@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Footer -->
+    <template id="footer_custom" inherit_id="website.layout" name="Custom Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <footer id="custom_footer" class="footer-graphy-clone">
+                <div class="footer-container">
+                    <!-- Main Footer Content -->
+                    <div class="footer-content">
+                        <!-- Left Section - Brand -->
+                        <div class="footer-brand">
+                            <t t-call="website_customizations.footer_base"/>
+                        </div>
+
+                        <!-- Right Section - Links -->
+                        <div class="footer-links">
+                            <!-- Product Column -->
+                            <div class="footer-column">
+                                <t t-call="website_customizations.footer_company"/>
+                            </div>
+
+                            <!-- Resources Column -->
+                            <div class="footer-column">
+                                <t t-call="website_customizations.footer_resources"/>
+                            </div>
+
+                            <!-- Company Column -->
+                            <div class="footer-column">
+                                <t t-call="website_customizations.footer_social"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Bottom -->
+                    <div class="footer-bottom">
+                        <t t-call="website_customizations.footer_bottom"/>
+                    </div>
+                </div>
+            </footer>
+        </xpath>
+    </template>
+
+    <!-- Kill leftover Odoo copyright -->
+    <template id="remove_odoo_footer" inherit_id="website.layout">
+        <xpath expr="//div[contains(@class,'o_footer_copyright')]" position="replace"/>
+    </template>
+</odoo>

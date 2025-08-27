@@ -8,154 +8,150 @@
                 <div class="menu-popup-header">
                     <h1>Categories</h1>
                 </div>
+
                 <div class="menu-popup-grid">
-                <!-- Rice Box -->
-                <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Food &amp; Meals</div>
-                        <h3 class="menu-popup-title">RICE BOX</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-rice-box.png" alt="Rice Box"
-                                 class="menu-popup-image"/>
+
+                    <!-- Rice Box -->
+                    <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                        <div class="menu-popup-card">
+                            <div class="menu-popup-img-circle">
+                                <img src="/website_customizations/static/src/images/category-rice-box.png" alt="Rice Box"
+                                    class="menu-popup-image"/>
+                            </div>
+                            <h3 class="menu-popup-title">RICE BOX</h3>
                         </div>
-                    </div>
-                </a>
-                
-                <!-- Fish and Chips -->
-                <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Fresh &amp; Crispy </div>
-                        <h3 class="menu-popup-title">FISH &amp; CHIPS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-fish-and-chips.png" alt="Fish and Chips"
-                                class="menu-popup-image"/>
+                    </a>
+
+                    <!-- Fish and Chips -->
+                    <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                        <div class="menu-popup-card">
+                            <div class="menu-popup-img-circle">
+                                <img src="/website_customizations/static/src/images/category-fish-and-chips.png" alt="Fish and Chips"
+                                    class="menu-popup-image"/>
+                            </div>
+                            <h3 class="menu-popup-title">FISH &amp; CHIPS</h3>
                         </div>
-                    </div>
-                </a>
+                    </a>
+
+                    <!-- Pasta -->
+                    <a href="#pasta-section" class="menu-popup-item group" data-category="pasta" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                        <div class="menu-popup-card">
+                            <div class="menu-popup-img-circle">
+                                <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta"
+                                    class="menu-popup-image"/>
+                            </div>
+                            <h3 class="menu-popup-title">PASTA</h3>
+                        </div>
+                    </a>
+
+                    <!-- Turkish Feast -->
+                    <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                        <div class="menu-popup-card">
+                            <div class="menu-popup-img-circle">
+                                <img src="/website_customizations/static/src/images/category-turkish-foods.png" alt="Turkish Feast"
+                                    class="menu-popup-image"/>
+                            </div>
+                            <h3 class="menu-popup-title">TURKISH FEAST</h3>
+                        </div>
+                    </a>
+
+                    <!-- Wraps & Rolls -->
+                    <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                        <div class="menu-popup-card">
+                            <div class="menu-popup-img-circle">
+                                <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png" alt="Wraps and Rolls"
+                                    class="menu-popup-image"/>
+                            </div>
+                            <h3 class="menu-popup-title">WRAPS &amp; ROLLS</h3>
+                        </div>
+                    </a>
+
+                    <!-- New Arrivals -->
+<a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Latest &amp; Fresh</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-new-arrivals.png" alt="New Arrivals"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">NEW ARRIVALS</h3>
+    </div>
+</a>
+
+<!-- Soups And Salads -->
+<a href="#soups-and-salads-section" class="menu-popup-item group" data-category="soups-salads" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Healthy &amp; Light</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-soups-salads.png"
+                 alt="Soups and Salads" class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">SOUPS &amp; SALADS</h3>
+    </div>
+</a>
+
+<!-- Cold Drinks -->
+<a href="#cold-drinks-section" class="menu-popup-item group" data-category="cold-drinks" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Beverages &amp; Drinks</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-cold-drinks.png" alt="Cold Drinks"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">COLD DRINKS</h3>
+    </div>
+</a>
+
+<!-- Hot Beverages -->
+<a href="#hot-beverages-section" class="menu-popup-item group" data-category="hot-beverages" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Hot &amp; Warm</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-hot-beverages.png" alt="Hot Beverages"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">HOT BEVERAGES</h3>
+    </div>
+</a>
+
+<!-- Desserts -->
+<a href="#desserts-section" class="menu-popup-item group" data-category="desserts" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Sweet &amp; Treats</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">DESSERTS</h3>
+    </div>
+</a>
+
+<!-- BBQ -->
+<a href="#bbq-section" class="menu-popup-item group" data-category="bbq" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Grilled &amp; BBQ</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">BBQ SPECIALS</h3>
+    </div>
+</a>
+
+<!-- Fast Food -->
+<a href="#fast-food-section" class="menu-popup-item group" data-category="fast-food" onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+    <div class="menu-popup-card">
+        <!-- <div class="menu-popup-category-label">Quick &amp; Fast</div> -->
+        <div class="menu-popup-img-circle">
+            <img src="/website_customizations/static/src/images/category-burger.png" alt="Fast Food"
+                 class="menu-popup-image"/>
+        </div>
+        <h3 class="menu-popup-title">FAST FOOD</h3>
+    </div>
+</a>
 
 
-                        <!-- Pastas -->
-        <a href="#pasta-section" class="menu-popup-item group" data-category="pasta">
-            <div class="menu-popup-card">
-                <div class="menu-popup-category-label">Premium &amp; Special</div>
-                <h3 class="menu-popup-title">PASTA</h3>
-                <div class="menu-popup-image-container">
-                    <img src="/website_customizations/static/src/images/category-pasta.png"
-                        alt="Pasta" class="menu-popup-image"/>
                 </div>
-            </div>
-        </a>
-
-
-                <!-- Turkish Feast -->
-                <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">International &amp; Feast</div>
-                        <h3 class="menu-popup-title">TURKISH FEAST</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-turkish-foods.png" alt="Turkish Feast"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                        <!-- Wraps & Rolls -->
-            <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls">
-                <div class="menu-popup-card">
-                    <div class="menu-popup-category-label">Wraps &amp; Rolls</div>
-                    <h3 class="menu-popup-title">WRAPS &amp; ROLLS</h3>
-                    <div class="menu-popup-image-container">
-                        <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
-                            alt="Wraps and Rolls" class="menu-popup-image"/>
-                    </div>
-                </div>
-            </a>
-
-                <!-- New Arrivals -->
-                <a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Latest &amp; Fresh</div>
-                        <h3 class="menu-popup-title">NEW ARRIVALS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-new-arrivals.png" alt="New Arrivals"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Soups And Salads -->
-                <a href="#soups-and-salads-section" class="menu-popup-item group" data-category="soups-salads">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Healthy &amp; Light</div>
-                        <h3 class="menu-popup-title">SOUPS &amp; SALADS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-soups-salads.png"
-                                 alt="Soups and Salads" class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Cold Drinks -->
-                <a href="#cold-drinks-section" class="menu-popup-item group" data-category="cold-drinks">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Beverages &amp; Drinks</div>
-                        <h3 class="menu-popup-title">COLD DRINKS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-cold-drinks.png" alt="Cold Drinks"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Hot Beverages -->
-                <a href="#hot-beverages-section" class="menu-popup-item group" data-category="hot-beverages">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Hot &amp; Warm</div>
-                        <h3 class="menu-popup-title">HOT BEVERAGES</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-hot-beverages.png" alt="Hot Beverages"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Desserts -->
-                <a href="#desserts-section" class="menu-popup-item group" data-category="desserts">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Sweet &amp; Treats</div>
-                        <h3 class="menu-popup-title">DESSERTS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- BBQ -->
-                <a href="#bbq-section" class="menu-popup-item group" data-category="bbq">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Grilled &amp; BBQ</div>
-                        <h3 class="menu-popup-title">BBQ SPECIALS</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Fast Food -->
-                <a href="#fast-food-section" class="menu-popup-item group" data-category="fast-food">
-                    <div class="menu-popup-card">
-                        <div class="menu-popup-category-label">Quick &amp; Fast</div>
-                        <h3 class="menu-popup-title">FAST FOOD</h3>
-                        <div class="menu-popup-image-container">
-                            <img src="/website_customizations/static/src/images/category-burger.png" alt="Fast Food"
-                                 class="menu-popup-image"/>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
             </div>
         </div>
     </template>

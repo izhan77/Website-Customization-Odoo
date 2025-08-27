@@ -27,7 +27,7 @@ section[id] {
     position: relative;
 }
 
-.menu-section h2::after {
+/*.menu-section h2::after {
     content: '';
     position: absolute;
     bottom: -10px;
@@ -37,7 +37,7 @@ section[id] {
     height: 4px;
     background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
     border-radius: 2px;
-}
+}*/
 
 .menu-section p {
     font-size: 1.125rem;
@@ -427,3 +427,5 @@ html {
     background: yellow;
 }
 */
+
+

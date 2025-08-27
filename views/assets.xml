@@ -19,6 +19,8 @@
             <!-- Navbar specific assets -->
             <link rel="stylesheet" type="text/css"
                   href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/navbar/mobile_categories.css"/>
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
 
@@ -42,8 +44,6 @@
             <!-- ================================= CATEGORY STRIP MODULAR COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css"
                   href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
-            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_responsive.css"/>-->
-            <!--            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/components/category_strip/category_strip_sticky.css"/>-->
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
 
@@ -57,6 +57,10 @@
             <!-- ================================= MENU SECTIONS COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css"
                   href="/website_customizations/static/src/css/components/menu_sections/menu_sections.css"/>
+
+            <!-- ================================= FOOTER COMPONENTS ================================= -->
+            <link rel="stylesheet" type="text/css"
+                  href="/website_customizations/static/src/css/components/footer/footer.css"/>
 
             <!-- Force font loading -->
             <style>

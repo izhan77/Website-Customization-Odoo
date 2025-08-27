@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_company">
+        <h3 class="column-title">Product</h3>
+        <ul class="footer-nav">
+            <li><a href="/features">Features</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/integrations">Integrations</a></li>
+            <li><a href="/changelog">Changelog</a></li>
+        </ul>
+    </template>
+</odoo>

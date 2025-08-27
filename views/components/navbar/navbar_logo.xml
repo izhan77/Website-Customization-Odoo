@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="navbar_logo" name="Navbar Logo">
-        <a style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;" class="text-white text-4xl font-bold  transition-all duration-300 flex items-center" href="/">
+        <a style="-webkit-tap-highlight-color: transparent !important; font-family: 'Roboto Condensed' !important; outline: none !important; background-color: transparent !important;" class="text-white text-4xl font-bold  transition-all duration-300 flex items-center" href="/">
             <span>Cravely</span>
         </a>
     </template>

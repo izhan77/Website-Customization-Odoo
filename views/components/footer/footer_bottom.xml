@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="footer_bottom">
+        <div class="footer-bottom-content">
+            <div class="footer-copyright">
+                <span>© 2025 Cravely. All rights reserved.</span>
+            </div>
+            <div class="footer-legal">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/cookies">Cookies Settings</a>
+            </div>
+        </div>
+    </template>
+</odoo>

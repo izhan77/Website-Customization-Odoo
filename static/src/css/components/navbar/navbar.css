@@ -46,19 +46,23 @@
     display: block !important;
 }
 
-/* FIXED: Menu content container - starts hidden, slides down when opened */
+/* FIXED: Menu content container - responsive height */
 #menu-content-container {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 65% !important;
-    background-color: #FFF1D5 !important;
+    min-height: 280px !important; /* Minimum height */
+    max-height: 65vh !important; /* Maximum height relative to viewport */
+    background-color: #7abfba !important;
     border-bottom-left-radius: 4rem !important;
     border-bottom-right-radius: 4rem !important;
     z-index: 999 !important;
     transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     transform: translateY(-100%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
 }
 
 /* When menu is open, slide the content down */
@@ -138,4 +142,43 @@ header.custom-navbar a:hover {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
+}
+
+/* Responsive adjustments for different screen sizes */
+@media (max-height: 700px) {
+    #menu-content-container {
+        max-height: 75vh !important;
+        padding-top: 1.5rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .menu-content-container .text-3xl {
+        font-size: 1.75rem !important; /* 28px */
+    }
+
+    .menu-content-container .space-y-5 > * {
+        margin-bottom: 0.75rem !important;
+    }
+}
+
+@media (max-height: 600px) {
+    #menu-content-container {
+        max-height: 80vh !important;
+        padding-top: 1rem !important;
+    }
+
+    .menu-content-container .text-3xl {
+        font-size: 1.5rem !important; /* 24px */
+    }
+
+    .menu-content-container .space-y-5 > * {
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* For very tall screens (iPhone 14 Pro Max, etc.) */
+@media (min-height: 800px) and (max-width: 1023px) {
+    #menu-content-container {
+        max-height: 55vh !important;
+    }
 }
