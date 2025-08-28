@@ -1,6 +1,8 @@
 /**
- * ULTIMATE SCROLL FIX - Pixel Perfect Navigation
+ * Menu Popup Controller - With Category Strip Interference Blocker
  * File: /website_customizations/static/src/js/components/navbar/menu_popup.js
+ *
+ * This version blocks category strip interference during menu popup scrolls only
  */
 (function () {
     'use strict';
@@ -11,23 +13,35 @@
     let hideTimeout = null;
     let isMouseOverPopup = false;
     let isMouseOverTrigger = false;
-    let resizeTimeout = null;
-    let popupReady = false;
     let isScrolling = false;
-    let scrollTimeout = null;
-    let scrollObserver = null;
 
-    // Constants
+    // Constants - FROM YOUR WORKING CODE
     const NAVBAR_SELECTOR = 'header, .navbar, #main-navbar, nav';
     const CATEGORY_STRIP_SELECTOR = '#category-strip-wrapper';
     const HOVER_DELAY = 150;
     const HIDE_DELAY = 300;
-    const SCROLL_HIDE_DELAY = 50;
 
-    // ================================= ULTIMATE SCROLL CALCULATION =================================
+    // ================================= CATEGORY STRIP INTERFERENCE BLOCKER =================================
 
     /**
-     * Get EXACT element position with all layout considerations
+     * Block category strip during menu popup scrolls ONLY
+     */
+    function blockCategoryStripTemporarily(duration = 2000) {
+        // Create a temporary flag that category strip can check
+        window.menuPopupScrolling = true;
+
+        console.log('🚫 Blocking category strip interference for', duration + 'ms');
+
+        setTimeout(() => {
+            window.menuPopupScrolling = false;
+            console.log('✅ Category strip interference block removed');
+        }, duration);
+    }
+
+    // ================================= WORKING SCROLL LOGIC - EXTRACTED FROM YOUR CODE =================================
+
+    /**
+     * Get EXACT element position - FROM YOUR WORKING CODE
      */
     function getExactElementTop(element) {
         if (!element) return 0;
@@ -43,51 +57,44 @@
     }
 
     /**
-     * Calculate PRECISE header heights with layout updates
-     */
+ * Calculate PRECISE header heights - ADJUSTED BUFFER
+ */
     function getPreciseHeaderHeight() {
-        let totalHeight = 0;
+    let totalHeight = 0;
 
-        // Force layout recalculation on all potential header elements
-        document.body.offsetHeight;
+    document.body.offsetHeight;
 
-        // Navbar height calculation
-        const navbar = document.querySelector(NAVBAR_SELECTOR);
-        if (navbar) {
-            // Force layout
-            navbar.offsetHeight;
+    const navbar = document.querySelector(NAVBAR_SELECTOR);
+    if (navbar) {
+        navbar.offsetHeight;
+        const computedStyle = window.getComputedStyle(navbar);
+        const position = computedStyle.position;
 
-            const computedStyle = window.getComputedStyle(navbar);
-            const position = computedStyle.position;
-
-            if (position === 'fixed' || position === 'sticky') {
-                const height = navbar.getBoundingClientRect().height;
-                totalHeight += Math.round(height);
-                console.log('Navbar height:', Math.round(height));
-            }
+        if (position === 'fixed' || position === 'sticky') {
+            const height = navbar.getBoundingClientRect().height;
+            totalHeight += Math.round(height);
+            console.log('Menu Popup - Navbar height:', Math.round(height));
         }
-
-        // Category strip height calculation
-        const categoryStrip = document.querySelector(CATEGORY_STRIP_SELECTOR);
-        if (categoryStrip) {
-            // Force layout
-            categoryStrip.offsetHeight;
-
-            const stripRect = categoryStrip.getBoundingClientRect();
-            const stripHeight = Math.round(stripRect.height);
-            totalHeight += stripHeight;
-            console.log('Category strip height:', stripHeight);
-        }
-
-        // Additional buffer for pixel-perfect alignment
-        totalHeight += 15;
-
-        console.log('Total header height:', totalHeight);
-        return totalHeight;
     }
 
+    const categoryStrip = document.querySelector(CATEGORY_STRIP_SELECTOR);
+    if (categoryStrip) {
+        categoryStrip.offsetHeight;
+        const stripRect = categoryStrip.getBoundingClientRect();
+        const stripHeight = Math.round(stripRect.height);
+        totalHeight += stripHeight;
+        console.log('Menu Popup - Category strip height:', stripHeight);
+    }
+
+    // CORRECT positioning - just below the strip
+    totalHeight += 20; // Small positive buffer for clean positioning
+
+    console.log('Menu Popup - Total header height:', totalHeight);
+    return totalHeight;
+}
+
     /**
-     * ULTIMATE PRECISION SCROLL - Multi-pass with error correction
+     * WORKING PRECISION SCROLL - Multi-pass with error correction - FROM YOUR CODE
      */
     function scrollToElementWithPrecision(targetElement) {
         if (!targetElement) {
@@ -95,10 +102,13 @@
             return;
         }
 
-        console.log('=== STARTING PRECISION SCROLL ===');
+        console.log('=== MENU POPUP PRECISION SCROLL START ===');
         console.log('Target element:', targetElement.id);
 
         isScrolling = true;
+
+        // BLOCK CATEGORY STRIP INTERFERENCE
+        blockCategoryStripTemporarily(3000);
 
         // Step 1: Initial calculation and scroll
         function performInitialScroll() {
@@ -107,7 +117,7 @@
                 const elementTop = getExactElementTop(targetElement);
                 const targetPosition = Math.max(0, elementTop - headerHeight);
 
-                console.log('Initial scroll calculation:', {
+                console.log('Menu Popup - Initial scroll calculation:', {
                     elementTop,
                     headerHeight,
                     targetPosition,
@@ -132,7 +142,7 @@
                 const currentScroll = window.pageYOffset;
                 const difference = Math.abs(currentScroll - targetPosition);
 
-                console.log('First correction:', {
+                console.log('Menu Popup - First correction:', {
                     elementTop,
                     headerHeight,
                     targetPosition,
@@ -163,7 +173,7 @@
                     const currentScroll = window.pageYOffset;
                     const difference = Math.abs(currentScroll - targetPosition);
 
-                    console.log('Final correction:', {
+                    console.log('Menu Popup - Final correction:', {
                         elementTop,
                         headerHeight,
                         targetPosition,
@@ -194,7 +204,7 @@
                     const currentScroll = window.pageYOffset;
                     const difference = targetPosition - currentScroll;
 
-                    console.log('Pixel correction:', {
+                    console.log('Menu Popup - Pixel correction:', {
                         elementTop,
                         headerHeight,
                         targetPosition,
@@ -207,15 +217,15 @@
                         window.scrollTo(0, targetPosition);
                     }
 
-                    console.log('Final position:', window.pageYOffset);
-                    console.log('=== SCROLL COMPLETE ===');
+                    console.log('Menu Popup - Final position:', window.pageYOffset);
+                    console.log('=== MENU POPUP PRECISION SCROLL COMPLETE ===');
 
                     resolve();
                 }, 50);
             });
         }
 
-        // Execute scroll sequence
+        // Execute scroll sequence - FROM YOUR WORKING CODE
         performInitialScroll()
             .then(() => performFirstCorrection())
             .then(() => performFinalCorrection())
@@ -226,198 +236,72 @@
                 }, 200);
             })
             .catch((error) => {
-                console.error('Scroll error:', error);
+                console.error('Menu Popup - Scroll error:', error);
                 isScrolling = false;
             });
     }
 
     /**
-     * Enhanced scroll with intersection observer for accuracy
+     * Enhanced scroll with intersection observer - FROM YOUR WORKING CODE
      */
     function scrollWithIntersectionCheck(targetElement) {
-        console.log('Starting enhanced scroll with intersection check');
+    console.log('Menu Popup - Starting enhanced scroll with intersection check');
 
-        // Start the precision scroll
-        scrollToElementWithPrecision(targetElement);
+    // Start the precision scroll
+    scrollToElementWithPrecision(targetElement);
 
-        // Set up intersection observer for verification
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const rect = entry.boundingClientRect;
-                    const headerHeight = getPreciseHeaderHeight();
+    // FIX: Ensure rootMargin is always positive
+    const headerHeight = getPreciseHeaderHeight();
+    const rootMargin = Math.max(headerHeight, 50); // Ensure minimum 50px
 
-                    console.log('Intersection detected:', {
-                        top: rect.top,
-                        headerHeight: headerHeight,
-                        isVisible: rect.top >= 0 && rect.top <= headerHeight + 10
-                    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const rect = entry.boundingClientRect;
 
-                    // If not positioned correctly, make final adjustment
-                    if (rect.top < 0 || rect.top > headerHeight + 10) {
-                        const elementTop = getExactElementTop(targetElement);
-                        const correctPosition = Math.max(0, elementTop - headerHeight);
-                        window.scrollTo(0, correctPosition);
-                        console.log('Final intersection correction applied');
-                    }
+                console.log('Menu Popup - Intersection detected:', {
+                    top: rect.top,
+                    headerHeight: headerHeight,
+                    isVisible: rect.top >= 0 && rect.top <= headerHeight + 10
+                });
 
-                    observer.disconnect();
+                // If not positioned correctly, make final adjustment
+                if (rect.top < 0 || rect.top > headerHeight + 10) {
+                    const elementTop = getExactElementTop(targetElement);
+                    const correctPosition = Math.max(0, elementTop - headerHeight);
+                    window.scrollTo(0, correctPosition);
+                    console.log('Menu Popup - Final intersection correction applied');
                 }
-            });
-        }, {
-            rootMargin: `-${getPreciseHeaderHeight()}px 0px 0px 0px`,
-            threshold: 0.1
+
+                observer.disconnect();
+            }
         });
+    }, {
+        rootMargin: `-${rootMargin}px 0px 0px 0px`, // Fixed: use positive rootMargin
+        threshold: 0.1
+    });
 
-        observer.observe(targetElement);
+    observer.observe(targetElement);
 
-        // Cleanup observer after timeout
-        setTimeout(() => {
-            observer.disconnect();
-        }, 2000);
-    }
+    // Cleanup observer after timeout
+    setTimeout(() => {
+        observer.disconnect();
+    }, 2000);
+}
 
     // ================================= POPUP MANAGEMENT =================================
 
-    function isMobileDevice() {
-        return window.innerWidth <= 1023;
-    }
-
-    function forceHidePopup() {
+    function updatePopupPosition() {
         const menuPopup = document.getElementById('menu-categories-popup');
-        if (!menuPopup) return;
+        const navbar = document.querySelector(NAVBAR_SELECTOR);
 
-        console.log('Force hiding popup');
+        if (!menuPopup || !navbar) return;
 
-        menuPopup.style.display = 'none';
-        menuPopup.style.visibility = 'hidden';
-        menuPopup.style.opacity = '0';
-        menuPopup.style.transform = 'translateY(-100%)';
-        menuPopup.style.pointerEvents = 'none';
-        menuPopup.classList.remove('show', 'positioned', 'mobile-centered');
-
-        popupReady = false;
-    }
-
-    function setupMobilePopup(menuPopup) {
-        if (isMobileDevice()) {
-            menuPopup.classList.add('mobile-centered');
-
-            menuPopup.style.position = 'fixed';
-            menuPopup.style.top = '50%';
-            menuPopup.style.left = '50%';
-            menuPopup.style.transform = 'translate(-50%, -50%)';
-            menuPopup.style.width = '90vw';
-            menuPopup.style.maxWidth = '400px';
-            menuPopup.style.height = '80vh';
-            menuPopup.style.maxHeight = '600px';
-            menuPopup.style.borderRadius = '20px';
-            menuPopup.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-            menuPopup.style.zIndex = '9999';
-
-            const contentWrapper = menuPopup.querySelector('.menu-popup-content-wrapper');
-            if (contentWrapper) {
-                contentWrapper.style.height = '100%';
-                contentWrapper.style.overflowY = 'auto';
-                contentWrapper.style.padding = '20px';
-                contentWrapper.style.maxHeight = 'none';
-            }
-        } else {
-            menuPopup.classList.remove('mobile-centered');
-
-            // Reset desktop styles
-            const resetStyles = ['position', 'top', 'left', 'transform', 'width', 'maxWidth', 'height', 'maxHeight', 'borderRadius', 'boxShadow'];
-            resetStyles.forEach(style => {
-                menuPopup.style[style] = '';
-            });
-        }
-    }
-
-    function adjustScrollBehavior() {
-        const menuPopup = document.getElementById('menu-categories-popup');
-        const contentWrapper = menuPopup?.querySelector('.menu-popup-content-wrapper');
-        if (!menuPopup || !contentWrapper) return;
-
-        if (isMobileDevice()) {
-            setupMobilePopup(menuPopup);
-        } else {
-            const navbar = document.querySelector(NAVBAR_SELECTOR);
-            const navbarHeight = navbar ? navbar.offsetHeight : 80;
-            menuPopup.style.setProperty('--navbar-height', navbarHeight + 'px');
-
-            const isLargeScreen = window.innerWidth >= 1400 && window.innerHeight >= 700;
-            if (isLargeScreen) {
-                contentWrapper.style.overflowY = 'visible';
-                contentWrapper.style.maxHeight = 'none';
-                menuPopup.style.maxHeight = 'none';
-                menuPopup.style.overflow = 'visible';
-            } else {
-                const maxHeight = `calc(100vh - ${navbarHeight}px - 40px)`;
-                contentWrapper.style.overflowY = 'auto';
-                contentWrapper.style.maxHeight = maxHeight;
-                menuPopup.style.maxHeight = `calc(100vh - ${navbarHeight}px)`;
-                menuPopup.style.overflow = 'hidden';
-            }
-        }
-    }
-
-    function preparePopup() {
-        const menuPopup = document.getElementById('menu-categories-popup');
-        if (!menuPopup) return false;
-
-        setupMobilePopup(menuPopup);
-
-        if (!isMobileDevice()) {
-            const navbar = document.querySelector(NAVBAR_SELECTOR);
-            if (navbar) {
-                const navbarHeight = navbar.offsetHeight || 80;
-                menuPopup.style.setProperty('--navbar-height', navbarHeight + 'px');
-            }
-        }
-
-        menuPopup.style.display = 'block';
-        menuPopup.style.visibility = 'hidden';
-        menuPopup.style.opacity = '0';
-
-        if (isMobileDevice()) {
-            menuPopup.style.transform = 'translate(-50%, -50%) scale(0.95)';
-        } else {
-            menuPopup.style.transform = 'translateY(-100%)';
-        }
-
+        const navbarHeight = navbar.offsetHeight || 80;
+        menuPopup.style.setProperty('--navbar-height', navbarHeight + 'px');
         menuPopup.classList.add('positioned');
-        adjustScrollBehavior();
 
-        popupReady = true;
-        return true;
-    }
-
-    function showPopupNow() {
-        const menuPopup = document.getElementById('menu-categories-popup');
-        if (!menuPopup || !popupReady) return;
-
-        menuPopup.style.visibility = 'visible';
-        menuPopup.style.pointerEvents = 'all';
-
-        requestAnimationFrame(() => {
-            menuPopup.classList.add('show');
-            menuPopup.style.opacity = '1';
-
-            if (isMobileDevice()) {
-                menuPopup.style.transform = 'translate(-50%, -50%) scale(1)';
-            } else {
-                menuPopup.style.transform = 'translateY(0)';
-            }
-
-            const cards = menuPopup.querySelectorAll('.menu-popup-item');
-            cards.forEach((card, index) => {
-                card.style.setProperty('--animation-delay', `${index * 0.05}s`);
-                card.style.animation = 'none';
-                card.offsetHeight;
-                card.style.animation = 'fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-                card.style.animationDelay = `var(--animation-delay)`;
-            });
-        });
+        console.log(`Menu popup positioned below navbar at height: ${navbarHeight}px`);
     }
 
     function showPopup() {
@@ -425,9 +309,22 @@
 
         clearTimeout(hideTimeout);
         isMouseOverTrigger = true;
+        updatePopupPosition();
 
-        if (!preparePopup()) return;
-        setTimeout(showPopupNow, 13);
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (!menuPopup) return;
+
+        menuPopup.classList.add('show');
+        console.log('Menu popup shown below navbar');
+
+        // Add stagger animation for cards
+        const cards = menuPopup.querySelectorAll('.menu-popup-item');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.05}s`;
+            card.style.animation = 'none';
+            card.offsetHeight; // trigger reflow
+            card.style.animation = 'fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+        });
     }
 
     function hidePopup() {
@@ -437,28 +334,20 @@
             const menuPopup = document.getElementById('menu-categories-popup');
             if (menuPopup) {
                 menuPopup.classList.remove('show');
-                menuPopup.style.opacity = '0';
+                console.log('Menu popup hidden');
 
-                if (isMobileDevice()) {
-                    menuPopup.style.transform = 'translate(-50%, -50%) scale(0.95)';
-                } else {
-                    menuPopup.style.transform = 'translateY(-100%)';
-                }
-
-                setTimeout(forceHidePopup, 300);
-
+                // Reset card animations
                 const cards = menuPopup.querySelectorAll('.menu-popup-item');
                 cards.forEach(card => {
                     card.style.animation = '';
                     card.style.animationDelay = '';
-                    card.style.removeProperty('--animation-delay');
                 });
             }
         }
     }
 
     /**
-     * ULTIMATE: Enhanced category click handler with precision scroll
+     * WORKING CATEGORY CLICK HANDLER - FROM YOUR CODE
      */
     function handleCategoryClick(event) {
         event.preventDefault();
@@ -467,7 +356,7 @@
         const item = event.currentTarget;
         const href = item.getAttribute('href');
 
-        console.log('=== CATEGORY CLICK EVENT ===');
+        console.log('=== MENU POPUP CATEGORY CLICK EVENT ===');
         console.log('Clicked href:', href);
 
         if (!href || !href.startsWith('#')) {
@@ -483,18 +372,18 @@
         }
 
         // Hide popup immediately
-        forceHidePopup();
+        hidePopup();
         isMouseOverPopup = false;
         isMouseOverTrigger = false;
 
         // Find target element with validation
         const targetId = href.slice(1);
-        console.log('Looking for section:', targetId);
+        console.log('Menu Popup - Looking for section:', targetId);
 
         const targetElement = document.getElementById(targetId);
 
         if (!targetElement) {
-            console.error('Section not found:', targetId);
+            console.error('Menu Popup - Section not found:', targetId);
 
             // Enhanced debugging
             const allSections = document.querySelectorAll('section[id], div[id], article[id]');
@@ -505,36 +394,23 @@
             return;
         }
 
-        console.log('Target found:', targetElement);
-        console.log('Target offsetTop:', targetElement.offsetTop);
-        console.log('Target getBoundingClientRect:', targetElement.getBoundingClientRect());
+        console.log('Menu Popup - Target found:', targetElement);
+        console.log('Menu Popup - Target offsetTop:', targetElement.offsetTop);
+        console.log('Menu Popup - Target getBoundingClientRect:', targetElement.getBoundingClientRect());
 
-        // Wait for popup to close, then scroll with precision
+        // Wait for popup to close, then scroll with precision - WORKING LOGIC
         setTimeout(() => {
             scrollWithIntersectionCheck(targetElement);
         }, 150);
 
         // Update URL after scroll sequence completes
         setTimeout(() => {
-            console.log('Updating URL to:', href);
+            console.log('Menu Popup - Updating URL to:', href);
             history.replaceState(null, '', href);
         }, 1500);
     }
 
-    function handleScroll() {
-        if (!isScrolling) {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                if (popupReady && !isScrolling) {
-                    forceHidePopup();
-                    isMouseOverPopup = false;
-                    isMouseOverTrigger = false;
-                }
-            }, SCROLL_HIDE_DELAY);
-        }
-    }
-
-    // ================================= INITIALIZATION =================================
+    // ================================= EVENT HANDLERS =================================
 
     function initMenuPopup() {
         if (menuPopupInitialized) return true;
@@ -543,131 +419,118 @@
         const menuPopup = document.getElementById('menu-categories-popup');
 
         if (!menuTrigger || !menuPopup) {
-            console.error('Menu elements not found');
+            console.log('Menu elements not found, retrying...');
             return false;
         }
 
-        console.log('Initializing ultimate menu popup system');
+        console.log('Initializing menu popup system with category strip blocker');
         menuPopupInitialized = true;
-        forceHidePopup();
 
-        // Event handlers
+        // Desktop hover handling
         menuTrigger.addEventListener('mouseenter', function () {
-            if (!isMobileDevice()) {
-                isMouseOverTrigger = true;
-                clearTimeout(hideTimeout);
-                hoverTimeout = setTimeout(showPopup, HOVER_DELAY);
-            }
+            console.log('Menu trigger hovered');
+            isMouseOverTrigger = true;
+            clearTimeout(hideTimeout);
+            hoverTimeout = setTimeout(showPopup, HOVER_DELAY);
         });
 
         menuTrigger.addEventListener('mouseleave', function () {
-            if (!isMobileDevice()) {
-                isMouseOverTrigger = false;
-                clearTimeout(hoverTimeout);
-                hideTimeout = setTimeout(hidePopup, HIDE_DELAY);
-            }
+            console.log('Menu trigger left');
+            isMouseOverTrigger = false;
+            clearTimeout(hoverTimeout);
+            hideTimeout = setTimeout(hidePopup, HIDE_DELAY);
         });
 
         menuPopup.addEventListener('mouseenter', function () {
-            if (!isMobileDevice()) {
-                isMouseOverPopup = true;
-                clearTimeout(hideTimeout);
-            }
+            console.log('Menu popup entered');
+            isMouseOverPopup = true;
+            clearTimeout(hideTimeout);
         });
 
         menuPopup.addEventListener('mouseleave', function () {
-            if (!isMobileDevice()) {
-                isMouseOverPopup = false;
-                hideTimeout = setTimeout(hidePopup, 200);
-            }
+            console.log('Menu popup left');
+            isMouseOverPopup = false;
+            hideTimeout = setTimeout(hidePopup, 200);
         });
 
-        // Mobile click handler
-        menuTrigger.addEventListener('click', function(e) {
-            if (isMobileDevice()) {
-                e.preventDefault();
-                if (popupReady && menuPopup.classList.contains('show')) {
-                    hidePopup();
-                } else {
-                    showPopup();
-                }
-            }
-        });
-
-        // Category item handlers
+        // Category item click handlers - WORKING LOGIC
         const popupItems = menuPopup.querySelectorAll('.menu-popup-item');
         popupItems.forEach((item) => {
             item.addEventListener('click', handleCategoryClick);
         });
 
-        // Global handlers
+        // Global close handlers
         document.addEventListener('click', function (e) {
             if (!menuTrigger.contains(e.target) && !menuPopup.contains(e.target)) {
-                forceHidePopup();
+                hidePopup();
                 isMouseOverPopup = false;
                 isMouseOverTrigger = false;
             }
         });
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Close on scroll - but respect scrolling state
+        window.addEventListener('scroll', function () {
+            if (!isScrolling && menuPopup.classList.contains('show')) {
+                setTimeout(() => {
+                    if (!isScrolling) {
+                        hidePopup();
+                        isMouseOverPopup = false;
+                        isMouseOverTrigger = false;
+                    }
+                }, 50);
+            }
+        }, { passive: true });
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
-                forceHidePopup();
+                hidePopup();
                 isMouseOverPopup = false;
                 isMouseOverTrigger = false;
             }
         });
 
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                if (popupReady) adjustScrollBehavior();
-            }, 250);
-        });
+        // Update position on resize
+        window.addEventListener('resize', updatePopupPosition);
+        setTimeout(updatePopupPosition, 100);
 
-        addEnhancedAnimations();
-        console.log('Ultimate menu popup system ready');
+        // Add CSS animations
+        addMenuPopupAnimations();
+
+        console.log('Menu popup system initialized successfully!');
         return true;
     }
 
-    function addEnhancedAnimations() {
-        if (document.getElementById('ultimate-menu-animations')) return;
+    function addMenuPopupAnimations() {
+        if (document.getElementById('menu-popup-animations')) return;
 
         const style = document.createElement('style');
-        style.id = 'ultimate-menu-animations';
+        style.id = 'menu-popup-animations';
         style.textContent = `
             @keyframes fadeInUp {
-                0% { opacity: 0; transform: translateY(20px); }
-                100% { opacity: 1; transform: translateY(0); }
+                0% {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .menu-popup-item {
                 opacity: 0;
                 transform: translateY(20px);
-                will-change: transform, opacity;
             }
 
             .menu-categories-popup.show .menu-popup-item {
                 opacity: 1;
                 transform: translateY(0);
             }
-
-            @media (max-width: 1023px) {
-                .menu-popup-grid {
-                    grid-template-columns: repeat(2, 1fr) !important;
-                    gap: 16px !important;
-                }
-                .menu-popup-card {
-                    height: 140px !important;
-                    padding: 16px !important;
-                }
-                .menu-popup-title { font-size: 14px !important; }
-                .menu-popup-image { width: 70px !important; height: 70px !important; }
-            }
         `;
         document.head.appendChild(style);
     }
+
+    // ================================= INITIALIZATION =================================
 
     function tryInitialize() {
         if (initMenuPopup()) return;
@@ -683,12 +546,12 @@
 
     window.addEventListener('load', () => setTimeout(tryInitialize, 200));
 
-    // Enhanced debug methods
+    // Debug methods for testing - FROM YOUR WORKING CODE
     window.menuPopupDebug = {
         scrollTo: function(sectionId) {
             const element = document.getElementById(sectionId);
             if (element) {
-                console.log(`=== MANUAL DEBUG SCROLL TO: ${sectionId} ===`);
+                console.log(`=== MENU POPUP MANUAL DEBUG SCROLL TO: ${sectionId} ===`);
                 scrollWithIntersectionCheck(element);
             } else {
                 console.error(`Section not found: ${sectionId}`);
@@ -700,7 +563,6 @@
             const sections = document.querySelectorAll('section[id], div[id], article[id]');
             console.log('=== ALL SECTIONS WITH IDS ===');
             sections.forEach(s => {
-                const rect = s.getBoundingClientRect();
                 console.log(`${s.id}: ${s.tagName.toLowerCase()}, top: ${getExactElementTop(s)}, visible: ${s.offsetParent !== null}`);
             });
             return Array.from(sections);
@@ -721,6 +583,14 @@
                 });
             }
         }
+    };
+
+    // Export for global access
+    window.menuPopupController = {
+        init: initMenuPopup,
+        show: showPopup,
+        hide: hidePopup,
+        scrollToSection: scrollWithIntersectionCheck
     };
 
 })();

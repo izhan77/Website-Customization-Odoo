@@ -52,17 +52,17 @@
                   href="/website_customizations/static/src/css/components/product_cards/single_product_card.css"/>
 
 
-            <!-- ================================= CART POPUP AND SIDEBAR MODULAR COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/cart_popup/cart_popup.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/cart_popup/cart_popup.js"></script>
+            <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
+            <!--            <link rel="stylesheet" type="text/css"-->
+            <!--                  href="/website_customizations/static/src/css/components/cart_popup/cart_popup_clean.css"/>-->
+            <!--            <script type="text/javascript"-->
+            <!--                    src="/website_customizations/static/src/js/components/cart_popup/cart_popup.js"></script>-->
 
-<!--            ================================= CHECKOUT MODULAR COMPONENTS =================================-->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/checkout/checkout.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>
+            <!-- ================================= CHECKOUT MODULAR COMPONENTS ================================= -->
+            <!--            <link rel="stylesheet" type="text/css"-->
+            <!--                  href="/website_customizations/static/src/css/components/checkout/checkout.css"/>-->
+            <!--            <script type="text/javascript"-->
+            <!--                    src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>-->
 
             <!-- ================================= FOOTER COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css"

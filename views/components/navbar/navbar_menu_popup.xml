@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="navbar_menu_popup" name="Navbar Menu Popup">
-        <!-- Menu Categories Popup (Hidden by default) -->
+        <!-- Menu Categories Popup (Hidden by default) - POSITIONED BELOW NAVBAR -->
         <div id="menu-categories-popup" class="menu-categories-popup">
             <div class="menu-popup-content-wrapper">
 
@@ -11,8 +11,9 @@
 
                 <div class="menu-popup-grid">
 
-                    <!-- Rice Box -->
-                    <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box">
+                    <!-- Rice Box - MATCHING MENU SECTIONS IDS -->
+                    <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-rice-box.png"
@@ -23,8 +24,9 @@
                         </div>
                     </a>
 
-                    <!-- Fish and Chips -->
-                    <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips">
+                    <!-- Fish and Chips - FIXED ID MATCHING -->
+                    <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-fish-and-chips.png"
@@ -35,8 +37,9 @@
                         </div>
                     </a>
 
-                    <!-- Pasta -->
-                    <a href="#pasta-section" class="menu-popup-item group" data-category="pasta">
+                    <!-- Pasta - FIXED ID MATCHING -->
+                    <a href="#pasta-section" class="menu-popup-item group" data-category="pasta-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta"
@@ -46,8 +49,9 @@
                         </div>
                     </a>
 
-                    <!-- Turkish Feast -->
-                    <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast">
+                    <!-- Turkish Feast - FIXED ID MATCHING -->
+                    <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-turkish-foods.png"
@@ -58,8 +62,9 @@
                         </div>
                     </a>
 
-                    <!-- Wraps & Rolls -->
-                    <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls">
+                    <!-- Wraps & Rolls - FIXED ID MATCHING -->
+                    <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
@@ -70,8 +75,9 @@
                         </div>
                     </a>
 
-                    <!-- New Arrivals -->
-                    <a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals">
+                    <!-- New Arrivals - FIXED ID MATCHING -->
+                    <a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-new-arrivals.png"
@@ -82,8 +88,9 @@
                         </div>
                     </a>
 
-                    <!-- Soups And Salads -->
-                    <a href="#soups-and-salads-section" class="menu-popup-item group" data-category="soups-salads">
+                    <!-- Soups And Salads - FIXED ID MATCHING -->
+                    <a href="#soups-and-salads-section" class="menu-popup-item group" data-category="soups-and-salads-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-soups-salads.png"
@@ -93,8 +100,9 @@
                         </div>
                     </a>
 
-                    <!-- Cold Drinks -->
-                    <a href="#cold-drinks-section" class="menu-popup-item group" data-category="cold-drinks">
+                    <!-- Cold Drinks - FIXED ID MATCHING -->
+                    <a href="#cold-drinks-section" class="menu-popup-item group" data-category="cold-drinks-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-cold-drinks.png"
@@ -105,8 +113,9 @@
                         </div>
                     </a>
 
-                    <!-- Hot Beverages -->
-                    <a href="#hot-beverages-section" class="menu-popup-item group" data-category="hot-beverages">
+                    <!-- Hot Beverages - FIXED ID MATCHING -->
+                    <a href="#hot-beverages-section" class="menu-popup-item group" data-category="hot-beverages-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-hot-beverages.png"
@@ -117,8 +126,9 @@
                         </div>
                     </a>
 
-                    <!-- Desserts -->
-                    <a href="#desserts-section" class="menu-popup-item group" data-category="desserts">
+                    <!-- Desserts - FIXED ID MATCHING -->
+                    <a href="#desserts-section" class="menu-popup-item group" data-category="desserts-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts"
@@ -128,8 +138,9 @@
                         </div>
                     </a>
 
-                    <!-- BBQ -->
-                    <a href="#bbq-section" class="menu-popup-item group" data-category="bbq">
+                    <!-- BBQ - FIXED ID MATCHING -->
+                    <a href="#bbq-section" class="menu-popup-item group" data-category="bbq-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
@@ -139,8 +150,9 @@
                         </div>
                     </a>
 
-                    <!-- Fast Food -->
-                    <a href="#fast-food-section" class="menu-popup-item group" data-category="fast-food">
+                    <!-- Fast Food - ADDED TO MATCH YOUR CATEGORY STRIP -->
+                    <a href="#fast-food-section" class="menu-popup-item group" data-category="fast-food-section"
+                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
                         <div class="menu-popup-card">
                             <div class="menu-popup-img-circle">
                                 <img src="/website_customizations/static/src/images/category-burger.png" alt="Fast Food"

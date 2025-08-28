@@ -1,25 +1,3 @@
-
-
-/* NAVBAR Z-INDEX PRIORITY FIX */
-.custom-navbar {
-    z-index: 1070 !important;
-    position: relative;
-    isolation: isolate; /* Creates new stacking context */
-}
-
-.custom-navbar > * {
-    position: relative;
-    z-index: 1070 !important;
-}
-
-/* Ensure all navbar children inherit proper z-index */
-.custom-navbar a,
-.custom-navbar button,
-.custom-navbar div {
-    z-index: 1070 !important;
-    position: relative;
-}
-
 /* Mobile menu animations */
 .animate-fadeIn {
     animation: fadeIn 0.5s ease-in-out forwards !important;
@@ -132,21 +110,21 @@
 a[data-oe-model][data-oe-id][data-oe-field]:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: none !important;
+    background-color: #8ab0ad !important;
 }
 
 /* Target all navbar links specifically */
 .custom-navbar a:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: none !important;
+    background-color: #8ab0ad !important;
 }
 
 /* Add this if you need even more specificity */
 header.custom-navbar a:hover {
     color: white !important;
     text-decoration: none !important;
-    background-color: none !important;
+    background-color: #8ab0ad !important;
 }
 
 /* Remove underlines from all navbar links */

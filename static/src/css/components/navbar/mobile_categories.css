@@ -1,6 +1,6 @@
-/* ================================= MOBILE CATEGORIES POPUP STYLING - IMPROVED ================================= */
+/* ================================= MOBILE CATEGORIES POPUP STYLING - CENTERED AND RESPONSIVE ================================= */
 
-/* Mobile Categories Popup Overlay - PROPER CENTERING */
+/* Mobile Categories Popup Overlay - CENTERED VERTICALLY AND HORIZONTALLY */
 #mobile-categories-popup {
     z-index: 1001 !important;
     position: fixed !important;
@@ -9,7 +9,7 @@
     width: 100vw !important;
     height: 100vh !important;
     background: rgba(0, 0, 0, 0.7) !important;
-    backdrop-filter: blur(6px) !important;
+    backdrop-filter: blur(8px) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -20,55 +20,82 @@
     opacity: 0 !important;
 }
 
-/* When popup is shown */
+/* When popup is shown - SMOOTH ENTRANCE */
 #mobile-categories-popup.show {
     opacity: 1 !important;
     pointer-events: all !important;
     visibility: visible !important;
 }
 
-/* White Container Box - RESPONSIVE SIZING WITH PROPER CENTERING */
+/* Centered White Container Box - RESPONSIVE SIZING */
 .mobile-categories-container {
     background: white !important;
-    border-radius: 20px !important;
+    border-radius: 24px !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
-    max-width: 400px !important;
-    max-height: 85vh !important;
-    min-height: 60vh !important;
+    height: auto !important;
     opacity: 0 !important;
-    transform: translateY(20px) scale(0.95) !important;
+    transform: translateY(30px) scale(0.95) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    margin: auto !important;
+
+    /* RESPONSIVE SIZING BASED ON SCREEN SIZE */
+    max-width: 350px !important; /* Small mobile */
+    max-height: 85vh !important;
 }
 
+/* Responsive container sizing - MORE COLUMNS ON BIGGER SCREENS */
+@media (min-width: 480px) {
+    .mobile-categories-container {
+        max-width: 400px !important; /* Large mobile */
+    }
+}
+
+@media (min-width: 640px) {
+    .mobile-categories-container {
+        max-width: 500px !important; /* Small tablet */
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-categories-container {
+        max-width: 650px !important; /* Medium tablet */
+    }
+}
+
+@media (min-width: 1024px) {
+    .mobile-categories-container {
+        max-width: 800px !important; /* Large tablet */
+    }
+}
+
+/* Container entrance animation */
 #mobile-categories-popup.show .mobile-categories-container {
     opacity: 1 !important;
     transform: translateY(0) scale(1) !important;
 }
 
-/* Header Styling */
+/* Header Styling - CLEAN AND MODERN */
 .mobile-categories-container .bg-gradient-to-r {
-    background: linear-gradient(to right, #f8fafc, #f1f5f9) !important;
-    padding: 20px 24px !important;
-    border-bottom: 1px solid #e5e7eb !important;
+    background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    padding: 20px 24px 16px 24px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
     flex-shrink: 0 !important;
     position: relative !important;
 }
 
 .mobile-categories-container h2 {
-    font-size: 1.5rem !important;
+    font-size: 1.75rem !important;
     font-weight: 700 !important;
-    color: #1f2937 !important;
+    color: #1e293b !important;
     margin: 0 !important;
     text-align: center !important;
-    line-height: 1.2 !important;
+    letter-spacing: -0.025em !important;
 }
 
-/* Close Button - BETTER POSITIONING */
+/* Close Button - PROPERLY POSITIONED */
 #mobile-categories-close {
     position: absolute !important;
     top: 50% !important;
@@ -76,13 +103,13 @@
     transform: translateY(-50%) !important;
     padding: 8px !important;
     border-radius: 50% !important;
-    background: rgba(107, 114, 128, 0.1) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
     border: none !important;
-    color: #374151 !important;
+    color: #475569 !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
-    width: 36px !important;
-    height: 36px !important;
+    width: 40px !important;
+    height: 40px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -90,107 +117,112 @@
 }
 
 #mobile-categories-close:hover {
-    background: rgba(107, 114, 128, 0.15) !important;
-    transform: translateY(-50%) scale(1.05) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-50%) scale(1.1) !important;
 }
 
-#mobile-categories-close svg {
-    width: 20px !important;
-    height: 20px !important;
-}
-
-/* Scrollable Content Area - IMPROVED SCROLLING */
+/* Scrollable Content Area - OPTIMIZED FOR MOBILE */
 .mobile-categories-container .overflow-y-auto {
     flex: 1 !important;
     overflow-y: auto !important;
-    padding: 16px !important;
+    padding: 20px 16px 16px 16px !important;
     -webkit-overflow-scrolling: touch !important;
-    min-height: 0 !important;
-    scrollbar-width: thin !important;
-    scrollbar-color: #cbd5e1 #f8fafc !important;
+    max-height: calc(85vh - 80px) !important; /* Account for header */
+    min-height: 200px !important;
 }
 
-/* Categories Grid - SINGLE COLUMN LIST LAYOUT */
+/* Categories Grid - RESPONSIVE COLUMNS */
 .mobile-categories-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
+    display: grid !important;
+    gap: 12px !important;
     width: 100% !important;
+
+    /* 1 COLUMN ON SMALL MOBILE */
+    grid-template-columns: 1fr !important;
 }
 
-/* Individual Category Item - HORIZONTAL CARD LAYOUT */
+/* 2 COLUMNS ON LARGER MOBILE */
+@media (min-width: 480px) {
+    .mobile-categories-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+}
+
+/* 2 COLUMNS ON SMALL TABLET */
+@media (min-width: 640px) {
+    .mobile-categories-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+}
+
+/* 3 COLUMNS ON MEDIUM TABLET */
+@media (min-width: 768px) {
+    .mobile-categories-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px !important;
+    }
+}
+
+/* 3 COLUMNS ON LARGE TABLET */
+@media (min-width: 1024px) {
+    .mobile-categories-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 18px !important;
+    }
+}
+
+/* Individual Category Item - CLEAN DESIGN */
 .mobile-category-item {
     text-decoration: none !important;
     display: block !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     cursor: pointer !important;
     -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Category Card - HORIZONTAL LAYOUT WITH IMAGE ON LEFT */
+/* Category Card - MODERN STYLING */
 .mobile-category-card {
     background: white !important;
-    border: 2px solid #e5e7eb !important;
-    border-radius: 12px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 16px !important;
     padding: 16px !important;
+    min-height: 110px !important;
     display: flex !important;
-    align-items: center !important;
-    gap: 16px !important;
-    transition: all 0.2s ease !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     position: relative !important;
     overflow: hidden !important;
-    min-height: 64px !important;
 }
 
 /* Hover Effects for Cards */
 .mobile-category-item:hover .mobile-category-card,
 .mobile-category-item:active .mobile-category-card {
-    border-color: #d1d5db !important;
-    background: #f9fafb !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    border-color: #7abfba !important;
+    background-color: #f8fffe !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(122, 191, 186, 0.15) !important;
 }
 
-/* Image Container - LEFT SIDE */
-.mobile-category-card .flex-shrink-0 {
-    flex-shrink: 0 !important;
-}
-
-.mobile-category-card img {
-    width: 48px !important;
-    height: 48px !important;
-    object-fit: contain !important;
-    transition: all 0.2s ease !important;
-    border-radius: 8px !important;
-}
-
-.mobile-category-item:hover .mobile-category-card img {
-    transform: scale(1.05) !important;
-}
-
-/* Text Content - RIGHT SIDE */
-.mobile-category-card .flex-1 {
-    flex: 1 !important;
-    min-width: 0 !important;
-}
-
-/* Category Labels */
+/* Category Labels - REFINED TYPOGRAPHY */
 .mobile-category-card .text-xs {
     font-size: 10px !important;
     font-weight: 500 !important;
-    color: #6b7280 !important;
+    color: #64748b !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 6px !important;
     line-height: 1.2 !important;
     text-align: left !important;
 }
 
-/* Category Titles */
+/* Category Titles - BOLD AND CLEAR */
 .mobile-category-card .text-sm {
     font-size: 14px !important;
     font-weight: 700 !important;
-    color: #1f2937 !important;
+    color: #1e293b !important;
     text-transform: uppercase !important;
     letter-spacing: 0.25px !important;
     line-height: 1.1 !important;
@@ -198,264 +230,61 @@
     margin: 0 !important;
 }
 
-/* ================================= RESPONSIVE BREAKPOINTS ================================= */
+/* Category Images - POSITIONED ELEGANTLY */
+.mobile-category-card img {
+    width: 36px !important;
+    height: 36px !important;
+    object-fit: contain !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: absolute !important;
+    right: 12px !important;
+    bottom: 12px !important;
+}
 
-/* Small Mobile Devices (up to 380px) */
-@media (max-width: 380px) {
-    .mobile-categories-container {
-        max-width: 95vw !important;
-        border-radius: 16px !important;
-        max-height: 90vh !important;
-    }
+/* Image Hover Animation */
+.mobile-category-item:hover .mobile-category-card img {
+    transform: scale(1.1) rotate(3deg) !important;
+}
 
-    .mobile-categories-container .bg-gradient-to-r {
-        padding: 16px 20px !important;
-    }
-
-    .mobile-categories-container h2 {
-        font-size: 1.25rem !important;
-    }
-
-    .mobile-categories-container .overflow-y-auto {
-        padding: 12px !important;
-    }
-
-    .mobile-category-card {
-        padding: 12px !important;
-        gap: 12px !important;
-        min-height: 56px !important;
-    }
-
+/* Responsive image sizing */
+@media (min-width: 480px) {
     .mobile-category-card img {
         width: 40px !important;
         height: 40px !important;
     }
-
-    .mobile-category-card .text-xs {
-        font-size: 9px !important;
-    }
-
-    .mobile-category-card .text-sm {
-        font-size: 12px !important;
-    }
-
-    #mobile-categories-close {
-        width: 32px !important;
-        height: 32px !important;
-        right: 16px !important;
-    }
-
-    #mobile-categories-close svg {
-        width: 18px !important;
-        height: 18px !important;
-    }
-}
-
-/* Large Mobile Devices (381px - 480px) */
-@media (min-width: 381px) and (max-width: 480px) {
-    .mobile-categories-container {
-        max-width: 90vw !important;
-        max-height: 88vh !important;
-    }
-}
-
-/* Small Tablets (481px - 600px) - START SHOWING GRID */
-@media (min-width: 481px) and (max-width: 600px) {
-    .mobile-categories-container {
-        max-width: 500px !important;
-        max-height: 85vh !important;
-    }
-
-    /* Switch to 2-column grid for small tablets */
-    .mobile-categories-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
-    }
-
-    /* Switch back to vertical card layout */
     .mobile-category-card {
-        flex-direction: column !important;
-        text-align: center !important;
-        padding: 16px 12px !important;
-        gap: 12px !important;
         min-height: 120px !important;
-    }
-
-    .mobile-category-card .flex-1 {
-        flex: none !important;
-    }
-
-    .mobile-category-card .text-xs,
-    .mobile-category-card .text-sm {
-        text-align: center !important;
-    }
-
-    .mobile-category-card img {
-        width: 56px !important;
-        height: 56px !important;
+        padding: 18px !important;
     }
 }
 
-/* Medium Tablets (601px - 768px) - 2 COLUMNS */
-@media (min-width: 601px) and (max-width: 768px) {
-    .mobile-categories-container {
-        max-width: 600px !important;
-        max-height: 80vh !important;
-    }
-
-    .mobile-categories-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 16px !important;
-    }
-
-    .mobile-category-card {
-        flex-direction: column !important;
-        text-align: center !important;
-        padding: 20px 16px !important;
-        gap: 16px !important;
-        min-height: 140px !important;
-    }
-
+@media (min-width: 640px) {
     .mobile-category-card img {
-        width: 64px !important;
-        height: 64px !important;
+        width: 44px !important;
+        height: 44px !important;
     }
-
     .mobile-category-card .text-xs {
         font-size: 11px !important;
     }
-
     .mobile-category-card .text-sm {
         font-size: 15px !important;
     }
 }
 
-/* Large Tablets (769px - 1023px) - 3 COLUMNS */
-@media (min-width: 769px) and (max-width: 1023px) {
-    .mobile-categories-container {
-        max-width: 700px !important;
-        max-height: 75vh !important;
-    }
-
-    .mobile-categories-grid {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 16px !important;
-    }
-
+@media (min-width: 768px) {
     .mobile-category-card {
-        flex-direction: column !important;
-        text-align: center !important;
-        padding: 20px 16px !important;
-        gap: 16px !important;
-        min-height: 140px !important;
+        min-height: 130px !important;
+        padding: 20px !important;
     }
-
     .mobile-category-card img {
-        width: 64px !important;
-        height: 64px !important;
-    }
-
-    .mobile-category-card .text-xs {
-        font-size: 11px !important;
-    }
-
-    .mobile-category-card .text-sm {
-        font-size: 15px !important;
+        width: 48px !important;
+        height: 48px !important;
+        right: 16px !important;
+        bottom: 16px !important;
     }
 }
 
-/* Very Large Tablets/Small Desktops (1024px - 1199px) - 4 COLUMNS */
-@media (min-width: 1024px) and (max-width: 1199px) {
-    #mobile-categories-popup {
-        display: flex !important; /* Show on larger screens too */
-    }
-
-    .mobile-categories-container {
-        max-width: 800px !important;
-        max-height: 70vh !important;
-    }
-
-    .mobile-categories-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 20px !important;
-    }
-
-    .mobile-category-card {
-        flex-direction: column !important;
-        text-align: center !important;
-        padding: 24px 20px !important;
-        gap: 16px !important;
-        min-height: 160px !important;
-    }
-
-    .mobile-category-card img {
-        width: 72px !important;
-        height: 72px !important;
-    }
-
-    .mobile-category-card .text-xs {
-        font-size: 12px !important;
-    }
-
-    .mobile-category-card .text-sm {
-        font-size: 16px !important;
-    }
-
-    .mobile-categories-container h2 {
-        font-size: 1.75rem !important;
-    }
-}
-
-/* Hide on very large desktops where main desktop popup should be used */
-@media (min-width: 1200px) {
-    #mobile-categories-popup {
-        display: none !important;
-    }
-}
-
-/* ================================= SCROLLBAR STYLING ================================= */
-
-.mobile-categories-container .overflow-y-auto::-webkit-scrollbar {
-    width: 6px !important;
-}
-
-.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-track {
-    background: #f8fafc !important;
-    border-radius: 3px !important;
-}
-
-.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #cbd5e1 !important;
-    border-radius: 3px !important;
-}
-
-.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8 !important;
-}
-
-/* ================================= TOUCH IMPROVEMENTS ================================= */
-
-/* Prevent text selection */
-.mobile-category-card {
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-}
-
-/* Smooth momentum scrolling on iOS */
-.mobile-categories-container .overflow-y-auto {
-    -webkit-overflow-scrolling: touch !important;
-    overflow-y: scroll !important;
-}
-
-/* ================================= ANIMATION IMPROVEMENTS ================================= */
-
-/* Animation for popup entrance */
+/* Animation Keyframes */
 @keyframes mobilePopupSlideIn {
     0% {
         opacity: 0;
@@ -478,64 +307,43 @@
     }
 }
 
-/* ================================= HEIGHT FIXES FOR DIFFERENT DEVICES ================================= */
+/* ================================= SCROLLBAR STYLING ================================= */
 
-/* iPhone and similar small height devices */
-@media (max-height: 700px) {
-    .mobile-categories-container {
-        max-height: 88vh !important;
-        min-height: 50vh !important;
-    }
-
-    .mobile-categories-container .overflow-y-auto {
-        padding: 12px !important;
-    }
-
-    .mobile-category-card {
-        padding: 12px !important;
-        min-height: 56px !important;
-    }
+.mobile-categories-container .overflow-y-auto::-webkit-scrollbar {
+    width: 4px;
 }
 
-/* Very short screens */
-@media (max-height: 600px) {
-    .mobile-categories-container {
-        max-height: 92vh !important;
-        min-height: 45vh !important;
-    }
-
-    .mobile-categories-container .bg-gradient-to-r {
-        padding: 14px 20px !important;
-    }
-
-    .mobile-categories-container h2 {
-        font-size: 1.25rem !important;
-    }
-
-    .mobile-category-card {
-        padding: 10px 12px !important;
-        gap: 10px !important;
-        min-height: 52px !important;
-    }
-
-    .mobile-category-card img {
-        width: 36px !important;
-        height: 36px !important;
-    }
-
-    .mobile-category-card .text-xs {
-        font-size: 8px !important;
-        margin-bottom: 2px !important;
-    }
-
-    .mobile-category-card .text-sm {
-        font-size: 11px !important;
-    }
+.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 2px;
 }
 
-/* ================================= FINAL LAYOUT FIXES ================================= */
+.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
 
-/* Ensure proper flex behavior */
+.mobile-categories-container .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ================================= TOUCH IMPROVEMENTS ================================= */
+
+/* Prevent text selection */
+.mobile-category-card {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Smooth momentum scrolling on iOS */
+.mobile-categories-container .overflow-y-auto {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: scroll !important;
+}
+
+/* Ensure proper flex layout */
 .mobile-categories-container {
     display: flex !important;
     flex-direction: column !important;
@@ -546,18 +354,53 @@
     min-height: 0 !important;
 }
 
-/* Remove any conflicting hover effects */
-.mobile-category-item:hover,
-.mobile-category-item:active {
+/* Hide on desktop */
+@media (min-width: 1024px) {
+    #mobile-categories-popup {
+        display: none !important;
+    }
+}
+
+/* ================================= ENHANCED HOVER STATES ================================= */
+
+.mobile-categories-grid .mobile-category-item:hover,
+.mobile-categories-grid .mobile-category-item:active {
     box-shadow: none !important;
     filter: none !important;
     background: none !important;
-    background-color: transparent !important;
+    background-color: none !important;
 }
 
-/* Ensure cards maintain proper styling */
 .mobile-categories-grid .mobile-category-item:hover .mobile-category-card,
 .mobile-categories-grid .mobile-category-item:active .mobile-category-card {
-    background-color: #f9fafb !important;
-    border-color: #d1d5db !important;
+    background-color: #f8fffe !important;
+    border-color: #7abfba !important;
+    box-shadow: 0 4px 12px rgba(122, 191, 186, 0.15) !important;
+}
+
+/* Loading/Staggered Animation Support */
+.mobile-category-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.mobile-category-item:nth-child(1) { animation-delay: 0.05s; }
+.mobile-category-item:nth-child(2) { animation-delay: 0.1s; }
+.mobile-category-item:nth-child(3) { animation-delay: 0.15s; }
+.mobile-category-item:nth-child(4) { animation-delay: 0.2s; }
+.mobile-category-item:nth-child(5) { animation-delay: 0.25s; }
+.mobile-category-item:nth-child(6) { animation-delay: 0.3s; }
+.mobile-category-item:nth-child(7) { animation-delay: 0.35s; }
+.mobile-category-item:nth-child(8) { animation-delay: 0.4s; }
+.mobile-category-item:nth-child(9) { animation-delay: 0.45s; }
+.mobile-category-item:nth-child(10) { animation-delay: 0.5s; }
+.mobile-category-item:nth-child(11) { animation-delay: 0.55s; }
+.mobile-category-item:nth-child(12) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -1,7 +1,17 @@
 /**
  * Enhanced Category Strip with FIXED Scrolling Functionality
  * FIXED: Precise scrolling to sections with accurate offset calculations
+ * ADDED: Menu popup interference prevention
  */
+
+// ================================= MENU POPUP INTERFERENCE PREVENTION =================================
+/**
+ * Check if menu popup is currently scrolling and we should stay silent
+ */
+function shouldStayQuietForMenuPopup() {
+    return window.menuPopupScrolling === true;
+}
+
 class CategoryStripComplete {
     constructor() {
         this.categoryStrip = null;
@@ -20,6 +30,7 @@ class CategoryStripComplete {
         this.navbarHeight = 0;
         this.isNavigating = false;
         this.categoryStripHeight = 0;
+        this.lastKnownOffset = null;
 
         this.init();
     }
@@ -96,6 +107,9 @@ class CategoryStripComplete {
     }
 
     updateDimensions() {
+        // CRITICAL: Don't interfere if menu popup is scrolling
+        if (shouldStayQuietForMenuPopup()) return;
+
         this.originalTop = this.categoryStrip.offsetTop;
         this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
         this.categoryStripHeight = this.categoryStrip.offsetHeight;
@@ -277,6 +291,9 @@ class CategoryStripComplete {
     }
 
     handleStickyScroll() {
+        // CRITICAL: Stay quiet if menu popup is scrolling
+        if (shouldStayQuietForMenuPopup()) return;
+
         if (!this.categoryStrip) return;
 
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -327,7 +344,7 @@ class CategoryStripComplete {
                 const href = item.getAttribute('href');
                 if (href && href.startsWith('#')) {
                     const sectionId = href.substring(1);
-                    console.log('Clicked section ID:', sectionId);
+                    console.log('Category Strip - Clicked section ID:', sectionId);
                     this.scrollToSection(sectionId, item);
                 }
 
@@ -346,11 +363,11 @@ class CategoryStripComplete {
         // Find the target section - FIXED LOGIC
         let targetElement = document.getElementById(sectionId);
 
-        console.log('Looking for section:', sectionId);
-        console.log('Found element:', targetElement);
+        console.log('Category Strip - Looking for section:', sectionId);
+        console.log('Category Strip - Found element:', targetElement);
 
         if (!targetElement) {
-            console.warn(`Section with ID "${sectionId}" not found`);
+            console.warn(`Category Strip - Section with ID "${sectionId}" not found`);
             return;
         }
 
@@ -372,9 +389,9 @@ class CategoryStripComplete {
         const elementPosition = this.getElementTop(targetElement);
         const offsetPosition = elementPosition - offset;
 
-        console.log('Element position:', elementPosition);
-        console.log('Calculated offset:', offset);
-        console.log('Final scroll position:', offsetPosition);
+        console.log('Category Strip - Element position:', elementPosition);
+        console.log('Category Strip - Calculated offset:', offset);
+        console.log('Category Strip - Final scroll position:', offsetPosition);
 
         // Smooth scroll to section with precise positioning
         window.scrollTo({
@@ -391,6 +408,12 @@ class CategoryStripComplete {
     }
 
     calculatePreciseScrollOffset() {
+        // CRITICAL: Don't interfere if menu popup is scrolling
+        if (shouldStayQuietForMenuPopup()) {
+            // Return cached value instead of recalculating
+            return this.lastKnownOffset || 134;
+        }
+
         // FIXED: Always calculate as if category strip will be sticky
         let totalOffset = this.categoryStripHeight;
 
@@ -405,8 +428,11 @@ class CategoryStripComplete {
         // Add a small buffer for perfect alignment (REDUCED from 20 to 10)
         totalOffset += 10;
 
+        // Only log if not staying quiet
         console.log('Calculated offset - Navbar:', this.navbarHeight, 'Strip:', this.categoryStripHeight, 'Total:', totalOffset);
 
+        // Cache the result
+        this.lastKnownOffset = totalOffset;
         return totalOffset;
     }
 
@@ -424,7 +450,8 @@ class CategoryStripComplete {
     }
 
     updateActiveStateOnScroll() {
-        if (this.isNavigating) return;
+        // CRITICAL: Don't interfere with menu popup scrolling
+        if (this.isNavigating || shouldStayQuietForMenuPopup()) return;
 
         // Look for sections with IDs that match your category links
         const sections = document.querySelectorAll('section[id]');
