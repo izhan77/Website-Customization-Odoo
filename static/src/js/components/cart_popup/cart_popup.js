@@ -26,6 +26,8 @@ class CartManager {
         this.init();
     }
 
+
+
     /**
      * Initialize the cart system
      */
@@ -1142,6 +1144,84 @@ hideSuccessNotification() {
         });
     }
 
+    /**
+ * Handle checkout process - FIXED REDIRECTION
+ */
+handleCheckout() {
+    if (this.cart.length === 0) {
+        this.showNotification('Your cart is empty! Please add items before checkout.', 'error');
+        return;
+    }
+
+    const checkoutData = {
+        items: this.cart,
+        subtotal: this.cartTotal,
+        tax: Math.round(this.cartTotal * this.taxRate),
+        deliveryFee: this.deliveryFee,
+        grandTotal: this.cartTotal + Math.round(this.cartTotal * this.taxRate) + this.deliveryFee,
+        timestamp: new Date().toISOString(),
+        orderDate: new Date().toLocaleDateString(),
+        orderTime: new Date().toLocaleTimeString()
+    };
+
+    // Show loading state
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            <span>Redirecting to Checkout...</span>
+        `;
+        checkoutBtn.disabled = true;
+    }
+
+    // Store checkout data in sessionStorage for the checkout page
+    try {
+        sessionStorage.setItem('checkoutCart', JSON.stringify(checkoutData));
+        console.log('Cart data stored for checkout:', checkoutData);
+
+        // Optional: Also send to server session if needed
+        if (window.location.origin) {
+            fetch('/checkout/update-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(checkoutData)
+            }).catch(error => {
+                console.warn('Failed to update server cart:', error);
+                // Continue with checkout even if server update fails
+            });
+        }
+
+    } catch (error) {
+        console.error('Failed to store cart data:', error);
+        this.showNotification('Failed to prepare checkout. Please try again.', 'error');
+
+        // Reset checkout button
+        if (checkoutBtn) {
+            checkoutBtn.innerHTML = `
+                <span class="checkout-text">Proceed to Checkout</span>
+                <svg class="checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12,5 19,12 12,19"></polyline>
+                </svg>
+            `;
+            checkoutBtn.disabled = false;
+        }
+        return;
+    }
+
+    // Hide cart sidebar before redirecting
+    this.hideCartSidebar();
+
+    // Redirect to checkout page after a brief delay
+    setTimeout(() => {
+        window.location.href = '/checkout';
+    }, 800);
+}
+
 }
 
 // Initialize cart manager when DOM is ready
@@ -1592,6 +1672,8 @@ if (document.readyState !== 'loading' && !window.cartManager) {
             }, SCROLL_HIDE_DELAY);
         }
     }
+
+
 
     /**
      * Handle resize events

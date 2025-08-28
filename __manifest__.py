@@ -39,6 +39,9 @@
         # Homepage Components
         'views/pages/homepage.xml',
 
+        # Checkout Components
+        'views/pages/checkout_page.xml',
+
         # Footer Components
         'views/components/footer/footer_base.xml',
         'views/components/footer/footer_company.xml',
@@ -80,6 +83,10 @@
             # CLEAN Cart CSS + JS (REMOVED PROBLEMATIC FILES)
             'website_customizations/static/src/css/components/cart_popup/cart_popup.css',
             'website_customizations/static/src/js/components/cart_popup/cart_popup.js',
+
+            # Checkout CSS + JS
+            'website_customizations/static/src/css/components/checkout/checkout.css',
+            'website_customizations/static/src/js/components/checkout/checkout.js',
 
             # Footer CSS
             'website_customizations/static/src/css/components/footer/footer.css',
