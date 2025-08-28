@@ -51,9 +51,10 @@
             <link rel="stylesheet" type="text/css"
                   href="/website_customizations/static/src/css/components/product_cards/single_product_card.css"/>
 
+
             <!-- ================================= MENU SECTIONS COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/menu_sections/menu_sections.css"/>
+<!--            <link rel="stylesheet" type="text/css"-->
+<!--                  href="/website_customizations/static/src/css/components/menu_sections/menu_sections.css"/>-->
 
             <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
             <link rel="stylesheet" type="text/css"

@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- ================================= ENHANCED CART VIEW POPUP TEMPLATE ================================= -->
-    <!-- This is the small popup that appears when you click "Add to Cart" -->
+    <!-- Cart View Popup Template -->
     <template id="cart_view_popup" name="Cart View Popup">
         <div id="cart-view-popup" class="cart-view-popup hidden">
             <div class="cart-popup-container">
-                <!-- Success notification icon and text -->
                 <div class="success-notification">
                     <div class="success-icon">
                         <svg class="checkmark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -15,8 +13,6 @@
                     </div>
                     <span class="success-text">Item added to cart</span>
                 </div>
-
-                <!-- View Cart Button -->
                 <button id="view-cart-btn" class="view-cart-button">
                     <span class="cart-count-badge">0</span>
                     <span class="view-cart-text">View Cart</span>
@@ -26,14 +22,10 @@
         </div>
     </template>
 
-    <!-- ================================= ENHANCED CART SIDEBAR TEMPLATE ================================= -->
-    <!-- This is the full sidebar that appears when you click "View Cart" -->
+    <!-- Cart Sidebar Template -->
     <template id="cart_sidebar" name="Cart Sidebar">
-        <!-- Black overlay background -->
         <div id="cart-sidebar-overlay" class="cart-sidebar-overlay hidden">
-            <!-- Sidebar container -->
             <div id="cart-sidebar" class="cart-sidebar">
-                <!-- Sidebar Header -->
                 <div class="cart-sidebar-header">
                     <h2 class="cart-title">Your Cart</h2>
                     <button id="close-cart-btn" class="close-cart-btn">
@@ -44,72 +36,64 @@
                     </button>
                 </div>
 
-                <!-- Cart Items Section with proper scrolling -->
-                <div class="cart-items-section" id="cart-items-container">
-                    <div class="empty-cart-state">
-                        <div class="empty-cart-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="m1 1 4 4 2.4 12h11.6"></path>
-                            </svg>
+                <div class="cart-scrollable-content" id="cart-scrollable-content">
+                    <div class="cart-items-section" id="cart-items-container">
+                        <!-- Cart items will be dynamically inserted here -->
+                    </div>
+
+                    <!-- Add More Items Section - Placed before popular items -->
+                    <div class="add-more-items-section" id="add-more-section">
+                        <button class="add-more-items-btn" id="add-more-items-btn">
+                            <span class="add-icon">+</span>
+                            Add more items
+                        </button>
+                    </div>
+
+                    <!-- Popular Items Section -->
+                    <div class="popular-items-section" id="popular-items-section">
+                        <h3 class="popular-items-title">Popular with your order</h3>
+                        <p class="popular-items-subtitle">Customers often buy these together</p>
+                        <div class="popular-items-grid" id="popular-items-grid">
+                            <!-- Popular items will be dynamically inserted here -->
                         </div>
-                        <p class="empty-cart-message">Your cart is empty</p>
-                        <p class="empty-cart-subtitle">Add some delicious items to get started</p>
                     </div>
-                </div>
 
-                <!-- Add More Items Section -->
-                <div class="add-more-items-section" id="add-more-section">
-                    <button class="add-more-items-btn" id="add-more-items-btn">
-                        <span class="add-icon">+</span>
-                        Add more items
-                    </button>
-                </div>
+                    <!-- Cart Summary Section -->
+                    <div class="cart-summary-section" id="cart-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span class="summary-value" id="subtotal-amount">Rs. 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Tax (15%)</span>
+                            <span class="summary-value" id="tax-amount">Rs. 0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Delivery Fee</span>
+                            <span class="summary-value">Rs. 200</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span class="summary-label">Grand Total</span>
+                            <span class="summary-value" id="grand-total-amount">Rs. 200</span>
+                        </div>
+                    </div>
 
-                <!-- Popular Items Section -->
-                <div class="popular-items-section" id="popular-items-section">
-                    <h3 class="popular-items-title">Popular with your order</h3>
-                    <p class="popular-items-subtitle">Customers often buy these together</p>
-                    <div class="popular-items-grid" id="popular-items-grid">
-                        <!-- Dynamic popular items will be inserted here -->
+                    <!-- Checkout Section -->
+                    <div class="checkout-section" id="checkout-section">
+                        <button class="checkout-btn" id="checkout-btn">
+                            <span class="checkout-text">Proceed to Checkout</span>
+                            <svg class="checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12,5 19,12 12,19"></polyline>
+                            </svg>
+                        </button>
                     </div>
-                </div>
 
-                <!-- Cart Summary Section -->
-                <div class="cart-summary-section" id="cart-summary" style="display: none;">
-                    <div class="summary-row">
-                        <span class="summary-label">Subtotal</span>
-                        <span class="summary-value" id="subtotal-amount">Rs. 0</span>
+                    <!-- Delivery Info -->
+                    <div class="delivery-info" id="delivery-info">
+                        <p class="delivery-text">Sorry, we are closed right now but pre-orders can be placed.</p>
+                        <p class="delivery-text">Your order will be delivered approximately on <span class="delivery-date">August 28, 2025</span> at <span class="delivery-time">1:30 PM</span></p>
                     </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Tax (15%)</span>
-                        <span class="summary-value" id="tax-amount">Rs. 0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Delivery Fee</span>
-                        <span class="summary-value">Rs. 200</span>
-                    </div>
-                    <div class="summary-row total-row">
-                        <span class="summary-label">Grand Total</span>
-                        <span class="summary-value" id="grand-total-amount">Rs. 200</span>
-                    </div>
-                </div>
-
-                <!-- Checkout Section -->
-                <div class="checkout-section" id="checkout-section" style="display: none;">
-                    <button class="checkout-btn" id="checkout-btn">
-                        <span class="checkout-text">Proceed to Checkout</span>
-                        <svg class="checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12,5 19,12 12,19"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Delivery Info -->
-                <div class="delivery-info" id="delivery-info" style="display: none;">
-                    <p class="delivery-text">Your order will be delivered approximately on <span class="delivery-date">August 28, 2025</span> at <span class="delivery-time">1:30 PM</span></p>
                 </div>
             </div>
         </div>

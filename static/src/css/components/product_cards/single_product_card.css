@@ -175,6 +175,10 @@
     display: none;
 }
 
+.quantity-controls-bar.show {
+    display: flex;
+}
+
 .quantity-decrease-btn,
 .quantity-increase-btn {
     width: 32px;

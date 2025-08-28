@@ -2,7 +2,7 @@
 <odoo>
     <template id="navbar_base" inherit_id="website.layout" name="Custom Navbar">
         <xpath expr="//header" position="replace">
-            <header class="bg-[#7abfba] shadow-lg relative z-50 custom-navbar" id="main-navbar">
+            <header style="z-index: 9999 !important; position: relative !important;" class="bg-[#7abfba] shadow-lg relative z-[1070]  custom-navbar" id="main-navbar">
                 <nav class="container mx-auto px-4 py-3">
                     <div class="flex items-center justify-between">
                         <!-- Logo -->

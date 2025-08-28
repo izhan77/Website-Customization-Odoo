@@ -1,3 +1,23 @@
+/* NAVBAR Z-INDEX PRIORITY FIX */
+.custom-navbar {
+    z-index: 1070 !important;
+    position: relative;
+    isolation: isolate; /* Creates new stacking context */
+}
+
+.custom-navbar > * {
+    position: relative;
+    z-index: 1070 !important;
+}
+
+/* Ensure all navbar children inherit proper z-index */
+.custom-navbar a,
+.custom-navbar button,
+.custom-navbar div {
+    z-index: 1070 !important;
+    position: relative;
+}
+
 /* Mobile menu animations */
 .animate-fadeIn {
     animation: fadeIn 0.5s ease-in-out forwards !important;

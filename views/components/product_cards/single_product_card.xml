@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- ================================= FIXED SINGLE PRODUCT CARD - NO BADGES ================================= -->
+    <!-- ================================= FIXED SINGLE PRODUCT CARD WITH PROPER CLASSES ================================= -->
     <template id="single_product_card" name="Single Product Card">
         <!-- Product Card Container -->
         <div class="product-card"

@@ -1,54 +1,14 @@
 /**
-     * Update cart sidebar content with minus buttons and proper layout
-     */
-    updateCartSidebarContent() {
-        const container = document.getElementById('cart-items-container');
-        const summarySection = document.getElementById('cart-summary');
-        const checkoutSection = document.getElementById('checkout-section');
-        const deliveryInfo = document.getElementById('delivery-info');
-        const addMoreSection = document.getElementById('add-more-section');
-
-        if (!container) return;
-
-        if (this.cart.length === 0) {
-            container.innerHTML = `
-                <div class="empty-cart-state">
-                    <div class="empty-cart-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="m1 1 4 4 2.4 12h11.6"></path>
-                        </svg>
-                    </div>
-                    <p class="empty-cart-message">Your cart is empty</p>
-                    <p class="empty-cart-subtitle">Add some delicious items to get started</p>
-                </div>
-            `;
-
-            // Hide sections when cart is empty
-            if (summarySection) summarySection.style.display = 'none';
-            if (checkoutSection) checkoutSection.style.display = 'none';
-            if (deliveryInfo) deliveryInfo.style.display = 'none';
-            if (addMoreSection) addMoreSection.style.display = 'block';
-
-            return;
-        }
-
-        // Show cart items with minus and plus buttons
-        container.innerHTML = this.cart.map(item => `
-            <div class="cart-item" data-product-id="${item.id}">
-                <div class="cart-item/**
- * ================================= ENHANCED CART SYSTEM WITH QUANTITY CONTROLS =================================
+ * ================================= ENHANCED CART SYSTEM =================================
  * Complete cart functionality with:
- * 1. Product card quantity controls (add/remove buttons replacing add to cart)
+ * 1. Product card quantity controls (add/remove buttons)
  * 2. Dynamic cart popup and sidebar with real product data
  * 3. Popular items from actual menu sections
  * 4. Proper state management and UI synchronization
  * 5. Smooth animations and responsive design
- * 6. Checkout preparation with cart data storage
  */
 
-class AdvancedCartManager {
+class CartManager {
     constructor() {
         // Cart state management
         this.cart = [];
@@ -70,7 +30,7 @@ class AdvancedCartManager {
      * Initialize the cart system
      */
     init() {
-        console.log('🛒 Initializing Advanced Cart Manager...');
+        console.log('🛒 Initializing Cart Manager...');
 
         // Wait for DOM to be fully ready
         if (document.readyState === 'loading') {
@@ -88,9 +48,10 @@ class AdvancedCartManager {
     setup() {
         this.loadMenuProducts();
         this.createCartElements();
+        //this.injectCartStyles();
         this.bindAllEvents();
         this.initializeQuantityControls();
-        console.log('✅ Advanced Cart Manager initialized successfully');
+        console.log('✅ Cart Manager initialized successfully');
     }
 
     /**
@@ -112,13 +73,6 @@ class AdvancedCartManager {
             };
 
             this.menuProducts.push(productData);
-
-            // Update card with proper data attributes
-            card.setAttribute('data-product-id', productData.id);
-            card.setAttribute('data-name', productData.name);
-            card.setAttribute('data-price', productData.price);
-            card.setAttribute('data-original-price', productData.originalPrice);
-            card.setAttribute('data-image', productData.image);
         });
 
         console.log(`📦 Loaded ${this.menuProducts.length} products from menu sections`);
@@ -135,17 +89,10 @@ class AdvancedCartManager {
         }
 
         console.log('🏗️ Creating cart UI elements...');
-        this.createCartPopup();
-        this.createCartSidebar();
-        this.updatePopularItems();
-    }
 
-    /**
-     * Create cart popup HTML
-     */
-    createCartPopup() {
+        // Create cart popup
         const popupHTML = `
-            <div id="cart-view-popup" class="cart-view-popup hidden">
+            <div id="cart-view-popup" class="cart-view-popup hidden" style="display: none !important; pointer-events: none !important;">
                 <div class="cart-popup-container">
                     <div class="success-notification">
                         <div class="success-icon">
@@ -165,14 +112,10 @@ class AdvancedCartManager {
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', popupHTML);
-    }
 
-    /**
-     * Create cart sidebar HTML
-     */
-    createCartSidebar() {
+        // Create cart sidebar
         const sidebarHTML = `
-            <div id="cart-sidebar-overlay" class="cart-sidebar-overlay hidden">
+            <div id="cart-sidebar-overlay" class="cart-sidebar-overlay hidden" style="display: none !important; pointer-events: none !important;">
                 <div id="cart-sidebar" class="cart-sidebar">
                     <div class="cart-sidebar-header">
                         <h2 class="cart-title">Your Cart</h2>
@@ -183,6 +126,7 @@ class AdvancedCartManager {
                             </svg>
                         </button>
                     </div>
+
                     <div class="cart-scrollable-content" id="cart-scrollable-content">
                         <div class="cart-items-section" id="cart-items-container">
                             <div class="empty-cart-state">
@@ -197,17 +141,20 @@ class AdvancedCartManager {
                                 <p class="empty-cart-subtitle">Add some delicious items to get started</p>
                             </div>
                         </div>
+
                         <div class="add-more-items-section" id="add-more-section">
                             <button class="add-more-items-btn" id="add-more-items-btn">
                                 <span class="add-icon">+</span>
                                 Add more items
                             </button>
                         </div>
+
                         <div class="popular-items-section" id="popular-items-section">
                             <h3 class="popular-items-title">Popular with your order</h3>
                             <p class="popular-items-subtitle">Customers often buy these together</p>
                             <div class="popular-items-grid" id="popular-items-grid"></div>
                         </div>
+
                         <div class="cart-summary-section" id="cart-summary" style="display: none;">
                             <div class="summary-row">
                                 <span class="summary-label">Subtotal</span>
@@ -226,6 +173,7 @@ class AdvancedCartManager {
                                 <span class="summary-value" id="grand-total-amount">Rs. ${this.deliveryFee}</span>
                             </div>
                         </div>
+
                         <div class="checkout-section" id="checkout-section" style="display: none;">
                             <button class="checkout-btn" id="checkout-btn">
                                 <span class="checkout-text">Proceed to Checkout</span>
@@ -235,7 +183,9 @@ class AdvancedCartManager {
                                 </svg>
                             </button>
                         </div>
+
                         <div class="delivery-info" id="delivery-info" style="display: none;">
+                            <p class="delivery-text">Sorry, we are closed right now but pre-orders can be placed.</p>
                             <p class="delivery-text">Your order will be delivered approximately on <span class="delivery-date">August 28, 2025</span> at <span class="delivery-time">1:30 PM</span></p>
                         </div>
                     </div>
@@ -243,6 +193,8 @@ class AdvancedCartManager {
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+        this.updatePopularItems();
     }
 
     /**
@@ -301,14 +253,6 @@ class AdvancedCartManager {
         document.addEventListener('click', (e) => {
             if (e.target.closest('#view-cart-btn')) {
                 this.showCartSidebar();
-            }
-        });
-
-        // Auto-hide popup after timeout
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.cart-view-popup') && !e.target.closest('#view-cart-btn')) {
-                // Allow interaction with popup without hiding it
-                return;
             }
         });
     }
@@ -629,23 +573,56 @@ class AdvancedCartManager {
     }
 
     /**
-     * Handle add more items button
-     */
-    handleAddMoreItems() {
-        this.hideCartSidebar();
+ * Handle add more items button - scroll to first category
+ */
+handleAddMoreItems() {
+    this.hideCartSidebar();
 
-        // Smooth scroll to menu sections
-        const menuSection = document.querySelector('.menu-section') ||
-                           document.querySelector('#rice-box-section') ||
-                           document.querySelector('.product-grid');
-
-        if (menuSection) {
-            menuSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+    // Show cart popup again since we're adding more items
+    if (this.cart.length > 0) {
+        this.showCartPopup();
     }
+
+    // Smooth scroll to first menu section
+    const menuSection = document.querySelector('.menu-section') ||
+                       document.querySelector('#rice-box-section') ||
+                       document.querySelector('.product-grid');
+
+    if (menuSection) {
+        menuSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+    /**
+ * Get product data from card element with proper class handling
+ */
+getProductDataFromCard(productCard) {
+    // Extract price from text content
+    const priceText = productCard.getAttribute('data-price') ||
+                     productCard.querySelector('.discounted-price')?.textContent || '0';
+
+    // Extract original price from text content
+    const originalPriceText = productCard.getAttribute('data-original-price') ||
+                            productCard.querySelector('.original-price')?.textContent || '0';
+
+    return {
+        id: productCard.getAttribute('data-product-id'),
+        name: productCard.getAttribute('data-name') ||
+              productCard.querySelector('.product-title')?.textContent?.trim() || 'Unknown Product',
+        price: this.extractPrice(priceText),
+        originalPrice: this.extractPrice(originalPriceText),
+        image: productCard.getAttribute('data-image') ||
+              productCard.querySelector('.product-image-container img')?.src ||
+              '/website_customizations/static/src/images/product_1.jpg',
+        description: productCard.querySelector('.product-description')?.textContent?.trim() ||
+                    'Fresh and delicious food',
+        category: productCard.getAttribute('data-category') || 'general',
+        quantity: 1
+    };
+}
 
     /**
      * Handle checkout process
@@ -735,93 +712,77 @@ class AdvancedCartManager {
      * Show cart popup with animation
      */
     showCartPopup() {
-        const popup = document.getElementById('cart-view-popup');
-        if (!popup) return;
+    const popup = document.getElementById('cart-view-popup');
+    if (!popup) return;
 
-        // Reset classes
-        popup.classList.remove('show', 'hide', 'hidden');
+    // Reset classes
+    popup.classList.remove('show', 'hide', 'hidden');
 
-        // Show popup
-        setTimeout(() => {
-            popup.classList.add('show');
-        }, 10);
+    // Show popup
+    setTimeout(() => {
+        popup.classList.add('show');
+    }, 10);
 
-        // Only auto-hide the success notification, keep view cart button visible
-        setTimeout(() => {
-            this.hideSuccessNotification();
-        }, this.popupDisplayTime);
-    }
-
-    /**
-     * Hide only the success notification, keep view cart button
-     */
-    hideSuccessNotification() {
-        const popup = document.getElementById('cart-view-popup');
-        const successNotification = popup?.querySelector('.success-notification');
-
-        if (successNotification) {
-            successNotification.style.opacity = '0';
-            successNotification.style.transform = 'scale(0.8)';
-            successNotification.style.transition = 'all 0.3s ease';
-
-            setTimeout(() => {
-                successNotification.style.display = 'none';
-            }, 300);
-        }
-    }
+    // Only auto-hide the success notification, keep view cart button visible
+    setTimeout(() => {
+        this.hideSuccessNotification();
+    }, this.popupDisplayTime);
+}
 
     /**
      * Hide cart popup
      */
-    hideCartPopup() {
-        const popup = document.getElementById('cart-view-popup');
-        if (!popup || popup.classList.contains('hidden')) return;
-
-        popup.classList.remove('show');
-        popup.classList.add('hide');
-
-        setTimeout(() => {
-            popup.classList.add('hidden');
-            popup.classList.remove('hide');
-        }, 300);
-    }
-
     /**
-     * Show cart sidebar
-     */
-    showCartSidebar() {
-        this.hideCartPopup();
+ * Hide cart popup only if cart is empty
+ */
+hideCartPopup() {
+    const popup = document.getElementById('cart-view-popup');
+    if (!popup || popup.classList.contains('hidden') || this.cart.length > 0) return;
 
-        const overlay = document.getElementById('cart-sidebar-overlay');
-        if (!overlay) return;
+    popup.classList.remove('show');
+    popup.classList.add('hide');
 
-        this.isCartOpen = true;
-        this.updateCartSidebarContent();
+    setTimeout(() => {
+        popup.classList.add('hidden');
+        popup.classList.remove('hide');
+    }, 300);
+}
 
-        overlay.classList.remove('hidden');
-        setTimeout(() => {
-            overlay.classList.add('show');
-        }, 10);
+// In showCartSidebar method:
+showCartSidebar() {
+    this.hideCartPopup();
+    this.ensureNavbarVisibility();
 
-        document.body.style.overflow = 'hidden';
-    }
+    const overlay = document.getElementById('cart-sidebar-overlay');
+    if (!overlay) return;
 
-    /**
-     * Hide cart sidebar
-     */
-    hideCartSidebar() {
-        const overlay = document.getElementById('cart-sidebar-overlay');
-        if (!overlay) return;
+    this.isCartOpen = true;
+    this.updateCartSidebarContent();
 
-        this.isCartOpen = false;
-        overlay.classList.remove('show');
+    // Add class to body to prevent scrolling
+    document.body.classList.add('cart-open');
 
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-        }, 300);
+    overlay.classList.remove('hidden');
+    setTimeout(() => {
+        overlay.classList.add('show');
+    }, 10);
+}
 
-        document.body.style.overflow = '';
-    }
+// In hideCartSidebar method:
+hideCartSidebar() {
+    const overlay = document.getElementById('cart-sidebar-overlay');
+    if (!overlay) return;
+
+    this.isCartOpen = false;
+
+    // Remove class from body to restore scrolling
+    document.body.classList.remove('cart-open');
+
+    overlay.classList.remove('show');
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+    }, 300);
+}
 
     /**
      * Update cart popup display
@@ -842,70 +803,97 @@ class AdvancedCartManager {
     }
 
     /**
-     * Update cart sidebar content
-     */
-    updateCartSidebarContent() {
-        const container = document.getElementById('cart-items-container');
-        const summarySection = document.getElementById('cart-summary');
-        const checkoutSection = document.getElementById('checkout-section');
-        const deliveryInfo = document.getElementById('delivery-info');
+ * Update cart sidebar content with proper section ordering
+ */
+updateCartSidebarContent() {
+    const container = document.getElementById('cart-items-container');
+    const summarySection = document.getElementById('cart-summary');
+    const checkoutSection = document.getElementById('checkout-section');
+    const deliveryInfo = document.getElementById('delivery-info');
+    const addMoreSection = document.getElementById('add-more-section');
+    const popularSection = document.getElementById('popular-items-section');
 
-        if (!container) return;
+    if (!container) return;
 
-        if (this.cart.length === 0) {
-            container.innerHTML = `
-                <div class="empty-cart-state">
-                    <div class="empty-cart-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="m1 1 4 4 2.4 12h11.6"></path>
-                        </svg>
-                    </div>
-                    <p class="empty-cart-message">Your cart is empty</p>
-                    <p class="empty-cart-subtitle">Add some delicious items to get started</p>
+    if (this.cart.length === 0) {
+        container.innerHTML = `
+            <div class="empty-cart-state">
+                <div class="empty-cart-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="m1 1 4 4 2.4 12h11.6"></path>
+                    </svg>
                 </div>
-            `;
+                <p class="empty-cart-message">Your cart is empty</p>
+                <p class="empty-cart-subtitle">Add some delicious items to get started</p>
+            </div>
+        `;
 
-            // Hide sections when cart is empty
-            if (summarySection) summarySection.style.display = 'none';
-            if (checkoutSection) checkoutSection.style.display = 'none';
-            if (deliveryInfo) deliveryInfo.style.display = 'none';
+        // Hide sections when cart is empty
+        if (summarySection) summarySection.style.display = 'none';
+        if (checkoutSection) checkoutSection.style.display = 'none';
+        if (deliveryInfo) deliveryInfo.style.display = 'none';
+        if (addMoreSection) addMoreSection.style.display = 'block';
+        if (popularSection) popularSection.style.display = 'none';
 
-            return;
-        }
+        return;
+    }
 
-        // Show cart items
-        container.innerHTML = this.cart.map(item => `
-            <div class="cart-item" data-product-id="${item.id}">
-                <div class="cart-item-image">
-                    <img src="${item.image}" alt="${item.name}" loading="lazy"/>
-                </div>
-                <div class="cart-item-details">
-                    <h4 class="cart-item-name">${item.name}</h4>
-                    <span class="cart-item-price">Rs. ${item.price}</span>
-                </div>
-                <div class="cart-item-controls">
-                    <button class="delete-item-btn">
-                        <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="3,6 5,6 21,6"></polyline>
-                            <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
-                        </svg>
-                    </button>
-                    <div class="quantity-controls">
-                        <span class="quantity-number">${item.quantity}</span>
-                        <button class="quantity-plus-btn">+</button>
-                    </div>
+    // Show cart items
+    container.innerHTML = this.cart.map(item => `
+        <div class="cart-item" data-product-id="${item.id}">
+            <div class="cart-item-image">
+                <img src="${item.image}" alt="${item.name}" loading="lazy"/>
+            </div>
+            <div class="cart-item-details">
+                <h4 class="cart-item-name">${item.name}</h4>
+                <span class="cart-item-price">Rs. ${item.price}</span>
+            </div>
+            <div class="cart-item-controls">
+                <button class="delete-item-btn">
+                    <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3,6 5,6 21,6"></polyline>
+                        <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+                    </svg>
+                </button>
+                <div class="quantity-controls">
+                    <button class="quantity-minus-btn">-</button>
+                    <span class="quantity-number">${item.quantity}</span>
+                    <button class="quantity-plus-btn">+</button>
                 </div>
             </div>
-        `).join('');
+        </div>
+    `).join('');
 
-        // Show and update summary sections
-        this.updateCartSummary();
-        if (summarySection) summarySection.style.display = 'block';
-        if (checkoutSection) checkoutSection.style.display = 'block';
-        if (deliveryInfo) deliveryInfo.style.display = 'block';
+    // Show and update summary sections
+    this.updateCartSummary();
+    if (summarySection) summarySection.style.display = 'block';
+    if (checkoutSection) checkoutSection.style.display = 'block';
+    if (deliveryInfo) deliveryInfo.style.display = 'block';
+    if (addMoreSection) addMoreSection.style.display = 'block'; // Show add more section
+    if (popularSection) popularSection.style.display = 'block'; // Show popular section
+
+    // Reorder sections - add more items before popular items
+    if (addMoreSection && popularSection) {
+        popularSection.parentNode.insertBefore(addMoreSection, popularSection);
     }
+}
+
+
+/**
+ * Inject CSS styles into the document
+ */
+
+ // Add this method to your CartManager class
+ensureNavbarVisibility() {
+    // Force navbar to top layer when cart is open
+    const navbar = document.querySelector('.custom-navbar, #main-navbar');
+    if (navbar) {
+        navbar.style.zIndex = '1070';
+    }
+}
+
 
     /**
      * Update cart summary
@@ -1111,6 +1099,24 @@ class AdvancedCartManager {
     }
 
     /**
+ * Hide only the success notification, keep view cart button
+ */
+hideSuccessNotification() {
+    const popup = document.getElementById('cart-view-popup');
+    const successNotification = popup?.querySelector('.success-notification');
+
+    if (successNotification) {
+        successNotification.style.opacity = '0';
+        successNotification.style.transform = 'scale(0.8)';
+        successNotification.style.transition = 'all 0.3s ease';
+
+        setTimeout(() => {
+            successNotification.style.display = 'none';
+        }, 300);
+    }
+}
+
+    /**
      * Public API methods
      */
     getCart() {
@@ -1135,16 +1141,620 @@ class AdvancedCartManager {
             this.showAddToCartButton(card);
         });
     }
+
 }
 
 // Initialize cart manager when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     if (!window.cartManager) {
-        window.cartManager = new AdvancedCartManager();
+        window.cartManager = new CartManager();
     }
 });
 
 // Also handle case where DOM is already loaded
 if (document.readyState !== 'loading' && !window.cartManager) {
-    window.cartManager = new AdvancedCartManager();
+    window.cartManager = new CartManager();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * FIXED MENU POPUP - Below Navbar Positioning & No Blinking
+ * File: /website_customizations/static/src/js/components/navbar/menu_popup.js
+ */
+(function () {
+    'use strict';
+
+    // ================================= STATE & CONFIGURATION =================================
+    let menuPopupInitialized = false;
+    let hoverTimeout = null;
+    let hideTimeout = null;
+    let isMouseOverPopup = false;
+    let isMouseOverTrigger = false;
+    let resizeTimeout = null;
+    let popupReady = false;
+    let isScrolling = false;
+    let scrollTimeout = null;
+    let navbarHeight = 0;
+
+    // Constants
+    const NAVBAR_SELECTOR = 'header, .navbar, #main-navbar, nav';
+    const CATEGORY_STRIP_SELECTOR = '#category-strip-wrapper';
+    const HOVER_DELAY = 150;
+    const HIDE_DELAY = 300;
+    const SCROLL_HIDE_DELAY = 50;
+
+    // ================================= UTILITY FUNCTIONS =================================
+
+    function isMobileDevice() {
+        return window.innerWidth <= 1023;
+    }
+
+    /**
+     * FIXED: Calculate navbar height accurately
+     */
+    function calculateNavbarHeight() {
+        const navbar = document.querySelector(NAVBAR_SELECTOR);
+        if (navbar) {
+            // Force layout calculation
+            navbar.offsetHeight;
+            const computedStyle = window.getComputedStyle(navbar);
+            const position = computedStyle.position;
+
+            if (position === 'fixed' || position === 'sticky') {
+                navbarHeight = Math.round(navbar.getBoundingClientRect().height);
+                console.log('Calculated navbar height:', navbarHeight);
+                return navbarHeight;
+            }
+        }
+        navbarHeight = 80; // Fallback
+        return navbarHeight;
+    }
+
+    /**
+     * FIXED: Get element position with precise calculations
+     */
+    function getExactElementTop(element) {
+        if (!element) return 0;
+        element.offsetHeight; // Force layout
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        return Math.round(rect.top + scrollTop);
+    }
+
+    /**
+     * FIXED: Calculate total header offset for scrolling
+     */
+    function getPreciseHeaderHeight() {
+        let totalHeight = navbarHeight;
+
+        // Add category strip height if it exists
+        const categoryStrip = document.querySelector(CATEGORY_STRIP_SELECTOR);
+        if (categoryStrip) {
+            categoryStrip.offsetHeight; // Force layout
+            const stripRect = categoryStrip.getBoundingClientRect();
+            const stripHeight = Math.round(stripRect.height);
+            totalHeight += stripHeight;
+            console.log('Category strip height:', stripHeight);
+        }
+
+        totalHeight += 15; // Buffer for perfect alignment
+        console.log('Total header height for scrolling:', totalHeight);
+        return totalHeight;
+    }
+
+    // ================================= POPUP MANAGEMENT =================================
+
+    /**
+     * FIXED: Force hide popup without blinking
+     */
+    function forceHidePopup() {
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (!menuPopup) return;
+
+        console.log('Force hiding popup');
+
+        // FIXED: Immediate hiding without transitions to prevent blinking
+        menuPopup.style.transition = 'none';
+        menuPopup.style.visibility = 'hidden';
+        menuPopup.style.opacity = '0';
+        menuPopup.style.transform = 'translateY(-100%)';
+        menuPopup.style.pointerEvents = 'none';
+        menuPopup.classList.remove('show', 'positioned');
+
+        // Restore transitions after hiding
+        requestAnimationFrame(() => {
+            if (menuPopup) {
+                menuPopup.style.transition = '';
+            }
+        });
+
+        popupReady = false;
+    }
+
+    /**
+     * FIXED: Prepare popup positioning below navbar
+     */
+    function preparePopup() {
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (!menuPopup) return false;
+
+        // Calculate current navbar height
+        const currentNavbarHeight = calculateNavbarHeight();
+
+        // FIXED: Set CSS custom property for navbar height
+        menuPopup.style.setProperty('--navbar-height', currentNavbarHeight + 'px');
+
+        // FIXED: Position below navbar, not at top: 0
+        menuPopup.style.top = currentNavbarHeight + 'px';
+
+        // FIXED: Initially hidden state - no blinking
+        menuPopup.style.transition = 'none'; // Disable transitions during setup
+        menuPopup.style.visibility = 'hidden';
+        menuPopup.style.opacity = '0';
+        menuPopup.style.transform = 'translateY(-100%)';
+        menuPopup.style.pointerEvents = 'none';
+
+        // Setup responsive height
+        const maxHeight = `calc(100vh - ${currentNavbarHeight}px - 20px)`;
+        menuPopup.style.maxHeight = maxHeight;
+
+        menuPopup.classList.add('positioned');
+
+        // Re-enable transitions after setup
+        requestAnimationFrame(() => {
+            if (menuPopup) {
+                menuPopup.style.transition = '';
+            }
+        });
+
+        popupReady = true;
+        console.log('Popup prepared below navbar at:', currentNavbarHeight + 'px');
+        return true;
+    }
+
+    /**
+     * FIXED: Show popup with smooth animation from below navbar
+     */
+    function showPopupNow() {
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (!menuPopup || !popupReady) return;
+
+        console.log('Showing popup');
+
+        // Make visible
+        menuPopup.style.visibility = 'visible';
+        menuPopup.style.pointerEvents = 'all';
+
+        // Animate in from below navbar
+        requestAnimationFrame(() => {
+            menuPopup.classList.add('show');
+            menuPopup.style.opacity = '1';
+            menuPopup.style.transform = 'translateY(0)';
+
+            // Stagger animation for items
+            const cards = menuPopup.querySelectorAll('.menu-popup-item');
+            cards.forEach((card, index) => {
+                card.style.setProperty('--animation-delay', `${index * 0.03}s`);
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 30);
+            });
+        });
+    }
+
+    /**
+     * Show popup with preparation
+     */
+    function showPopup() {
+        if (isScrolling) return;
+
+        clearTimeout(hideTimeout);
+        isMouseOverTrigger = true;
+
+        if (!preparePopup()) return;
+        setTimeout(showPopupNow, 10);
+    }
+
+    /**
+     * Hide popup smoothly
+     */
+    function hidePopup() {
+        clearTimeout(hoverTimeout);
+
+        if (!isMouseOverPopup && !isMouseOverTrigger) {
+            const menuPopup = document.getElementById('menu-categories-popup');
+            if (menuPopup && menuPopup.classList.contains('show')) {
+                console.log('Hiding popup');
+
+                menuPopup.classList.remove('show');
+                menuPopup.style.opacity = '0';
+                menuPopup.style.transform = 'translateY(-100%)';
+
+                // Reset item animations
+                const cards = menuPopup.querySelectorAll('.menu-popup-item');
+                cards.forEach(card => {
+                    card.style.transition = '';
+                    card.style.opacity = '';
+                    card.style.transform = '';
+                    card.style.removeProperty('--animation-delay');
+                });
+
+                setTimeout(forceHidePopup, 350);
+            }
+        }
+    }
+
+    // ================================= SCROLL FUNCTIONS =================================
+
+    /**
+     * FIXED: Ultimate precision scroll with multi-pass correction
+     */
+    function scrollToElementWithPrecision(targetElement) {
+        if (!targetElement) {
+            console.error('Target element is null');
+            return;
+        }
+
+        console.log('=== STARTING PRECISION SCROLL ===');
+        console.log('Target element:', targetElement.id);
+
+        isScrolling = true;
+
+        // Step 1: Initial calculation and scroll
+        function performInitialScroll() {
+            return new Promise((resolve) => {
+                const headerHeight = getPreciseHeaderHeight();
+                const elementTop = getExactElementTop(targetElement);
+                const targetPosition = Math.max(0, elementTop - headerHeight);
+
+                console.log('Initial scroll calculation:', {
+                    elementTop,
+                    headerHeight,
+                    targetPosition,
+                    currentScroll: window.pageYOffset
+                });
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                setTimeout(resolve, 400);
+            });
+        }
+
+        // Step 2: First correction pass
+        function performFirstCorrection() {
+            return new Promise((resolve) => {
+                const headerHeight = getPreciseHeaderHeight();
+                const elementTop = getExactElementTop(targetElement);
+                const targetPosition = Math.max(0, elementTop - headerHeight);
+                const currentScroll = window.pageYOffset;
+                const difference = Math.abs(currentScroll - targetPosition);
+
+                console.log('First correction:', {
+                    elementTop,
+                    headerHeight,
+                    targetPosition,
+                    currentScroll,
+                    difference
+                });
+
+                if (difference > 3) {
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    setTimeout(resolve, 300);
+                } else {
+                    resolve();
+                }
+            });
+        }
+
+        // Step 3: Final pixel-perfect correction
+        function performFinalCorrection() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const headerHeight = getPreciseHeaderHeight();
+                    const elementTop = getExactElementTop(targetElement);
+                    const targetPosition = Math.max(0, elementTop - headerHeight);
+                    const currentScroll = window.pageYOffset;
+                    const difference = targetPosition - currentScroll;
+
+                    console.log('Final correction:', {
+                        elementTop,
+                        headerHeight,
+                        targetPosition,
+                        currentScroll,
+                        difference
+                    });
+
+                    if (Math.abs(difference) > 1) {
+                        // Instantaneous pixel-perfect positioning
+                        window.scrollTo(0, targetPosition);
+                    }
+
+                    console.log('Final position:', window.pageYOffset);
+                    console.log('=== SCROLL COMPLETE ===');
+
+                    resolve();
+                }, 100);
+            });
+        }
+
+        // Execute scroll sequence
+        performInitialScroll()
+            .then(() => performFirstCorrection())
+            .then(() => performFinalCorrection())
+            .then(() => {
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 300);
+            })
+            .catch((error) => {
+                console.error('Scroll error:', error);
+                isScrolling = false;
+            });
+    }
+
+    /**
+     * FIXED: Enhanced category click handler
+     */
+    function handleCategoryClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const item = event.currentTarget;
+        const href = item.getAttribute('href');
+
+        console.log('=== CATEGORY CLICK EVENT ===');
+        console.log('Clicked href:', href);
+
+        if (!href || !href.startsWith('#')) {
+            console.error('Invalid href:', href);
+            return;
+        }
+
+        // Visual feedback
+        const card = item.querySelector('.menu-popup-card');
+        if (card) {
+            card.style.transform = 'translateY(-2px) scale(0.95)';
+            setTimeout(() => card.style.transform = '', 150);
+        }
+
+        // Hide popup immediately
+        forceHidePopup();
+        isMouseOverPopup = false;
+        isMouseOverTrigger = false;
+
+        // Find target element
+        const targetId = href.slice(1);
+        console.log('Looking for section:', targetId);
+
+        const targetElement = document.getElementById(targetId);
+
+        if (!targetElement) {
+            console.error('Section not found:', targetId);
+
+            // Enhanced debugging
+            const allSections = document.querySelectorAll('section[id], div[id], article[id]');
+            console.log('Available sections:');
+            allSections.forEach(section => {
+                console.log(`- ${section.id} (tag: ${section.tagName})`);
+            });
+            return;
+        }
+
+        console.log('Target found:', targetElement);
+
+        // Wait for popup to close, then scroll with precision
+        setTimeout(() => {
+            scrollToElementWithPrecision(targetElement);
+        }, 200);
+
+        // Update URL after scroll sequence completes
+        setTimeout(() => {
+            console.log('Updating URL to:', href);
+            history.replaceState(null, '', href);
+        }, 1500);
+    }
+
+    /**
+     * Handle scroll events
+     */
+    function handleScroll() {
+        if (!isScrolling) {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (popupReady && !isScrolling) {
+                    forceHidePopup();
+                    isMouseOverPopup = false;
+                    isMouseOverTrigger = false;
+                }
+            }, SCROLL_HIDE_DELAY);
+        }
+    }
+
+    /**
+     * Handle resize events
+     */
+    function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            // Recalculate navbar height
+            calculateNavbarHeight();
+
+            // Update popup positioning if visible
+            if (popupReady) {
+                const menuPopup = document.getElementById('menu-categories-popup');
+                if (menuPopup) {
+                    menuPopup.style.setProperty('--navbar-height', navbarHeight + 'px');
+                    menuPopup.style.top = navbarHeight + 'px';
+                    menuPopup.style.maxHeight = `calc(100vh - ${navbarHeight}px - 20px)`;
+                }
+            }
+        }, 250);
+    }
+
+    // ================================= INITIALIZATION =================================
+
+    function initMenuPopup() {
+        if (menuPopupInitialized) return true;
+
+        const menuTrigger = document.getElementById('menu-hover-trigger');
+        const menuPopup = document.getElementById('menu-categories-popup');
+
+        if (!menuTrigger || !menuPopup) {
+            console.error('Menu elements not found');
+            return false;
+        }
+
+        console.log('Initializing fixed menu popup system');
+        menuPopupInitialized = true;
+
+        // Calculate initial navbar height
+        calculateNavbarHeight();
+
+        // Force hide popup initially to prevent blinking
+        forceHidePopup();
+
+        // ================================= EVENT LISTENERS =================================
+
+        // Desktop hover handlers
+        menuTrigger.addEventListener('mouseenter', function () {
+            if (!isMobileDevice()) {
+                isMouseOverTrigger = true;
+                clearTimeout(hideTimeout);
+                hoverTimeout = setTimeout(showPopup, HOVER_DELAY);
+            }
+        });
+
+        menuTrigger.addEventListener('mouseleave', function () {
+            if (!isMobileDevice()) {
+                isMouseOverTrigger = false;
+                clearTimeout(hoverTimeout);
+                hideTimeout = setTimeout(hidePopup, HIDE_DELAY);
+            }
+        });
+
+        menuPopup.addEventListener('mouseenter', function () {
+            if (!isMobileDevice()) {
+                isMouseOverPopup = true;
+                clearTimeout(hideTimeout);
+            }
+        });
+
+        menuPopup.addEventListener('mouseleave', function () {
+            if (!isMobileDevice()) {
+                isMouseOverPopup = false;
+                hideTimeout = setTimeout(hidePopup, 200);
+            }
+        });
+
+        // Mobile click handler
+        menuTrigger.addEventListener('click', function(e) {
+            if (isMobileDevice()) {
+                e.preventDefault();
+                if (popupReady && menuPopup.classList.contains('show')) {
+                    hidePopup();
+                } else {
+                    showPopup();
+                }
+            }
+        });
+
+        // Category item handlers
+        const popupItems = menuPopup.querySelectorAll('.menu-popup-item');
+        popupItems.forEach((item) => {
+            item.addEventListener('click', handleCategoryClick);
+        });
+
+        // Global handlers
+        document.addEventListener('click', function (e) {
+            if (!menuTrigger.contains(e.target) && !menuPopup.contains(e.target)) {
+                forceHidePopup();
+                isMouseOverPopup = false;
+                isMouseOverTrigger = false;
+            }
+        });
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleResize);
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                forceHidePopup();
+                isMouseOverPopup = false;
+                isMouseOverTrigger = false;
+            }
+        });
+
+        console.log('Fixed menu popup system initialized - navbar height:', navbarHeight);
+        return true;
+    }
+
+    // ================================= INITIALIZATION STRATEGIES =================================
+
+    function tryInitialize() {
+        if (initMenuPopup()) return;
+        setTimeout(tryInitialize, 500);
+    }
+
+    // Initialize
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(tryInitialize, 100));
+    } else {
+        setTimeout(tryInitialize, 100);
+    }
+
+    window.addEventListener('load', () => setTimeout(tryInitialize, 200));
+
+    // Enhanced debug methods
+    window.menuPopupDebug = {
+        scrollTo: function(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                console.log(`=== MANUAL DEBUG SCROLL TO: ${sectionId} ===`);
+                scrollToElementWithPrecision(element);
+            } else {
+                console.error(`Section not found: ${sectionId}`);
+                this.listSections();
+            }
+        },
+
+        listSections: function() {
+            const sections = document.querySelectorAll('section[id], div[id], article[id]');
+            console.log('=== ALL SECTIONS WITH IDS ===');
+            sections.forEach(s => {
+                const rect = s.getBoundingClientRect();
+                console.log(`${s.id}: ${s.tagName.toLowerCase()}, top: ${getExactElementTop(s)}, visible: ${s.offsetParent !== null}`);
+            });
+            return Array.from(sections);
+        },
+
+        testNavbarHeight: function() {
+            const height = calculateNavbarHeight();
+            console.log('Current navbar height:', height);
+            return height;
+        }
+    };
+
+})();
