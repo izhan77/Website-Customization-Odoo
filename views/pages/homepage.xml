@@ -13,8 +13,8 @@
             <t t-call="website_customizations.menu_sections_complete"/>
 
             <!-- Cart Popup Components  -->
-            <t t-call="website_customizations.cart_view_popup"/>
-            <t t-call="website_customizations.cart_sidebar"/>
+            <!-- <t t-call="website_customizations.cart_view_popup"/>
+            <t t-call="website_customizations.cart_sidebar"/> -->
 
         </xpath>
     </template>

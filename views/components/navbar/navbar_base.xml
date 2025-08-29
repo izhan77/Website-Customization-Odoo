@@ -2,24 +2,32 @@
 <odoo>
     <template id="navbar_base" inherit_id="website.layout" name="Custom Navbar">
         <xpath expr="//header" position="replace">
-            <header style="z-index: 9999 !important; position: relative !important;" class="bg-[#7abfba] shadow-lg relative z-[1070]  custom-navbar" id="main-navbar">
+            <header style="z-index: 99999 !important; position: relative !important; background-color: #7abfba !important;" 
+                    class="bg-[#7abfba] shadow-lg relative custom-navbar" 
+                    id="main-navbar">
                 <nav class="container mx-auto px-4 py-3">
-                    <div class="flex items-center justify-between">
-                        <!-- Logo -->
-                        <t t-call="website_customizations.navbar_logo"/>
+                    <div class="flex items-center justify-between w-full">
+                        
+                        <!-- Logo - Left Side -->
+                        <div class="flex-shrink-0">
+                            <t t-call="website_customizations.navbar_logo"/>
+                        </div>
 
-                        <!-- Desktop Navigation -->
+                        <!-- Desktop Navigation - Center -->
                         <div class="hidden lg:flex items-center space-x-8 flex-1 justify-center">
                             <t t-call="website_customizations.navbar_desktop_links"/>
                         </div>
 
-                        <!-- Contact button -->
-                        <div class="hidden lg:block">
+                        <!-- Desktop Contact Buttons - Right Side -->
+                        <div class="hidden lg:flex flex-shrink-0">
                             <t t-call="website_customizations.navbar_desktop_button"/>
                         </div>
 
-                        <!-- Mobile menu button -->
-                        <t t-call="website_customizations.navbar_menu_button"/>
+                        <!-- Mobile menu button - Right Side (Mobile Only) -->
+                        <div class="flex lg:hidden flex-shrink-0">
+                            <t t-call="website_customizations.navbar_menu_button"/>
+                        </div>
+                        
                     </div>
 
                     <!-- Mobile Navigation Menu -->

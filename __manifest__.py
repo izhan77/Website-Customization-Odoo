@@ -34,7 +34,7 @@
         'views/components/menu_sections/menu_sections_complete.xml',
 
         # Cart Popup Components
-        'views/components/cart_popup/cart_popup_components.xml',
+        # 'views/components/cart_popup/cart_popup_components.xml',
 
         # Homepage Components
         'views/pages/homepage.xml',
@@ -78,8 +78,8 @@
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
 
             # CLEAN Cart CSS + JS (REMOVED PROBLEMATIC FILES)
-            'website_customizations/static/src/css/components/cart_popup/cart_popup.css',
-            'website_customizations/static/src/js/components/cart_popup/cart_popup.js',
+            # 'website_customizations/static/src/css/components/cart_popup/cart_popup.css',
+            # 'website_customizations/static/src/js/components/cart_popup/cart_popup.js',
 
             # Footer CSS
             'website_customizations/static/src/css/components/footer/footer.css',

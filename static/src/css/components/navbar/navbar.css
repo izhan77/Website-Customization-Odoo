@@ -1,55 +1,202 @@
-/* NAVBAR Z-INDEX PRIORITY FIX */
+/* NAVBAR FINAL VERSION - PERFECT LAYOUT RESTORED */
+
+/* Base navbar styling */
 .custom-navbar {
-    z-index: 1070 !important;
-    position: relative;
-    isolation: isolate; /* Creates new stacking context */
+    z-index: 99999 !important;
+    position: relative !important;
+    isolation: isolate !important;
+    background-color: #7abfba !important;
+    width: 100% !important;
+    height: 70px !important;
+    display: block !important;
+    visibility: visible !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Force Montserrat on all navbar elements EXCEPT logo */
+.custom-navbar *:not(.roboto-condensed):not(.roboto-condensed *) {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Force Montserrat specifically on navigation links and buttons */
+.custom-navbar a:not(.roboto-condensed),
+.custom-navbar button,
+.custom-navbar span:not(.roboto-condensed span),
+.custom-navbar div:not(.roboto-condensed) {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Ensure Roboto Condensed stays on logo */
+.custom-navbar .roboto-condensed,
+.custom-navbar .roboto-condensed * {
+    font-family: 'Roboto Condensed', sans-serif !important;
 }
 
 .custom-navbar > * {
-    position: relative;
-    z-index: 1070 !important;
+    position: relative !important;
+    z-index: 99999 !important;
 }
 
-/* Ensure all navbar children inherit proper z-index */
-.custom-navbar a,
-.custom-navbar button,
-.custom-navbar div {
-    z-index: 1070 !important;
-    position: relative;
+/* Navbar container - PERFECT LAYOUT */
+.custom-navbar nav {
+    width: 100% !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: 0.75rem 2rem !important;
+    height: 70px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-/* Mobile menu animations */
-.animate-fadeIn {
-    animation: fadeIn 0.5s ease-in-out forwards !important;
-    display: block !important;
-    opacity: 1 !important;
+/* Main container - 3 SECTION LAYOUT */
+.custom-navbar .flex.items-center.justify-between {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
-.animate-fadeOut {
-    animation: fadeOut 0.5s ease-in-out forwards !important;
+/* LOGO SECTION - LEFT */
+.custom-navbar .flex-shrink-0:first-child {
+    flex: 0 0 200px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+.custom-navbar a[href="/"] {
+    color: white !important;
+    text-decoration: none !important;
+    font-family: 'Roboto Condensed', sans-serif !important;
+    font-size: 2.5rem !important;
+    font-weight: bold !important;
+    display: flex !important;
+    align-items: center !important;
+    line-height: 1 !important;
+}
+
+/* DESKTOP NAVIGATION - CENTER */
+@media (min-width: 1024px) {
+    
+    /* Center navigation container */
+    .custom-navbar .lg\\:flex.items-center.space-x-8.flex-1.justify-center {
+        display: flex !important;
+        flex: 1 !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
     }
-    to {
-        opacity: 1;
+    
+    /* Navigation links - COMPACT STYLING */
+    .custom-navbar .lg\\:flex a {
+        color: white !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        padding: 8px 20px !important;
+        margin: 0 4px !important;
+        border-radius: 25px !important;
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Desktop buttons container - RIGHT */
+    .custom-navbar .lg\\:flex.flex-shrink-0 {
+        display: flex !important;
+        flex: 0 0 350px !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+    }
+    
+    /* Button container spacing */
+    .custom-navbar .space-x-4 {
+        display: flex !important;
+        gap: 12px !important;
+        align-items: center !important;
+    }
+    
+    /* Individual buttons - COMPACT SIZE */
+    .custom-navbar .space-x-4 a {
+        background-color: white !important;
+        color: #66a39e !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 6px 16px !important;
+        border-radius: 20px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        gap: 6px !important;
+        height: 36px !important;
+        min-width: auto !important;
+    }
+    
+    /* SVG icon size */
+    .custom-navbar .space-x-4 a svg {
+        width: 16px !important;
+        height: 16px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Hide mobile elements */
+    .custom-navbar .flex.lg\\:hidden {
+        display: none !important;
+    }
+    
+    /* Force hide mobile menu */
+    #mobile-menu {
+        display: none !important;
+    }
+    
+    #mobile-categories-popup {
+        display: none !important;
     }
 }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
+/* MOBILE LAYOUT (up to 1023px) */
+@media (max-width: 1023px) {
+    
+    /* Hide desktop elements */
+    .custom-navbar .lg\\:flex {
+        display: none !important;
     }
-    to {
-        opacity: 0;
+    
+    /* Show mobile elements */
+    .custom-navbar .flex.lg\\:hidden {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Mobile menu button */
+    #mobile-menu-toggle {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 99999 !important;
+        position: relative !important;
+        background-color: transparent !important;
+        border: 1px solid white !important;
+        color: white !important;
+        padding: 6px 16px !important;
+        border-radius: 25px !important;
+        align-items: center !important;
+        gap: 8px !important;
+        font-size: 1rem !important;
+        height: 38px !important;
     }
 }
 
-/* Mobile menu overlay styling */
+/* Mobile menu styling */
 #mobile-menu {
-    z-index: 998 !important;
+    z-index: 98000 !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -66,18 +213,18 @@
     display: block !important;
 }
 
-/* FIXED: Menu content container - responsive height */
+/* Menu content container */
 #menu-content-container {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    min-height: 280px !important; /* Minimum height */
-    max-height: 65vh !important; /* Maximum height relative to viewport */
+    min-height: 280px !important;
+    max-height: 65vh !important;
     background-color: #7abfba !important;
     border-bottom-left-radius: 4rem !important;
     border-bottom-right-radius: 4rem !important;
-    z-index: 999 !important;
+    z-index: 98001 !important;
     transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     transform: translateY(-100%) !important;
     display: flex !important;
@@ -85,99 +232,61 @@
     justify-content: flex-start !important;
 }
 
-/* When menu is open, slide the content down */
 #menu-content-container.menu-open {
     transform: translateY(0) !important;
 }
 
-/* Hamburger icon animations */
+/* Menu animations */
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out forwards !important;
+    display: block !important;
+    opacity: 1 !important;
+}
+
+.animate-fadeOut {
+    animation: fadeOut 0.5s ease-in-out forwards !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Override conflicts */
+.custom-navbar a:hover {
+    text-decoration: none !important;
+}
+
+header[data-oe-model]:hover,
+a[data-oe-model][data-oe-id][data-oe-field]:hover {
+    color: white !important;
+    text-decoration: none !important;
+    background-color: transparent !important;
+}
+
+/* Hamburger animations */
 .menu-line {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     transform-origin: center !important;
 }
 
-/* Mobile menu button */
-#mobile-menu-toggle {
-    z-index: 1000 !important;
-    position: relative !important;
-    cursor: pointer !important;
-}
-
-/* Ensure mobile menu appears on small screens only */
-@media (min-width: 1024px) {
-    #mobile-menu {
-        display: none !important;
-    }
-}
-
-@media (max-width: 1023px) {
-    #mobile-menu-toggle {
-        display: flex !important;
-    }
-}
-
-/* Remove underlines from all navbar links */
-.custom-navbar a {
-    text-decoration: none !important;
-}
-
-/* Ensure no underline on hover */
-.custom-navbar a:hover {
-    text-decoration: none !important;
-}
-
-/* Nuclear option to override Odoo's inline styles */
-a[data-oe-model][data-oe-id][data-oe-field]:hover {
-    color: white !important;
-    text-decoration: none !important;
-    background-color: none !important;
-}
-
-/* Target all navbar links specifically */
-.custom-navbar a:hover {
-    color: white !important;
-    text-decoration: none !important;
-    background-color: none !important;
-}
-
-/* Add this if you need even more specificity */
-header.custom-navbar a:hover {
-    color: white !important;
-    text-decoration: none !important;
-    background-color: none !important;
-}
-
-/* Remove underlines from all navbar links */
-.custom-navbar a {
-    text-decoration: none !important;
-}
-
-/* Ensure no underline on hover */
-.custom-navbar a:hover {
-    text-decoration: none !important;
-}
-
-/* Force visibility when needed */
 #mobile-menu.mobile-menu-open {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
 
-/* Responsive adjustments for different screen sizes */
+/* Responsive adjustments */
 @media (max-height: 700px) {
     #menu-content-container {
         max-height: 75vh !important;
         padding-top: 1.5rem !important;
         padding-bottom: 1rem !important;
-    }
-
-    .menu-content-container .text-3xl {
-        font-size: 1.75rem !important; /* 28px */
-    }
-
-    .menu-content-container .space-y-5 > * {
-        margin-bottom: 0.75rem !important;
     }
 }
 
@@ -186,17 +295,8 @@ header.custom-navbar a:hover {
         max-height: 80vh !important;
         padding-top: 1rem !important;
     }
-
-    .menu-content-container .text-3xl {
-        font-size: 1.5rem !important; /* 24px */
-    }
-
-    .menu-content-container .space-y-5 > * {
-        margin-bottom: 0.5rem !important;
-    }
 }
 
-/* For very tall screens (iPhone 14 Pro Max, etc.) */
 @media (min-height: 800px) and (max-width: 1023px) {
     #menu-content-container {
         max-height: 55vh !important;

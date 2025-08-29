@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="navbar_desktop_links" name="Navbar Desktop Links">
-        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" href="/"
-           style="color: white !important;"
+        <!-- Home Link - COMPACT -->
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" 
+           href="/"
+           style="color: white !important; text-decoration: none !important; padding: 8px 20px !important; margin: 0 4px !important; border-radius: 25px !important; font-size: 1.1rem !important; font-weight: 500 !important; line-height: 1.2 !important; white-space: nowrap !important;"
            onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
            onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
             Home
         </a>
 
-        <!-- Menu button with hover trigger -->
+        <!-- Menu button with hover trigger - COMPACT -->
         <div class="menu-hover-container relative">
-            <a id="menu-hover-trigger" class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300 cursor-pointer"
-               style="color: white !important;"
+            <a id="menu-hover-trigger" 
+               class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300 cursor-pointer"
+               style="color: white !important; text-decoration: none !important; padding: 8px 20px !important; margin: 0 4px !important; border-radius: 25px !important; font-size: 1.1rem !important; font-weight: 500 !important; line-height: 1.2 !important; white-space: nowrap !important;"
                onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
                onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
                 Menu
@@ -20,8 +23,10 @@
             <t t-call="website_customizations.navbar_menu_popup"/>
         </div>
 
-        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" href="/about"
-           style="color: white !important;"
+        <!-- About Us Link - COMPACT -->
+        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" 
+           href="/about"
+           style="color: white !important; text-decoration: none !important; padding: 8px 20px !important; margin: 0 4px !important; border-radius: 25px !important; font-size: 1.1rem !important; font-weight: 500 !important; line-height: 1.2 !important; white-space: nowrap !important;"
            onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
            onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
             About Us

@@ -4,17 +4,20 @@
         <button id="mobile-menu-toggle"
                 class="lg:hidden border border-white px-3 py-1 md:px-6 md:py-2 gap-x-3 rounded-full cursor-pointer font-bold text-lg tracking-tight text-white flex justify-center items-center hover:bg-white/20 hover:border-white transition-all duration-300 z-[1000] relative"
                 type="button"
-                aria-label="Toggle mobile menu">
+                aria-label="Toggle mobile menu"
+                style="display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 99999 !important; position: relative !important; background-color: transparent !important; border: 1px solid white !important; color: white !important;">
+            
             <!-- Animated Hamburger Icon -->
-            <div class="menu-icon-container">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="transition-all duration-300">
+            <div class="menu-icon-container" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="transition-all duration-300" style="color: white !important; display: block !important;">
                     <line id="menu-line-1" x1="3" y1="9" x2="21" y2="9" class="menu-line transition-all duration-300 origin-center"/>
                     <line id="menu-line-2" x1="3" y1="15" x2="21" y2="15" class="menu-line transition-all duration-300 origin-center"/>
                 </svg>
             </div>
+            
             <!-- Menu Text -->
-            <div>
-                <h4 class="font-semibold text-white">Menu</h4>
+            <div style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                <h4 class="font-semibold text-white" style="color: white !important; display: block !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important;">Menu</h4>
             </div>
         </button>
     </template>
