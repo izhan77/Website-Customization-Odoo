@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Fixed Custom Homepage Structure -->
     <template id="custom_homepage" name="Custom Homepage" inherit_id="website.homepage">
         <xpath expr="//div[@id='wrap']" position="replace">
             <div id="wrap" class="js_fullheight">
-                <!-- Fixed structure with proper spacing -->
                 <main class="main-content">
-                    <!-- Hero Section -->
                     <section class="hero-section">
                         <t t-call="website_customizations.hero_section_carousel"/>
                     </section>
 
-                    <!-- Category Strip - Properly positioned -->
-                    <section class="category-strip-section" id="category-strip-wrapper">
+                    <div id="category-strip-wrapper" class="category-strip-container">
                         <t t-call="website_customizations.category_strip_complete"/>
-                    </section>
+                    </div>
 
-                    <!-- All Menu Sections with proper spacing -->
                     <section class="menu-sections">
                         <t t-call="website_customizations.menu_sections_complete"/>
                     </section>
-
-                    <!-- Cart Components (commented out as mentioned) -->
-                    <!-- <t t-call="website_customizations.cart_view_popup"/> -->
-                    <!-- <t t-call="website_customizations.cart_sidebar"/> -->
                 </main>
             </div>
         </xpath>

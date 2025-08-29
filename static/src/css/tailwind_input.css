@@ -20,7 +20,6 @@
     font-style: normal;
 }
 
-
 /* Roboto Condensed font faces */
 @font-face {
     font-family: 'Roboto Condensed';
@@ -54,3 +53,71 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* UPDATED: Minimal scroll margins for closer headings */
+.menu-section {
+    position: relative;
+    scroll-margin-top: 40px; /* Reduced from 140px for closer positioning */
+}
+
+/* Category strip placeholder - FIXED VERSION */
+.category-strip-placeholder {
+    width: 100%;
+    height: 0px !important;
+    background: transparent;
+    display: none;
+    transition: height 0.3s ease;
+    visibility: hidden;
+    min-height: 0px !important;
+    max-height: none !important;
+}
+
+/* When category strip is sticky, placeholder maintains the space */
+.category-strip-container.sticky .category-strip-placeholder {
+    display: block !important;
+    height: 60px;
+    visibility: hidden !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+    .menu-section {
+        scroll-margin-top: 30px; /* Reduced from 100px */
+    }
+}
+
+/* Product cards styling */
+.product-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Add to cart button styling */
+.add-to-cart-btn {
+    background-color: #7abfba;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #6aa9a4;
+    transform: translateY(-2px);
+}
+
+.mobile-menu:not(.hidden) ~ * .category-strip-container,
+#mobile-categories-popup:not(.hidden) ~ * .category-strip-container {
+    z-index: 500 !important;
+}

@@ -52,44 +52,32 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            # Core Assets
-            'website_customizations/static/src/js/tailwind_config.js',
+            # CRITICAL: Load scroll utilities FIRST
+            'website_customizations/static/src/js/utils/scroll_utils.js',
+
+            # Core CSS and config
             'website_customizations/static/src/css/tailwind_input.css',
+            'website_customizations/static/src/js/tailwind_config.js',
 
-            # CLEAN Navbar CSS + JS (REMOVED PROBLEMATIC FILES)
+            # Component CSS files
             'website_customizations/static/src/css/components/navbar/navbar.css',
-            'website_customizations/static/src/js/components/navbar/navbar.js',
-
-            # Mobile Categories CSS
             'website_customizations/static/src/css/components/navbar/mobile_categories.css',
-
-            # Menu popup
             'website_customizations/static/src/css/components/navbar/menu_popup.css',
-            'website_customizations/static/src/js/components/navbar/menu_popup.js',
-
-            # Hero Section CSS + JS
             'website_customizations/static/src/css/components/hero_section/hero_carousel_base.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
-
-            # Category Strip CSS + JS
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
-            'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
-
-            # Product Cards CSS + JS
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
-
-            # CLEAN Cart CSS + JS (REMOVED PROBLEMATIC FILES)
-            # 'website_customizations/static/src/css/components/cart_popup/cart_popup.css',
-            # 'website_customizations/static/src/js/components/cart_popup/cart_popup.js',
-
-            # Checkout CSS + JS
-            # 'website_customizations/static/src/css/components/checkout/checkout.css',
-            # 'website_customizations/static/src/js/components/checkout/checkout.js',
-
-            # Footer CSS
             'website_customizations/static/src/css/components/footer/footer.css',
+
+            # JavaScript files in dependency order
+            'website_customizations/static/src/js/components/hero_section/hero_carousel_config.js',
+            'website_customizations/static/src/js/components/navbar/menu_popup.js',
+            'website_customizations/static/src/js/components/navbar/navbar_mobile.js',
+
+            # IMPORTANT: Category strip loads LAST (depends on scroll utils)
+            'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
         ],
     },
     'installable': True,

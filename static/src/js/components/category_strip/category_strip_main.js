@@ -1,16 +1,7 @@
 /**
- * Enhanced Category Strip with FIXED Scrolling Functionality
- * FIXED: Precise scrolling to sections with accurate offset calculations
- * ADDED: Menu popup interference prevention
+ * ENHANCED PERFECT STICKY Category Strip with BULLETPROOF Positioning
+ * File: /website_customizations/static/src/js/components/category_strip/category_strip_main.js
  */
-
-// ================================= MENU POPUP INTERFERENCE PREVENTION =================================
-/**
- * Check if menu popup is currently scrolling and we should stay silent
- */
-function shouldStayQuietForMenuPopup() {
-    return window.menuPopupScrolling === true;
-}
 
 class CategoryStripComplete {
     constructor() {
@@ -20,7 +11,6 @@ class CategoryStripComplete {
         this.leftArrow = null;
         this.rightArrow = null;
         this.placeholder = null;
-        this.scrollAmount = 200;
         this.currentTransform = 0;
         this.isSticky = false;
         this.originalTop = 0;
@@ -30,7 +20,10 @@ class CategoryStripComplete {
         this.navbarHeight = 0;
         this.isNavigating = false;
         this.categoryStripHeight = 0;
-        this.lastKnownOffset = null;
+        this.stickyOffset = 0;
+        this.categoryButtons = [];
+        this.sectionObserver = null;
+        this.lastActiveSection = null;
 
         this.init();
     }
@@ -45,75 +38,377 @@ class CategoryStripComplete {
 
     setup() {
         this.categoryStrip = document.getElementById('category-strip-wrapper');
-        this.navbar = document.querySelector('header, .navbar, #main-navbar, nav');
         this.scrollContainer = document.getElementById('categories-container');
         this.leftArrow = document.getElementById('scroll-left');
         this.rightArrow = document.getElementById('scroll-right');
 
         if (!this.categoryStrip || !this.scrollContainer || !this.leftArrow || !this.rightArrow) {
-            console.warn('Category strip elements not found, retrying...');
             setTimeout(() => this.setup(), 500);
             return;
         }
 
-        this.originalTop = this.categoryStrip.offsetTop;
-        this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
-        this.categoryStripHeight = this.categoryStrip.offsetHeight;
+        // Get all category buttons
+        this.categoryButtons = Array.from(this.scrollContainer.querySelectorAll('.category-item'));
 
-        this.createPlaceholder();
+        this.findOrCreatePlaceholder();
+        this.calculateDimensions();
         this.setupHorizontalScroll();
-        this.setupCategoryClicks();
-        this.setupStickyBehavior();
-        this.setupActiveStates();
+        this.setupBulletproofStickyBehavior();
+        this.setupEnhancedScrolling();
+        this.setupMenuSectionObserver();
+        this.setupScrollListener();
 
-        // Update arrow states after initialization
         setTimeout(() => this.updateArrowStates(), 100);
-
-        console.log('Enhanced Category Strip initialized successfully!');
-        console.log('Navbar height:', this.navbarHeight);
-        console.log('Category strip height:', this.categoryStripHeight);
-        console.log('Original top:', this.originalTop);
     }
 
-    createPlaceholder() {
-        let placeholder = document.querySelector('.category-strip-placeholder');
-        if (!placeholder) {
-            placeholder = document.createElement('div');
-            placeholder.className = 'category-strip-placeholder';
-            this.categoryStrip.parentNode.insertBefore(placeholder, this.categoryStrip.nextSibling);
+    calculateDimensions() {
+        this.originalTop = this.categoryStrip.offsetTop;
+        this.categoryStripHeight = this.categoryStrip.offsetHeight;
+        this.stickyOffset = 0;
+    }
+
+    findOrCreatePlaceholder() {
+        this.placeholder = document.querySelector('.category-strip-placeholder');
+
+        if (!this.placeholder) {
+            this.placeholder = document.createElement('div');
+            this.placeholder.className = 'category-strip-placeholder';
+            this.categoryStrip.parentNode.insertBefore(this.placeholder, this.categoryStrip.nextSibling);
         }
-        this.placeholder = placeholder;
+
+        this.resetPlaceholder();
+    }
+
+    resetPlaceholder() {
+        if (this.placeholder) {
+            this.placeholder.style.height = '0px';
+            this.placeholder.style.display = 'none';
+        }
+    }
+
+    setupBulletproofStickyBehavior() {
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.handleBulletproofStickyScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('resize', () => {
+            this.recalculateDimensions();
+        });
+    }
+
+    handleBulletproofStickyScroll() {
+        if (!this.categoryStrip || (window.scrollUtils && window.scrollUtils.isScrolling)) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const shouldBeSticky = scrollTop > this.originalTop;
+
+        if (shouldBeSticky && !this.isSticky) {
+            this.makeBulletproofSticky();
+        } else if (!shouldBeSticky && this.isSticky) {
+            this.removeBulletproofSticky();
+        }
+    }
+
+    makeBulletproofSticky() {
+        if (this.isSticky) return;
+
+        this.isSticky = true;
+        const exactHeight = this.categoryStrip.offsetHeight;
+
+        if (this.placeholder) {
+            this.placeholder.style.height = exactHeight + 'px';
+            this.placeholder.style.display = 'block';
+        }
+
+        this.categoryStrip.style.position = 'fixed';
+        this.categoryStrip.style.top = this.stickyOffset + 'px';
+        this.categoryStrip.style.left = '0';
+        this.categoryStrip.style.right = '0';
+        this.categoryStrip.style.zIndex = '9999';
+        this.categoryStrip.style.width = '100%';
+        this.categoryStrip.classList.add('sticky');
+    }
+
+    removeBulletproofSticky() {
+        if (!this.isSticky) return;
+
+        this.isSticky = false;
+
+        if (this.placeholder) {
+            this.placeholder.style.height = '0px';
+            this.placeholder.style.display = 'none';
+        }
+
+        this.categoryStrip.style.position = '';
+        this.categoryStrip.style.top = '';
+        this.categoryStrip.style.left = '';
+        this.categoryStrip.style.right = '';
+        this.categoryStrip.style.zIndex = '';
+        this.categoryStrip.style.width = '';
+        this.categoryStrip.classList.remove('sticky');
+    }
+
+    recalculateDimensions() {
+        if (!this.isSticky) {
+            this.originalTop = this.categoryStrip.offsetTop;
+        }
+        this.categoryStripHeight = this.categoryStrip.offsetHeight;
+
+        if (this.isSticky && this.placeholder) {
+            const currentHeight = this.categoryStrip.offsetHeight;
+            this.placeholder.style.height = currentHeight + 'px';
+            this.categoryStrip.style.top = this.stickyOffset + 'px';
+        }
     }
 
     setupHorizontalScroll() {
         this.leftArrow.addEventListener('click', (e) => {
             e.preventDefault();
             this.hasUserScrolled = true;
-            this.scrollLeft();
+            this.smartScrollLeft();
         });
 
         this.rightArrow.addEventListener('click', (e) => {
             e.preventDefault();
             this.hasUserScrolled = true;
-            this.scrollRight();
+            this.smartScrollRight();
         });
 
         this.setupTouchScrolling();
         this.setupWheelScrolling();
+
         window.addEventListener('resize', () => {
-            this.updateDimensions();
             this.updateArrowStates();
         });
     }
 
-    updateDimensions() {
-        // CRITICAL: Don't interfere if menu popup is scrolling
-        if (shouldStayQuietForMenuPopup()) return;
+    smartScrollLeft() {
+        const containerWidth = this.scrollContainer.parentElement.offsetWidth;
+        const averageButtonWidth = this.calculateAverageButtonWidth();
+        const buttonsToShow = 3;
+        const smartScrollAmount = averageButtonWidth * buttonsToShow;
 
-        this.originalTop = this.categoryStrip.offsetTop;
-        this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 0;
-        this.categoryStripHeight = this.categoryStrip.offsetHeight;
-        console.log('Updated dimensions - Navbar:', this.navbarHeight, 'Strip:', this.categoryStripHeight);
+        const maxScroll = 0;
+        this.smoothScrollTo(Math.min(this.currentTransform + smartScrollAmount, maxScroll));
+    }
+
+    smartScrollRight() {
+        const containerWidth = this.scrollContainer.parentElement.offsetWidth;
+        const contentWidth = this.scrollContainer.scrollWidth;
+        const averageButtonWidth = this.calculateAverageButtonWidth();
+        const buttonsToShow = 3;
+        const smartScrollAmount = averageButtonWidth * buttonsToShow;
+
+        const maxScroll = -(contentWidth - containerWidth);
+        this.smoothScrollTo(Math.max(this.currentTransform - smartScrollAmount, maxScroll));
+    }
+
+    calculateAverageButtonWidth() {
+        if (this.categoryButtons.length === 0) return 120;
+
+        let totalWidth = 0;
+        this.categoryButtons.forEach(button => {
+            totalWidth += button.offsetWidth + 12;
+        });
+
+        return totalWidth / this.categoryButtons.length;
+    }
+
+    setupEnhancedScrolling() {
+        // Store original handler
+        const originalHandleCategoryClick = window.handleCategoryClick;
+
+        if (originalHandleCategoryClick) {
+            window.handleCategoryClick = function(event) {
+                event.preventDefault();
+
+                const href = this.getAttribute('href');
+                if (!href || !href.startsWith('#')) return;
+
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (!targetElement) return;
+
+                // Set active state immediately
+                const activeItem = document.querySelector(`.category-item[href="#${targetId}"]`);
+                if (activeItem && window.categoryStripComplete) {
+                    window.categoryStripComplete.setActiveCategory(activeItem);
+                    window.categoryStripComplete.centerActiveItem(activeItem);
+                }
+
+                // Call original handler for vertical scrolling
+                originalHandleCategoryClick.call(this, event);
+            };
+        }
+
+        // Re-attach handlers with new behavior
+        setTimeout(() => {
+            const items = document.querySelectorAll('.category-item');
+            items.forEach(item => {
+                item.removeEventListener('click', window.handleCategoryClick);
+                item.addEventListener('click', window.handleCategoryClick);
+            });
+        }, 300);
+    }
+
+    setupScrollListener() {
+        let ticking = false;
+        let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking && !this.isNavigating &&
+                (!window.scrollUtils || !window.scrollUtils.isScrolling)) {
+                requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                    // Only detect scroll direction if there's significant movement
+                    if (Math.abs(scrollTop - lastScrollTop) > 50) {
+                        this.detectActiveSectionOnScroll();
+                        lastScrollTop = scrollTop;
+                    }
+
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    detectActiveSectionOnScroll() {
+        const sections = document.querySelectorAll('section[id]');
+        if (!sections.length) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const offset = this.isSticky ? this.categoryStripHeight + 30 : 200;
+
+        let activeSection = null;
+        let closestDistance = Infinity;
+
+        sections.forEach(section => {
+            if (!section.id) return;
+
+            const rect = section.getBoundingClientRect();
+            const sectionTop = rect.top + scrollTop;
+            const sectionHeight = rect.height;
+            const sectionBottom = sectionTop + sectionHeight;
+
+            // Calculate distance from viewport center
+            const viewportCenter = scrollTop + (windowHeight / 2);
+            const sectionCenter = sectionTop + (sectionHeight / 2);
+            const distance = Math.abs(viewportCenter - sectionCenter);
+
+            // Check if section is in view
+            const isInView = (
+                (sectionTop <= scrollTop + windowHeight - offset) &&
+                (sectionBottom >= scrollTop + offset)
+            );
+
+            if (isInView && distance < closestDistance) {
+                closestDistance = distance;
+                activeSection = section.id;
+            }
+        });
+
+        if (activeSection && activeSection !== this.lastActiveSection) {
+            this.lastActiveSection = activeSection;
+            const activeItem = document.querySelector(`.category-item[href="#${activeSection}"]`);
+
+            if (activeItem) {
+                this.setActiveCategory(activeItem);
+
+                // Auto-scroll the category strip to show the active button
+                if (!this.isItemFullyVisible(activeItem)) {
+                    this.centerActiveItem(activeItem);
+                }
+            }
+        }
+    }
+
+    setupMenuSectionObserver() {
+        const sections = document.querySelectorAll('section[id]');
+        if (!sections.length) return;
+
+        if (this.sectionObserver) {
+            this.sectionObserver.disconnect();
+        }
+
+        const options = {
+            root: null,
+            rootMargin: `-${this.categoryStripHeight + 50}px 0px -${window.innerHeight - this.categoryStripHeight - 150}px 0px`,
+            threshold: 0.2
+        };
+
+        this.sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.isNavigating &&
+                    (!window.scrollUtils || !window.scrollUtils.isScrolling)) {
+                    const sectionId = entry.target.id;
+                    const activeItem = document.querySelector(`.category-item[href="#${sectionId}"]`);
+
+                    if (activeItem) {
+                        this.setActiveCategory(activeItem);
+
+                        // Auto-scroll the category strip when section comes into view
+                        if (!this.isItemFullyVisible(activeItem)) {
+                            this.centerActiveItem(activeItem);
+                        }
+                    }
+                }
+            });
+        }, options);
+
+        sections.forEach(section => {
+            this.sectionObserver.observe(section);
+        });
+    }
+
+    isItemFullyVisible(item) {
+        if (!item) return false;
+
+        const wrapper = document.getElementById('categories-wrapper');
+        if (!wrapper) return false;
+
+        const itemRect = item.getBoundingClientRect();
+        const wrapperRect = wrapper.getBoundingClientRect();
+
+        return (
+            itemRect.left >= wrapperRect.left &&
+            itemRect.right <= wrapperRect.right
+        );
+    }
+
+    centerActiveItem(item) {
+        if (!item || this.isNavigating) return;
+
+        const wrapper = document.getElementById('categories-wrapper');
+        if (!wrapper) return;
+
+        const itemOffsetLeft = item.offsetLeft;
+        const wrapperWidth = wrapper.offsetWidth;
+        const itemWidth = item.offsetWidth;
+
+        // Calculate position to show 2-3 buttons visible around the active one
+        const buttonsToShowBefore = 1.5;
+        const averageButtonWidth = this.calculateAverageButtonWidth();
+        const offset = averageButtonWidth * buttonsToShowBefore;
+
+        const scrollPosition = itemOffsetLeft - offset;
+        const contentWidth = this.scrollContainer.scrollWidth;
+        const maxScroll = 0;
+        const minScroll = -(contentWidth - wrapperWidth);
+
+        const targetTransform = Math.max(Math.min(-scrollPosition, maxScroll), minScroll);
+        this.smoothScrollTo(targetTransform);
     }
 
     setupTouchScrolling() {
@@ -124,6 +419,7 @@ class CategoryStripComplete {
         this.scrollContainer.addEventListener('mousedown', (e) => {
             if (this.isNavigating) return;
             isDown = true;
+            this.hasUserScrolled = true;
             startX = e.pageX - this.scrollContainer.offsetLeft;
             scrollLeft = this.currentTransform;
             this.scrollContainer.style.cursor = 'grabbing';
@@ -153,6 +449,7 @@ class CategoryStripComplete {
         this.scrollContainer.addEventListener('touchstart', (e) => {
             if (this.isNavigating) return;
             isDown = true;
+            this.hasUserScrolled = true;
             startX = e.touches[0].pageX - this.scrollContainer.offsetLeft;
             scrollLeft = this.currentTransform;
         }, { passive: true });
@@ -177,6 +474,7 @@ class CategoryStripComplete {
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 e.preventDefault();
                 this.currentTransform -= e.deltaX * 1.5;
+                this.hasUserScrolled = true;
 
                 const containerWidth = this.scrollContainer.parentElement.offsetWidth;
                 const contentWidth = this.scrollContainer.scrollWidth;
@@ -185,21 +483,8 @@ class CategoryStripComplete {
                 this.currentTransform = Math.min(Math.max(this.currentTransform, maxScroll), 0);
                 this.applyTransform();
                 this.updateArrowStates();
-                this.hasUserScrolled = true;
             }
         }, { passive: false });
-    }
-
-    scrollLeft() {
-        const maxScroll = 0;
-        this.smoothScrollTo(Math.min(this.currentTransform + this.scrollAmount, maxScroll));
-    }
-
-    scrollRight() {
-        const containerWidth = this.scrollContainer.parentElement.offsetWidth;
-        const contentWidth = this.scrollContainer.scrollWidth;
-        const maxScroll = -(contentWidth - containerWidth);
-        this.smoothScrollTo(Math.max(this.currentTransform - this.scrollAmount, maxScroll));
     }
 
     smoothScrollTo(targetPosition) {
@@ -209,7 +494,7 @@ class CategoryStripComplete {
 
         const startPosition = this.currentTransform;
         const distance = targetPosition - startPosition;
-        const duration = 300;
+        const duration = 400;
         let startTime = null;
 
         const animateScroll = (currentTime) => {
@@ -251,9 +536,7 @@ class CategoryStripComplete {
         if (this.currentTransform >= 0) {
             this.leftArrow.classList.add('disabled');
             this.leftArrow.disabled = true;
-            if (!this.hasUserScrolled || this.currentTransform === 0) {
-                this.leftArrow.style.display = 'none';
-            }
+            this.leftArrow.style.display = 'none';
         } else {
             this.leftArrow.classList.remove('disabled');
             this.leftArrow.disabled = false;
@@ -272,281 +555,46 @@ class CategoryStripComplete {
         }
     }
 
-    setupStickyBehavior() {
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    this.handleStickyScroll();
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }, { passive: true });
-
-        window.addEventListener('resize', () => {
-            this.updateDimensions();
-            this.updateArrowStates();
-        });
-    }
-
-    handleStickyScroll() {
-        // CRITICAL: Stay quiet if menu popup is scrolling
-        if (shouldStayQuietForMenuPopup()) return;
-
-        if (!this.categoryStrip) return;
-
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const shouldBeSticky = scrollTop >= this.originalTop;
-
-        if (shouldBeSticky && !this.isSticky) {
-            this.makeSticky();
-        } else if (!shouldBeSticky && this.isSticky) {
-            this.removeSticky();
-        }
-    }
-
-    makeSticky() {
-        if (this.isSticky) return;
-
-        this.isSticky = true;
-        const stripHeight = this.categoryStrip.offsetHeight;
-
-        // Set placeholder
-        this.placeholder.style.height = stripHeight + 'px';
-        this.placeholder.style.display = 'block';
-
-        // Apply sticky styles
-        this.categoryStrip.classList.add('sticky');
-    }
-
-    removeSticky() {
-        if (!this.isSticky) return;
-
-        this.isSticky = false;
-
-        // Remove placeholder
-        this.placeholder.style.height = '0px';
-        this.placeholder.style.display = 'none';
-
-        // Remove sticky styles
-        this.categoryStrip.classList.remove('sticky');
-    }
-
-    setupCategoryClicks() {
-        const categoryItems = document.querySelectorAll('.category-item');
-
-        categoryItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.isNavigating = true;
-
-                const href = item.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    const sectionId = href.substring(1);
-                    console.log('Category Strip - Clicked section ID:', sectionId);
-                    this.scrollToSection(sectionId, item);
-                }
-
-                // Reset navigation flag after a delay
-                setTimeout(() => {
-                    this.isNavigating = false;
-                }, 1000);
-            });
-        });
-    }
-
-    scrollToSection(sectionId, clickedItem) {
-        // Set active category immediately
-        this.setActiveCategory(clickedItem);
-
-        // Find the target section - FIXED LOGIC
-        let targetElement = document.getElementById(sectionId);
-
-        console.log('Category Strip - Looking for section:', sectionId);
-        console.log('Category Strip - Found element:', targetElement);
-
-        if (!targetElement) {
-            console.warn(`Category Strip - Section with ID "${sectionId}" not found`);
-            return;
-        }
-
-        // FIXED: Calculate precise scroll position
-        this.scrollToExactSection(targetElement);
-
-        // Update URL hash after scroll
-        setTimeout(() => {
-            history.replaceState(null, null, `#${sectionId}`);
-        }, 600);
-
-        // Scroll category into view in the strip
-        this.scrollCategoryIntoView(clickedItem);
-    }
-
-    scrollToExactSection(targetElement) {
-        // FIXED: More precise offset calculation
-        const offset = this.calculatePreciseScrollOffset();
-        const elementPosition = this.getElementTop(targetElement);
-        const offsetPosition = elementPosition - offset;
-
-        console.log('Category Strip - Element position:', elementPosition);
-        console.log('Category Strip - Calculated offset:', offset);
-        console.log('Category Strip - Final scroll position:', offsetPosition);
-
-        // Smooth scroll to section with precise positioning
-        window.scrollTo({
-            top: Math.max(0, offsetPosition), // Ensure we don't scroll to negative position
-            behavior: 'smooth'
-        });
-    }
-
-    getElementTop(element) {
-        // More accurate way to get element's top position
-        const rect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return rect.top + scrollTop;
-    }
-
-    calculatePreciseScrollOffset() {
-        // CRITICAL: Don't interfere if menu popup is scrolling
-        if (shouldStayQuietForMenuPopup()) {
-            // Return cached value instead of recalculating
-            return this.lastKnownOffset || 134;
-        }
-
-        // FIXED: Always calculate as if category strip will be sticky
-        let totalOffset = this.categoryStripHeight;
-
-        // Add navbar height if it exists and is visible
-        if (this.navbar) {
-            const navbarStyle = window.getComputedStyle(this.navbar);
-            if (navbarStyle.position === 'fixed' || navbarStyle.position === 'sticky') {
-                totalOffset += this.navbarHeight;
-            }
-        }
-
-        // Add a small buffer for perfect alignment (REDUCED from 20 to 10)
-        totalOffset += 10;
-
-        // Only log if not staying quiet
-        console.log('Calculated offset - Navbar:', this.navbarHeight, 'Strip:', this.categoryStripHeight, 'Total:', totalOffset);
-
-        // Cache the result
-        this.lastKnownOffset = totalOffset;
-        return totalOffset;
-    }
-
-    setupActiveStates() {
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking && !this.isNavigating) {
-                requestAnimationFrame(() => {
-                    this.updateActiveStateOnScroll();
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }, { passive: true });
-    }
-
-    updateActiveStateOnScroll() {
-        // CRITICAL: Don't interfere with menu popup scrolling
-        if (this.isNavigating || shouldStayQuietForMenuPopup()) return;
-
-        // Look for sections with IDs that match your category links
-        const sections = document.querySelectorAll('section[id]');
-        const scrollTop = window.pageYOffset + this.calculatePreciseScrollOffset();
-
-        let activeSection = null;
-        let closestDistance = Infinity;
-
-        sections.forEach(section => {
-            if (!section.id) return;
-
-            const top = this.getElementTop(section);
-            const distance = Math.abs(top - scrollTop);
-
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                activeSection = section.id;
-            }
-        });
-
-        if (activeSection) {
-            // Find category item that matches the section ID exactly
-            const activeItem = document.querySelector(`.category-item[href="#${activeSection}"]`);
-
-            if (activeItem) {
-                this.setActiveCategory(activeItem);
-                // Only auto-scroll category strip if user hasn't manually scrolled it recently
-                if (!this.hasUserScrolled) {
-                    this.scrollCategoryIntoView(activeItem);
-                }
-            }
-        }
-    }
-
-    scrollCategoryIntoView(categoryItem) {
-        if (this.isNavigating) return;
-
-        const wrapper = document.getElementById('categories-wrapper');
-        if (!wrapper || !categoryItem) return;
-
-        const itemRect = categoryItem.getBoundingClientRect();
-        const wrapperRect = wrapper.getBoundingClientRect();
-
-        if (itemRect.left < wrapperRect.left || itemRect.right > wrapperRect.right) {
-            const itemOffsetLeft = categoryItem.offsetLeft;
-            const wrapperWidth = wrapper.offsetWidth;
-            const itemWidth = categoryItem.offsetWidth;
-            const scrollPosition = itemOffsetLeft - (wrapperWidth / 2) + (itemWidth / 2);
-
-            const contentWidth = this.scrollContainer.scrollWidth;
-            const maxScroll = 0;
-            const minScroll = -(contentWidth - wrapperWidth);
-
-            this.smoothScrollTo(Math.max(Math.min(-scrollPosition, maxScroll), minScroll));
-        }
-    }
-
     setActiveCategory(activeItem) {
-        // Remove active class from all items
         document.querySelectorAll('.category-item').forEach(item => {
             item.classList.remove('active');
         });
 
-        // Add active class to current item
         if (activeItem) {
             activeItem.classList.add('active');
         }
     }
 
-    // Public method to scroll to a specific section (can be called externally)
+    destroy() {
+        if (this.sectionObserver) {
+            this.sectionObserver.disconnect();
+        }
+    }
+
     navigateToSection(sectionId) {
         const categoryItem = document.querySelector(`.category-item[href="#${sectionId}"]`);
         if (categoryItem) {
             categoryItem.click();
         }
     }
+}
 
-    // Public method to get current active section
-    getCurrentActiveSection() {
-        const activeItem = document.querySelector('.category-item.active');
-        return activeItem ? activeItem.getAttribute('href').substring(1) : null;
+// Initialize
+function initializeCategoryStrip() {
+    if (typeof window.scrollToSectionWithPrecision === 'function') {
+        if (window.categoryStripComplete) {
+            window.categoryStripComplete.destroy();
+        }
+
+        window.categoryStripComplete = new CategoryStripComplete();
+    } else {
+        setTimeout(initializeCategoryStrip, 200);
     }
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    window.categoryStripComplete = new CategoryStripComplete();
-});
-
-// Also initialize immediately if DOM is already loaded
-if (document.readyState !== 'loading') {
-    window.categoryStripComplete = new CategoryStripComplete();
-}
-
-// Export for use in other scripts if needed
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CategoryStripComplete;
+// Initialize when ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCategoryStrip);
+} else {
+    initializeCategoryStrip();
 }

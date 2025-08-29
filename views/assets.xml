@@ -1,79 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Load Tailwind CDN first -->
-    <template id="tailwind_cdn" inherit_id="web.layout">
-        <xpath expr="//head" position="inside">
-            <script src="https://cdn.tailwindcss.com"></script>
-        </xpath>
-    </template>
-
-    <!-- Load custom fonts and config -->
+    <!-- Clean Assets Loading - Using your existing files -->
     <template id="custom_assets" inherit_id="website.layout" name="Custom Assets">
         <xpath expr="//head" position="inside">
-            <!-- Custom CSS with fonts - load after Tailwind -->
-            <link rel="stylesheet" type="text/css" href="/website_customizations/static/src/css/tailwind_input.css"/>
+            <!-- Load Tailwind CDN -->
+            <script src="https://cdn.tailwindcss.com"></script>
 
-            <!-- Tailwind Config -->
-            <script type="text/javascript" src="/website_customizations/static/src/js/tailwind_config.js"></script>
-
-            <!-- Navbar specific assets -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/navbar/navbar.css"/>
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/navbar/mobile_categories.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/navbar/navbar.js"></script>
-
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/navbar/menu_popup.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
-
-            <!-- ================================= HERO SECTION MODULAR COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_base.css"/>
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css"/>
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css"/>
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
-
-            <!-- ================================= CATEGORY STRIP MODULAR COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/category_strip/category_strip.css"/>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
-
-            <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/product_cards/single_product_card.css"/>
-
-
-            <!-- ================================= PRODUCT CARDS MODULAR COMPONENTS ================================= -->
-            <!--            <link rel="stylesheet" type="text/css"-->
-            <!--                  href="/website_customizations/static/src/css/components/cart_popup/cart_popup_clean.css"/>-->
-            <!--            <script type="text/javascript"-->
-            <!--                    src="/website_customizations/static/src/js/components/cart_popup/cart_popup.js"></script>-->
-
-            <!-- ================================= CHECKOUT MODULAR COMPONENTS ================================= -->
-            <!--            <link rel="stylesheet" type="text/css"-->
-            <!--                  href="/website_customizations/static/src/css/components/checkout/checkout.css"/>-->
-            <!--            <script type="text/javascript"-->
-            <!--                    src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>-->
-
-            <!-- ================================= FOOTER COMPONENTS ================================= -->
-            <link rel="stylesheet" type="text/css"
-                  href="/website_customizations/static/src/css/components/footer/footer.css"/>
-
-            <!-- Force font loading -->
+            <!-- Basic styling for proper z-index and layout -->
             <style>
-                * {
-                font-family: 'Montserrat', sans-serif !important;
+                /* Ensure proper z-index layering */
+                .navbar, header {
+                    z-index: 999;
+                }
+
+                .menu-categories-popup {
+                    z-index: 998;
+                }
+
+                .mobile-categories-popup {
+                    z-index: 1001;
+                }
+
+                /* Smooth scroll disabled - let JS handle it */
+                html {
+                    scroll-behavior: auto;
                 }
             </style>
+        </xpath>
+
+        <!-- Load JavaScript files in correct order at bottom -->
+        <xpath expr="//body" position="inside">
+            <!-- STEP 1: Core scroll utilities FIRST -->
+            <script type="text/javascript" src="/website_customizations/static/src/js/utils/scroll_utils.js"></script>
+
+            <!-- STEP 2: Component scripts in dependency order -->
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar_mobile.js"></script>
+
+            <!-- STEP 3: Category strip LAST -->
+            <script type="text/javascript" src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
         </xpath>
     </template>
 </odoo>
