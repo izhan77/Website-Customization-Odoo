@@ -1,6 +1,5 @@
 /**
- * FIXED Mobile Menu System - Bulletproof Solution
- * This fixes the flash/hide issue by properly managing display states
+ * FIXED Mobile Menu System - Prevents Menu Closing When Clicking Categories Popup
  */
 (function() {
     'use strict';
@@ -56,7 +55,7 @@
     }
 
     /**
-     * FIXED: Open the main mobile menu - No more flashing!
+     * Open the main mobile menu
      */
     function openMainMenu() {
         const mobileMenu = document.getElementById('mobile-menu');
@@ -70,17 +69,17 @@
         console.log('Opening main menu');
         isMainMenuOpen = true;
 
-        // STEP 1: Show the overlay immediately
+        // Show the overlay immediately
         mobileMenu.classList.remove('hidden');
         mobileMenu.style.display = 'block';
         mobileMenu.style.visibility = 'visible';
         mobileMenu.style.opacity = '1';
 
-        // STEP 2: Reset content position to hidden state
+        // Reset content position to hidden state
         menuContent.style.transform = 'translateY(-100%)';
         menuContent.classList.remove('menu-open');
 
-        // STEP 3: Force a reflow then animate in
+        // Force a reflow then animate in
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 menuContent.style.transform = 'translateY(0)';
@@ -93,7 +92,7 @@
     }
 
     /**
-     * FIXED: Close the main mobile menu - Smooth closing
+     * Close the main mobile menu
      */
     function closeMainMenu() {
         const mobileMenu = document.getElementById('mobile-menu');
@@ -104,11 +103,11 @@
         console.log('Closing main menu');
         isMainMenuOpen = false;
 
-        // STEP 1: Animate content out
+        // Animate content out
         menuContent.style.transform = 'translateY(-100%)';
         menuContent.classList.remove('menu-open');
 
-        // STEP 2: Hide overlay after animation completes
+        // Hide overlay after animation completes
         setTimeout(() => {
             if (!isMainMenuOpen && mobileMenu) {
                 mobileMenu.style.opacity = '0';
@@ -118,12 +117,16 @@
             }
         }, 500);
 
-        toggleBodyScroll(false);
+        // IMPORTANT: Only restore scrolling if categories popup is also closed
+        if (!isCategoriesPopupOpen) {
+            toggleBodyScroll(false);
+        }
+
         toggleHamburgerIcon(false);
     }
 
     /**
-     * FIXED: Show categories popup
+     * Show categories popup
      */
     function showCategoriesPopup() {
         const popup = document.getElementById('mobile-categories-popup');
@@ -136,10 +139,13 @@
         popup.style.visibility = 'visible';
         popup.style.opacity = '1';
         popup.classList.remove('hidden');
+
+        // Ensure scrolling remains locked when popup opens
+        toggleBodyScroll(true);
     }
 
     /**
-     * FIXED: Hide categories popup
+     * Hide categories popup
      */
     function hideCategoriesPopup() {
         const popup = document.getElementById('mobile-categories-popup');
@@ -152,10 +158,15 @@
         popup.style.visibility = 'hidden';
         popup.style.display = 'none';
         popup.classList.add('hidden');
+
+        // IMPORTANT: Only restore scrolling if main menu is also closed
+        if (!isMainMenuOpen) {
+            toggleBodyScroll(false);
+        }
     }
 
     /**
-     * FIXED: Initialize mobile menu system with better error handling
+     * Initialize mobile menu system
      */
     function initMobileMenu() {
         if (mobileMenuInitialized) return true;
@@ -177,7 +188,6 @@
         };
 
         if (!checkElements()) {
-            // Retry after a short delay
             setTimeout(() => {
                 if (!mobileMenuInitialized) {
                     initMobileMenu();
@@ -195,7 +205,7 @@
         const categoriesTrigger = document.getElementById('mobile-menu-categories-trigger');
         const categoriesCloseBtn = document.getElementById('mobile-categories-close');
 
-        // FIXED: Main menu toggle with better event handling
+        // Main menu toggle
         mobileMenuButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -227,10 +237,24 @@
             });
         }
 
-        // FIXED: Better outside click handling
+        // FIXED: Better outside click handling - prevents main menu from closing when clicking categories popup
         document.addEventListener('click', function(e) {
-            // Close main menu when clicking outside
-            if (isMainMenuOpen) {
+            // Close categories popup when clicking outside (but not on main menu content)
+            if (isCategoriesPopupOpen) {
+                const categoriesPopup = document.getElementById('mobile-categories-popup');
+                const container = categoriesPopup ? categoriesPopup.querySelector('.mobile-categories-container') : null;
+                const menuContent = document.getElementById('menu-content-container');
+
+                // Only close if clicking outside both the categories popup AND the main menu content
+                if (categoriesPopup && container &&
+                    !container.contains(e.target) &&
+                    (!menuContent || !menuContent.contains(e.target))) {
+                    hideCategoriesPopup();
+                }
+            }
+
+            // Close main menu when clicking outside (but only if categories popup is not open)
+            else if (isMainMenuOpen && !isCategoriesPopupOpen) {
                 const menuButton = document.getElementById('mobile-menu-toggle');
                 const mobileMenu = document.getElementById('mobile-menu');
                 const menuContent = document.getElementById('menu-content-container');
@@ -239,17 +263,6 @@
                     !menuContent.contains(e.target) &&
                     !menuButton.contains(e.target)) {
                     closeMainMenu();
-                }
-            }
-
-            // Close categories popup when clicking outside
-            if (isCategoriesPopupOpen) {
-                const categoriesPopup = document.getElementById('mobile-categories-popup');
-                const container = categoriesPopup ? categoriesPopup.querySelector('.mobile-categories-container') : null;
-
-                if (categoriesPopup && container &&
-                    !container.contains(e.target)) {
-                    hideCategoriesPopup();
                 }
             }
         });
@@ -276,7 +289,7 @@
     }
 
     /**
-     * FIXED: Multiple initialization attempts for robustness
+     * Multiple initialization attempts for robustness
      */
     function attemptInitialization() {
         let attempts = 0;
