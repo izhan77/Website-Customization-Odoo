@@ -1,6 +1,6 @@
 /**
- * FIXED Mobile Menu System - Final Complete Solution
- * File: /website_customizations/static/src/js/components/navbar/navbar_mobile.js
+ * FIXED Mobile Menu System - Bulletproof Solution
+ * This fixes the flash/hide issue by properly managing display states
  */
 (function() {
     'use strict';
@@ -9,24 +9,6 @@
     let mobileMenuInitialized = false;
     let isMainMenuOpen = false;
     let isCategoriesPopupOpen = false;
-    let isAnimating = false;
-
-    /**
-     * Wait for scroll utilities to be available
-     */
-    function waitForScrollUtils() {
-        return new Promise((resolve) => {
-            const check = () => {
-                if (typeof window.scrollToSectionWithPrecision === 'function') {
-                    console.log('MobileNavbar - Scroll utilities ready');
-                    resolve();
-                } else {
-                    setTimeout(check, 100);
-                }
-            };
-            check();
-        });
-    }
 
     /**
      * Toggle body scroll lock
@@ -74,78 +56,66 @@
     }
 
     /**
-     * Open the main mobile menu
+     * FIXED: Open the main mobile menu - No more flashing!
      */
     function openMainMenu() {
-        if (isAnimating) return;
-
         const mobileMenu = document.getElementById('mobile-menu');
         const menuContent = document.getElementById('menu-content-container');
 
-        if (!mobileMenu) return;
+        if (!mobileMenu || !menuContent) {
+            console.error('Mobile menu elements not found');
+            return;
+        }
 
-        console.log('MobileNavbar - Opening main menu');
+        console.log('Opening main menu');
         isMainMenuOpen = true;
-        isAnimating = true;
 
-        // Show overlay
+        // STEP 1: Show the overlay immediately
         mobileMenu.classList.remove('hidden');
         mobileMenu.style.display = 'block';
+        mobileMenu.style.visibility = 'visible';
+        mobileMenu.style.opacity = '1';
 
-        // Force reflow
-        void mobileMenu.offsetWidth;
+        // STEP 2: Reset content position to hidden state
+        menuContent.style.transform = 'translateY(-100%)';
+        menuContent.classList.remove('menu-open');
 
-        // Animate overlay
-        mobileMenu.classList.add('animate-fadeIn');
-        mobileMenu.classList.remove('animate-fadeOut');
-
-        // Animate menu content
-        if (menuContent) {
-            menuContent.style.transform = 'translateY(0)';
-            menuContent.classList.add('menu-open');
-        }
+        // STEP 3: Force a reflow then animate in
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                menuContent.style.transform = 'translateY(0)';
+                menuContent.classList.add('menu-open');
+            });
+        });
 
         toggleBodyScroll(true);
         toggleHamburgerIcon(true);
-
-        // Reset animation flag
-        setTimeout(() => {
-            isAnimating = false;
-        }, 500);
     }
 
     /**
-     * Close the main mobile menu
+     * FIXED: Close the main mobile menu - Smooth closing
      */
     function closeMainMenu() {
-        if (isAnimating) return;
-
         const mobileMenu = document.getElementById('mobile-menu');
         const menuContent = document.getElementById('menu-content-container');
 
-        if (!mobileMenu) return;
+        if (!mobileMenu || !menuContent) return;
 
-        console.log('MobileNavbar - Closing main menu');
+        console.log('Closing main menu');
         isMainMenuOpen = false;
-        isAnimating = true;
 
-        // Animate menu content
-        if (menuContent) {
-            menuContent.style.transform = 'translateY(-100%)';
-            menuContent.classList.remove('menu-open');
-        }
+        // STEP 1: Animate content out
+        menuContent.style.transform = 'translateY(-100%)';
+        menuContent.classList.remove('menu-open');
 
-        // Animate overlay out
-        mobileMenu.classList.remove('animate-fadeIn');
-        mobileMenu.classList.add('animate-fadeOut');
-
-        // Hide after animation
+        // STEP 2: Hide overlay after animation completes
         setTimeout(() => {
-            if (mobileMenu && !isMainMenuOpen) {
-                mobileMenu.classList.add('hidden');
+            if (!isMainMenuOpen && mobileMenu) {
+                mobileMenu.style.opacity = '0';
+                mobileMenu.style.visibility = 'hidden';
                 mobileMenu.style.display = 'none';
+                mobileMenu.classList.add('hidden');
             }
-            isAnimating = false;
         }, 500);
 
         toggleBodyScroll(false);
@@ -153,140 +123,84 @@
     }
 
     /**
-     * Show categories popup - FIXED CENTERING
+     * FIXED: Show categories popup
      */
     function showCategoriesPopup() {
-        if (isAnimating) return;
-
         const popup = document.getElementById('mobile-categories-popup');
         if (!popup) return;
 
-        console.log('MobileNavbar - Showing categories popup');
+        console.log('Showing categories popup');
         isCategoriesPopupOpen = true;
-        isAnimating = true;
 
-        // Reset and center the popup
-        popup.classList.remove('hidden');
         popup.style.display = 'flex';
-        popup.style.alignItems = 'center';
-        popup.style.justifyContent = 'center';
-        popup.style.position = 'fixed';
-        popup.style.top = '0';
-        popup.style.left = '0';
-        popup.style.width = '100%';
-        popup.style.height = '100%';
-        popup.style.zIndex = '1001';
-
-        // Force reflow
-        void popup.offsetWidth;
-
-        // Apply show classes
-        popup.classList.add('show');
-
-        // Center the container
-        const container = popup.querySelector('.mobile-categories-container');
-        if (container) {
-            container.style.margin = 'auto';
-        }
-
-        // Reset animation flag
-        setTimeout(() => {
-            isAnimating = false;
-        }, 300);
+        popup.style.visibility = 'visible';
+        popup.style.opacity = '1';
+        popup.classList.remove('hidden');
     }
 
     /**
-     * Hide categories popup - FIXED MULTIPLE CALLS
+     * FIXED: Hide categories popup
      */
     function hideCategoriesPopup() {
-        if (!isCategoriesPopupOpen || isAnimating) return;
-
         const popup = document.getElementById('mobile-categories-popup');
         if (!popup) return;
 
-        console.log('MobileNavbar - Hiding categories popup');
+        console.log('Hiding categories popup');
         isCategoriesPopupOpen = false;
-        isAnimating = true;
 
-        // Remove show classes
-        popup.classList.remove('show');
-
-        // Hide after animation
-        setTimeout(() => {
-            if (popup && !isCategoriesPopupOpen) {
-                popup.classList.add('hidden');
-                popup.style.display = 'none';
-            }
-            isAnimating = false;
-        }, 300);
+        popup.style.opacity = '0';
+        popup.style.visibility = 'hidden';
+        popup.style.display = 'none';
+        popup.classList.add('hidden');
     }
 
     /**
-     * FIXED: Handle category clicks using unified scroll system
+     * FIXED: Initialize mobile menu system with better error handling
      */
-    function handleMobileCategoryClick(event, href) {
-        event.preventDefault();
-
-        if (!href || !href.startsWith('#')) return;
-
-        console.log('=== MOBILE CATEGORY CLICK ===');
-        console.log('MobileNavbar - Category clicked:', href);
-
-        // Close menus
-        hideCategoriesPopup();
-        setTimeout(closeMainMenu, 100);
-
-        // Use unified scroll system after menus close
-        setTimeout(() => {
-            const targetId = href.slice(1);
-            const targetElement = document.getElementById(targetId);
-
-            if (!targetElement) {
-                console.error('MobileNavbar - Section not found:', targetId);
-                return;
-            }
-
-            // Use the global scroll function for smooth scrolling
-            if (window.scrollToSectionWithPrecision) {
-                window.scrollToSectionWithPrecision(targetElement).then(() => {
-                    history.replaceState(null, null, href);
-                    console.log('MobileNavbar - Scrolled to section:', targetId);
-                });
-            } else {
-                console.error('MobileNavbar - Scroll function not available');
-            }
-        }, 300);
-    }
-
-    /**
-     * Initialize mobile menu system
-     */
-    async function initMobileMenu() {
+    function initMobileMenu() {
         if (mobileMenuInitialized) return true;
 
-        // Wait for scroll utilities
-        await waitForScrollUtils();
+        console.log('Initializing mobile menu...');
 
-        console.log('MobileNavbar - Initializing...');
+        // Wait for elements to be available
+        const checkElements = () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuContent = document.getElementById('menu-content-container');
 
-        const mobileMenuButton = document.getElementById('mobile-menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const categoriesTrigger = document.getElementById('mobile-menu-categories-trigger');
-        const categoriesPopup = document.getElementById('mobile-categories-popup');
-        const categoriesCloseBtn = document.getElementById('mobile-categories-close');
+            if (!mobileMenuButton || !mobileMenu || !menuContent) {
+                console.log('Mobile menu elements not ready, waiting...');
+                return false;
+            }
 
-        if (!mobileMenuButton || !mobileMenu) {
-            console.log('MobileNavbar - Elements not found, retrying...');
+            return true;
+        };
+
+        if (!checkElements()) {
+            // Retry after a short delay
+            setTimeout(() => {
+                if (!mobileMenuInitialized) {
+                    initMobileMenu();
+                }
+            }, 100);
             return false;
         }
 
         mobileMenuInitialized = true;
-        console.log('MobileNavbar - Elements found!');
+        console.log('Mobile menu elements found, setting up handlers...');
 
-        // Main menu toggle
+        // Get elements
+        const mobileMenuButton = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const categoriesTrigger = document.getElementById('mobile-menu-categories-trigger');
+        const categoriesCloseBtn = document.getElementById('mobile-categories-close');
+
+        // FIXED: Main menu toggle with better event handling
         mobileMenuButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+
+            console.log('Menu button clicked, current state:', isMainMenuOpen);
 
             if (isMainMenuOpen) {
                 closeMainMenu();
@@ -313,18 +227,34 @@
             });
         }
 
-        // Category items with unified scroll handling
-        if (categoriesPopup) {
-            const categoryItems = categoriesPopup.querySelectorAll('.mobile-category-item');
-            categoryItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    handleMobileCategoryClick(e, href);
-                });
-            });
-        }
+        // FIXED: Better outside click handling
+        document.addEventListener('click', function(e) {
+            // Close main menu when clicking outside
+            if (isMainMenuOpen) {
+                const menuButton = document.getElementById('mobile-menu-toggle');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const menuContent = document.getElementById('menu-content-container');
 
-        // Close menu when clicking other links
+                if (mobileMenu && menuContent &&
+                    !menuContent.contains(e.target) &&
+                    !menuButton.contains(e.target)) {
+                    closeMainMenu();
+                }
+            }
+
+            // Close categories popup when clicking outside
+            if (isCategoriesPopupOpen) {
+                const categoriesPopup = document.getElementById('mobile-categories-popup');
+                const container = categoriesPopup ? categoriesPopup.querySelector('.mobile-categories-container') : null;
+
+                if (categoriesPopup && container &&
+                    !container.contains(e.target)) {
+                    hideCategoriesPopup();
+                }
+            }
+        });
+
+        // Close menu when clicking navigation links (except categories trigger)
         const mainMenuLinks = mobileMenu.querySelectorAll('a:not(#mobile-menu-categories-trigger)');
         mainMenuLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -332,34 +262,65 @@
             });
         });
 
-        // Expose global functions
-        window.closeMainMenu = closeMainMenu;
-        window.hideCategoriesPopup = hideCategoriesPopup;
+        // Handle category clicks in mobile popup
+        const mobileCategories = document.querySelectorAll('.mobile-category-item');
+        mobileCategories.forEach(item => {
+            item.addEventListener('click', () => {
+                hideCategoriesPopup();
+                setTimeout(closeMainMenu, 300);
+            });
+        });
 
-        console.log('MobileNavbar - Initialized successfully!');
+        console.log('Mobile menu initialized successfully!');
         return true;
     }
 
     /**
-     * Initialize with retries
+     * FIXED: Multiple initialization attempts for robustness
      */
-    function tryInitialize() {
-        initMobileMenu().then(success => {
-            if (!success) {
-                setTimeout(tryInitialize, 500);
+    function attemptInitialization() {
+        let attempts = 0;
+        const maxAttempts = 20;
+
+        const tryInit = () => {
+            attempts++;
+            console.log(`Mobile menu initialization attempt ${attempts}/${maxAttempts}`);
+
+            if (initMobileMenu()) {
+                console.log('Mobile menu successfully initialized!');
+                return;
             }
-        });
+
+            if (attempts < maxAttempts) {
+                setTimeout(tryInit, 200);
+            } else {
+                console.error('Failed to initialize mobile menu after maximum attempts');
+            }
+        };
+
+        tryInit();
     }
 
-    // Initialize when DOM is ready
+    // Expose functions globally for debugging
+    window.openMainMenu = openMainMenu;
+    window.closeMainMenu = closeMainMenu;
+    window.showCategoriesPopup = showCategoriesPopup;
+    window.hideCategoriesPopup = hideCategoriesPopup;
+
+    // Initialize when ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(tryInitialize, 200);
-        });
+        document.addEventListener('DOMContentLoaded', attemptInitialization);
     } else {
-        setTimeout(tryInitialize, 200);
+        attemptInitialization();
     }
 
-    console.log('MobileNavbar module loaded');
+    // Also try after window load
+    window.addEventListener('load', () => {
+        if (!mobileMenuInitialized) {
+            attemptInitialization();
+        }
+    });
+
+    console.log('Mobile navbar module loaded');
 
 })();

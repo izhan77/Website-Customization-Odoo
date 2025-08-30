@@ -1,16 +1,17 @@
-/* ================================= DESKTOP MENU POPUP STYLING - POSITIONED BELOW NAVBAR ================================= */
+/* ================================= DESKTOP MENU POPUP STYLING ONLY ================================= */
 
+/* REMOVE ALL EFFECTS FROM DESKTOP POPUP ITEMS */
 .menu-popup-grid .menu-popup-item .menu-popup-card {
     box-shadow: none !important;
     filter: none !important;
-    background: none !important;
-    background-color: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
-/* Menu Categories Popup Styling - FIXED POSITIONING TO APPEAR BELOW NAVBAR */
+/* Menu Categories Popup Styling - POSITIONED BELOW NAVBAR */
 .menu-categories-popup {
     position: fixed;
-    top: var(--navbar-height, 80px); /* POSITIONED BELOW NAVBAR INSTEAD OF TOP: 0 */
+    top: var(--navbar-height, 80px);
     left: 0;
     width: 100%;
     background: white;
@@ -22,8 +23,8 @@
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     pointer-events: none;
     padding: 30px 0 40px 0;
-    max-height: 70vh; /* PREVENT OVERFLOW ON SMALLER SCREENS */
-    overflow-y: auto; /* SCROLLABLE IF CONTENT EXCEEDS HEIGHT */
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 /* DYNAMIC NAVBAR HEIGHT CALCULATION */
@@ -63,30 +64,39 @@
     gap: 24px;
 }
 
-/* Menu item */
+/* Menu item - CLEAN DESIGN */
 .menu-popup-item {
     text-decoration: none !important;
     display: block;
     cursor: pointer;
     outline: none !important;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
 }
 
-/* Card */
+/* Card - CLEAN DESIGN */
 .menu-popup-card {
     padding: 16px;
     text-align: center;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: none !important;
 }
 
 .menu-popup-item:hover .menu-popup-card {
     box-shadow: none !important;
     filter: none !important;
-    background: none !important;
-    background-color: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
     transform: translateY(-4px);
 }
 
-/* Circle background for image */
+/* Circle background for image - CLEAN DESIGN */
 .menu-popup-img-circle {
     width: 100px;
     height: 100px;
@@ -94,23 +104,33 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 12px auto;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: none !important;
 }
 
-/* Image inside circle */
+/* Image inside circle - CLEAN DESIGN */
 .menu-popup-image {
     width: 100px;
     height: 110px;
     object-fit: cover;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    filter: none !important;
+    border: none !important;
 }
 
-/* Hover effect */
+/* Hover effect - MINIMAL AND CLEAN */
 .menu-popup-item:hover .menu-popup-img-circle {
     box-shadow: none !important;
     filter: none !important;
-    background: none !important;
-    background-color: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
     transform: scale(1.05);
 }
 
@@ -118,8 +138,8 @@
     transform: scale(1.1) rotate(2deg);
     box-shadow: none !important;
     filter: none !important;
-    background: none !important;
-    background-color: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
 /* Title */
@@ -131,7 +151,7 @@
     text-transform: uppercase;
 }
 
-/* Responsive Design */
+/* Responsive Design for Desktop Popup */
 @media (max-width: 1200px) {
     .menu-popup-grid {
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -156,24 +176,6 @@
     }
 }
 
-@media (max-width: 600px) {
-    .menu-popup-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-    .menu-popup-img-circle {
-        width: 70px;
-        height: 70px;
-    }
-    .menu-popup-image {
-        width: 60px;
-        height: 70px;
-    }
-    .menu-popup-title {
-        font-size: 13px;
-    }
-}
-
 /* Animation for popup entrance */
 @keyframes slideDownFade {
     0% {
@@ -186,7 +188,7 @@
     }
 }
 
-/* Hide on mobile devices */
+/* Hide desktop popup on mobile devices */
 @media (max-width: 1023px) {
     .menu-categories-popup {
         display: none !important;

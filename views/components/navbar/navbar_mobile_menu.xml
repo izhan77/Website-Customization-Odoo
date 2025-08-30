@@ -3,45 +3,39 @@
     <template id="navbar_mobile_menu" name="Navbar Mobile Menu">
         <!-- Dark Overlay Background -->
         <div id="mobile-menu"
-             class="md:hidden hidden fixed top-0 left-0 h-full w-full bg-black/30 backdrop-blur-sm z-[998] transition-all duration-500 ease-in-out"
-             style="display: none;">
+             class="md:hidden hidden fixed top-0 left-0 h-full w-full bg-black/30 backdrop-blur-sm z-[998] transition-all duration-500 ease-in-out">
 
             <!-- Menu Content Container -->
-            <div style="background-color: #7abfba !important;" id="menu-content-container"
-                 class="menu-content-container fixed top-0 left-0 w-full bg-[#B8D8D6] rounded-bl-[4rem] rounded-br-[4rem] z-[999] pt-8 pb-6">
+            <div id="menu-content-container"
+                 class="fixed top-0 left-0 w-full bg-[#7abfba] rounded-bl-[4rem] rounded-br-[4rem] z-[999] pt-8 pb-6 transition-transform duration-500">
 
                 <!-- Menu Links - Moved Down -->
                 <div class="flex flex-col items-end justify-start h-full pr-10 pt-16">
                     <div class="flex flex-col text-3xl font-bold leading-[1.15] tracking-tight text-right space-y-2">
                         <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/"
-                           style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;">
+                           href="/">
                             <span>Home</span>
                         </a>
 
                         <!-- Menu Link - This will trigger the categories popup -->
                         <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2 mobile-menu-trigger"
                            href="#"
-                           id="mobile-menu-categories-trigger"
-                           style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;">
+                           id="mobile-menu-categories-trigger">
                             <span>Menu</span>
                         </a>
 
                         <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/about"
-                           style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;">
+                           href="/about">
                             <span>About Us</span>
                         </a>
 
                         <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/services"
-                           style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;">
+                           href="/services">
                             <span>Services</span>
                         </a>
 
                         <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/contactus"
-                           style="-webkit-tap-highlight-color: transparent !important; outline: none !important; background-color: transparent !important;">
+                           href="/contactus">
                             <span>Contact Us</span>
                         </a>
                     </div>
@@ -69,215 +63,132 @@
                 <div class="overflow-y-auto p-6">
                     <div class="mobile-categories-grid grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
 
-                        <!-- Rice Box - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Rice Box -->
                         <a href="#rice-box-section" class="mobile-category-item block text-decoration-none"
                            data-category="rice-box-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">FOOD
-                                        &amp; MEALS
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">RICE BOX</div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="RICE BOX">
                                     <img src="/website_customizations/static/src/images/category-rice-box.png"
                                          alt="Rice Box" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Fish & Chips - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Fish & Chips -->
                         <a href="#fish-and-chips-section" class="mobile-category-item block text-decoration-none"
                            data-category="fish-and-chips-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">CRISPY
-                                        &amp; GOLDEN
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">FISH &amp;
-                                        CHIPS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="FISH &amp; CHIPS">
                                     <img src="/website_customizations/static/src/images/category-fish-and-chips.png"
                                          alt="Fish &amp; Chips" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Pasta - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Pasta -->
                         <a href="#pasta-section" class="mobile-category-item block text-decoration-none"
                            data-category="pasta-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">ITALIAN
-                                        &amp; AUTHENTIC
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">PASTA</div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="PASTA">
                                     <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta"
                                          class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Turkish Feast - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Turkish Feast -->
                         <a href="#turkish-feast-section" class="mobile-category-item block text-decoration-none"
                            data-category="turkish-feast-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                                        INTERNATIONAL &amp; FEAST
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">TURKISH FEAST
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="TURKISH FEAST">
                                     <img src="/website_customizations/static/src/images/category-turkish-foods.png"
                                          alt="Turkish Feast" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Wraps & Rolls - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Wraps & Rolls -->
                         <a href="#wraps-rolls-section" class="mobile-category-item block text-decoration-none"
                            data-category="wraps-rolls-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">FRESH
-                                        &amp; WRAPPED
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">WRAPS &amp;
-                                        ROLLS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="WRAPS &amp; ROLLS">
                                     <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
                                          alt="Wraps &amp; Rolls" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- New Arrivals - MATCHING DESKTOP MENU POPUP -->
+                        <!-- New Arrivals -->
                         <a href="#new-arrivals-section" class="mobile-category-item block text-decoration-none"
                            data-category="new-arrivals-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">LATEST
-                                        &amp; FRESH
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">NEW ARRIVALS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="NEW ARRIVALS">
                                     <img src="/website_customizations/static/src/images/category-new-arrivals.png"
                                          alt="New Arrivals" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Soups & Salads - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Soups & Salads -->
                         <a href="#soups-and-salads-section" class="mobile-category-item block text-decoration-none"
                            data-category="soups-and-salads-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">HEALTHY
-                                        &amp; LIGHT
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">SOUPS &amp;
-                                        SALADS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="SOUPS &amp; SALADS">
                                     <img src="/website_customizations/static/src/images/category-soups-salads.png"
                                          alt="Soups &amp; Salads" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Cold Drinks - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Cold Drinks -->
                         <a href="#cold-drinks-section" class="mobile-category-item block text-decoration-none"
                            data-category="cold-drinks-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                                        BEVERAGES &amp; DRINKS
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">COLD DRINKS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="COLD DRINKS">
                                     <img src="/website_customizations/static/src/images/category-cold-drinks.png"
                                          alt="Cold Drinks" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Hot Beverages - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Hot Beverages -->
                         <a href="#hot-beverages-section" class="mobile-category-item block text-decoration-none"
                            data-category="hot-beverages-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">HOT
-                                        &amp; WARM
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">HOT BEVERAGES
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="HOT BEVERAGES">
                                     <img src="/website_customizations/static/src/images/category-hot-beverages.png"
                                          alt="Hot Beverages" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Desserts - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Desserts -->
                         <a href="#desserts-section" class="mobile-category-item block text-decoration-none"
                            data-category="desserts-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">SWEET
-                                        &amp; TREATS
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">DESSERTS</div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="DESSERTS">
                                     <img src="/website_customizations/static/src/images/category-desert.png"
                                          alt="Desserts" class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- BBQ Specials - MATCHING DESKTOP MENU POPUP -->
+                        <!-- BBQ Specials -->
                         <a href="#bbq-section" class="mobile-category-item block text-decoration-none"
                            data-category="bbq-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">GRILLED
-                                        &amp; BBQ
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">BBQ SPECIALS
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="BBQ SPECIALS">
                                     <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
                                          class="w-12 h-12 object-contain"/>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Fast Food - MATCHING DESKTOP MENU POPUP -->
+                        <!-- Fast Food -->
                         <a href="#fast-food-section" class="mobile-category-item block text-decoration-none"
                            data-category="fast-food-section">
                             <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div>
-                                    <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">QUICK
-                                        &amp; FAST
-                                    </div>
-                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">FAST FOOD</div>
-                                </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end" data-title="FAST FOOD">
                                     <img src="/website_customizations/static/src/images/category-burger.png"
                                          alt="Fast Food" class="w-12 h-12 object-contain"/>
                                 </div>
