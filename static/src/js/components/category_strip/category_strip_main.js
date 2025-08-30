@@ -1,5 +1,5 @@
 /**
- * CORRECT Category Strip - Sticky at Top of Screen
+ * FIXED Category Strip - Proper Sticky Behavior for Both Scroll Directions
  */
 
 class CategoryStripComplete {
@@ -13,6 +13,8 @@ class CategoryStripComplete {
         this.isSticky = false;
         this.originalTop = 0;
         this.categoryButtons = [];
+        this.lastScrollTop = 0;
+        this.scrollDirection = 'down'; // Track scroll direction
 
         this.init();
     }
@@ -47,8 +49,18 @@ class CategoryStripComplete {
     }
 
     calculateOriginalPosition() {
-        // Store the original position of category strip
-        this.originalTop = this.categoryStrip.offsetTop;
+        // ALWAYS calculate from natural document position (not sticky position)
+        if (this.isSticky) {
+            // If currently sticky, temporarily remove sticky to get true original position
+            this.categoryStrip.style.position = 'relative';
+            this.categoryStrip.style.top = 'auto';
+            this.originalTop = this.categoryStrip.offsetTop;
+            // Restore sticky if it was sticky
+            this.makeSticky();
+        } else {
+            this.originalTop = this.categoryStrip.offsetTop;
+        }
+
         console.log('Category strip original position:', this.originalTop);
     }
 
@@ -90,28 +102,46 @@ class CategoryStripComplete {
     }
 
     handleStickyScroll() {
-    if (!this.categoryStrip || (window.scrollUtils && window.scrollUtils.isScrolling)) return;
+        if (!this.categoryStrip || (window.scrollUtils && window.scrollUtils.isScrolling)) return;
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    // Recalculate original position on each scroll to be precise
-    if (!this.isSticky) {
-        this.originalTop = this.categoryStrip.offsetTop;
+        // Determine scroll direction
+        if (scrollTop > this.lastScrollTop) {
+            this.scrollDirection = 'down';
+        } else if (scrollTop < this.lastScrollTop) {
+            this.scrollDirection = 'up';
+        }
+        this.lastScrollTop = scrollTop;
+
+        console.log(`Scroll: ${scrollTop}, Original: ${this.originalTop}, Direction: ${this.scrollDirection}, Sticky: ${this.isSticky}`);
+
+        // LOGIC: Handle both scroll directions differently
+        if (this.scrollDirection === 'down') {
+            // SCROLLING DOWN: Become sticky when we pass the original position
+            if (!this.isSticky && scrollTop > this.originalTop) {
+                console.log('Making sticky (scrolling down)');
+                this.makeSticky();
+            }
+        } else {
+            // SCROLLING UP: Return to original position when we reach it
+            if (this.isSticky) {
+                // Calculate where the strip would naturally be without sticky
+                const naturalTopPosition = this.originalTop;
+
+                // If we've scrolled back to or above the natural position, remove sticky
+                if (scrollTop <= naturalTopPosition) {
+                    console.log('Removing sticky (scrolling up, reached original position)');
+                    this.removeSticky();
+                }
+            }
+        }
     }
-
-    const shouldBeSticky = scrollTop > this.originalTop;
-
-    if (shouldBeSticky && !this.isSticky) {
-        this.makeSticky();
-    } else if (!shouldBeSticky && this.isSticky) {
-        this.removeSticky();
-    }
-}
 
     makeSticky() {
         if (this.isSticky) return;
 
-        console.log('Making category strip sticky at top');
+        console.log('Making category strip sticky at top of screen');
         this.isSticky = true;
         const exactHeight = this.categoryStrip.offsetHeight;
 
@@ -132,33 +162,41 @@ class CategoryStripComplete {
     }
 
     removeSticky() {
-    if (!this.isSticky) return;
+        if (!this.isSticky) return;
 
-    console.log('Removing sticky, returning to original position');
-    this.isSticky = false;
+        console.log('Removing sticky, returning to original position');
+        this.isSticky = false;
 
-    // Hide placeholder FIRST
-    if (this.placeholder) {
-        this.placeholder.style.height = '0px';
-        this.placeholder.style.display = 'none';
+        // Hide placeholder FIRST
+        if (this.placeholder) {
+            this.placeholder.style.height = '0px';
+            this.placeholder.style.display = 'none';
+        }
+
+        // Remove ALL sticky styles to return to original position
+        this.categoryStrip.style.position = 'relative'; // Force back to normal flow
+        this.categoryStrip.style.top = 'auto';
+        this.categoryStrip.style.left = 'auto';
+        this.categoryStrip.style.right = 'auto';
+        this.categoryStrip.style.zIndex = '30'; // Original z-index
+        this.categoryStrip.style.width = 'auto';
+        this.categoryStrip.classList.remove('sticky');
+
+        // Force reflow to ensure it returns to original position
+        this.categoryStrip.offsetHeight;
+
+        // Recalculate original position now that it's back in normal flow
+        setTimeout(() => {
+            this.originalTop = this.categoryStrip.offsetTop;
+            console.log('Recalculated original position after removing sticky:', this.originalTop);
+        }, 50);
     }
 
-    // Remove ALL sticky styles to return to original position
-    this.categoryStrip.style.position = 'relative'; // Force back to normal flow
-    this.categoryStrip.style.top = 'auto';
-    this.categoryStrip.style.left = 'auto';
-    this.categoryStrip.style.right = 'auto';
-    this.categoryStrip.style.zIndex = '30'; // Original z-index
-    this.categoryStrip.style.width = 'auto';
-    this.categoryStrip.classList.remove('sticky');
-
-    // Force reflow to ensure it returns to original position
-    this.categoryStrip.offsetHeight;
-}
-
     recalculatePosition() {
+        // Only recalculate if not currently sticky
         if (!this.isSticky) {
             this.originalTop = this.categoryStrip.offsetTop;
+            console.log('Recalculated original position on resize:', this.originalTop);
         }
 
         if (this.isSticky && this.placeholder) {

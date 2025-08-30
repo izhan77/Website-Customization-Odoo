@@ -1,14 +1,6 @@
-/* ================================= MOBILE CATEGORIES POPUP - FIXED Z-INDEX ================================= */
+/* ================================= MOBILE CATEGORIES POPUP - NO BLUE CLICK EFFECTS ================================= */
 
-.mobile-categories-grid .mobile-category-item .mobile-category-card{
-    background: none !important;
-    background-color: none !important;
-    box-shadow: none !important;
-    filter: none !important;
-}
-
-
-/* Mobile categories popup overlay - HIGHER Z-INDEX TO STAY ABOVE CATEGORY STRIP */
+/* Mobile categories popup overlay */
 #mobile-categories-popup {
     position: fixed !important;
     top: 0 !important;
@@ -17,7 +9,7 @@
     height: 100% !important;
     background: rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(4px) !important;
-    z-index: 1050 !important; /* INCREASED FROM 1030 TO STAY ABOVE CATEGORY STRIP */
+    z-index: 1050 !important;
     display: none !important;
     align-items: center !important;
     justify-content: center !important;
@@ -40,7 +32,7 @@
     display: flex !important;
     flex-direction: column !important;
     animation: popupSlideIn 0.3s ease-out !important;
-    z-index: 1051 !important; /* ENSURE CONTAINER ALSO HAS HIGH Z-INDEX */
+    z-index: 1051 !important;
 
     /* SMALL MOBILE (320px - 479px) */
     width: 95% !important;
@@ -197,15 +189,25 @@
     }
 }
 
-/* ========== CATEGORY CARDS - CLEAN DESIGN ========== */
+/* ========== CATEGORY CARDS - ABSOLUTELY NO BLUE EFFECTS ========== */
 
-/* REMOVE ALL EFFECTS COMPLETELY */
+/* NUCLEAR OPTION - REMOVE ALL POSSIBLE BLUE EFFECTS */
 .mobile-category-item,
 .mobile-category-item *,
 .mobile-category-card,
 .mobile-category-card *,
 .mobile-category-card:hover,
-.mobile-category-card:active {
+.mobile-category-card:active,
+.mobile-category-card:focus,
+.mobile-category-card:focus-within,
+.mobile-category-card:focus-visible,
+.mobile-category-item:hover,
+.mobile-category-item:active,
+.mobile-category-item:focus,
+.mobile-category-item:focus-within,
+.mobile-category-item:focus-visible,
+.mobile-category-item:visited,
+.mobile-category-item:link {
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
@@ -214,6 +216,19 @@
     border: none !important;
     outline: none !important;
     text-decoration: none !important;
+
+    /* REMOVE ALL BROWSER DEFAULT STATES */
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+
+    /* FORCE REMOVE FOCUS STATES */
+    -webkit-focus-ring-color: transparent !important;
+    -moz-focus-inner: none !important;
+    -moz-outline-style: none !important;
 }
 
 /* CATEGORY ITEM LINK */
@@ -221,10 +236,24 @@
     display: block !important;
     cursor: pointer !important;
     transition: transform 0.2s ease !important;
+
+    /* ADDITIONAL BLUE REMOVAL */
+    color: inherit !important;
+    text-decoration: none !important;
 }
 
 .mobile-category-item:hover {
     transform: translateY(-2px) !important;
+    color: inherit !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.mobile-category-item:active {
+    transform: translateY(-1px) !important;
+    color: inherit !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
 /* CATEGORY CARD */
@@ -273,6 +302,11 @@
     transition: transform 0.2s ease !important;
     width: 4rem !important;
     height: 4rem !important;
+
+    /* REMOVE BLUE EFFECTS FROM IMAGES TOO */
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+    border: none !important;
 }
 
 /* LARGE MOBILE IMAGES */
@@ -327,6 +361,10 @@
     line-height: 1.1 !important;
     margin-top: 0.75rem !important;
     font-size: 0.875rem !important;
+
+    /* ENSURE TEXT ALSO HAS NO BLUE EFFECTS */
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
 }
 
 /* LARGE MOBILE TEXT */
@@ -354,9 +392,19 @@
     border: none !important;
     cursor: pointer !important;
     transition: background-color 0.2s ease !important;
+
+    /* REMOVE BLUE FROM CLOSE BUTTON TOO */
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
 }
 
 #mobile-categories-close:hover {
+    background: #f3f4f6 !important;
+    background-color: #f3f4f6 !important;
+}
+
+#mobile-categories-close:focus {
+    outline: none !important;
     background: #f3f4f6 !important;
     background-color: #f3f4f6 !important;
 }
