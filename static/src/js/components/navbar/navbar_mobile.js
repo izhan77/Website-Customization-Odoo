@@ -1,5 +1,5 @@
 /**
- * FIXED Mobile Menu System - Compatible with Unified Scroll System
+ * FIXED Mobile Menu System - Final Complete Solution
  * File: /website_customizations/static/src/js/components/navbar/navbar_mobile.js
  */
 (function() {
@@ -9,6 +9,7 @@
     let mobileMenuInitialized = false;
     let isMainMenuOpen = false;
     let isCategoriesPopupOpen = false;
+    let isAnimating = false;
 
     /**
      * Wait for scroll utilities to be available
@@ -76,6 +77,8 @@
      * Open the main mobile menu
      */
     function openMainMenu() {
+        if (isAnimating) return;
+
         const mobileMenu = document.getElementById('mobile-menu');
         const menuContent = document.getElementById('menu-content-container');
 
@@ -83,6 +86,7 @@
 
         console.log('MobileNavbar - Opening main menu');
         isMainMenuOpen = true;
+        isAnimating = true;
 
         // Show overlay
         mobileMenu.classList.remove('hidden');
@@ -103,12 +107,19 @@
 
         toggleBodyScroll(true);
         toggleHamburgerIcon(true);
+
+        // Reset animation flag
+        setTimeout(() => {
+            isAnimating = false;
+        }, 500);
     }
 
     /**
      * Close the main mobile menu
      */
     function closeMainMenu() {
+        if (isAnimating) return;
+
         const mobileMenu = document.getElementById('mobile-menu');
         const menuContent = document.getElementById('menu-content-container');
 
@@ -116,6 +127,7 @@
 
         console.log('MobileNavbar - Closing main menu');
         isMainMenuOpen = false;
+        isAnimating = true;
 
         // Animate menu content
         if (menuContent) {
@@ -133,6 +145,7 @@
                 mobileMenu.classList.add('hidden');
                 mobileMenu.style.display = 'none';
             }
+            isAnimating = false;
         }, 500);
 
         toggleBodyScroll(false);
@@ -140,57 +153,71 @@
     }
 
     /**
-     * Show categories popup
+     * Show categories popup - FIXED CENTERING
      */
     function showCategoriesPopup() {
+        if (isAnimating) return;
+
         const popup = document.getElementById('mobile-categories-popup');
         if (!popup) return;
 
         console.log('MobileNavbar - Showing categories popup');
         isCategoriesPopupOpen = true;
+        isAnimating = true;
 
+        // Reset and center the popup
         popup.classList.remove('hidden');
         popup.style.display = 'flex';
+        popup.style.alignItems = 'center';
+        popup.style.justifyContent = 'center';
+        popup.style.position = 'fixed';
+        popup.style.top = '0';
+        popup.style.left = '0';
+        popup.style.width = '100%';
+        popup.style.height = '100%';
+        popup.style.zIndex = '1001';
+
+        // Force reflow
         void popup.offsetWidth;
 
+        // Apply show classes
         popup.classList.add('show');
-        popup.classList.add('mobile-categories-popup-enter');
-        popup.classList.remove('mobile-categories-popup-exit');
 
-        // Stagger animation for cards
-        const cards = popup.querySelectorAll('.mobile-category-item');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
+        // Center the container
+        const container = popup.querySelector('.mobile-categories-container');
+        if (container) {
+            container.style.margin = 'auto';
+        }
 
-            setTimeout(() => {
-                card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 50);
-        });
+        // Reset animation flag
+        setTimeout(() => {
+            isAnimating = false;
+        }, 300);
     }
 
     /**
-     * Hide categories popup
+     * Hide categories popup - FIXED MULTIPLE CALLS
      */
     function hideCategoriesPopup() {
+        if (!isCategoriesPopupOpen || isAnimating) return;
+
         const popup = document.getElementById('mobile-categories-popup');
         if (!popup) return;
 
         console.log('MobileNavbar - Hiding categories popup');
         isCategoriesPopupOpen = false;
+        isAnimating = true;
 
-        popup.classList.remove('mobile-categories-popup-enter');
-        popup.classList.add('mobile-categories-popup-exit');
+        // Remove show classes
         popup.classList.remove('show');
 
+        // Hide after animation
         setTimeout(() => {
             if (popup && !isCategoriesPopupOpen) {
                 popup.classList.add('hidden');
                 popup.style.display = 'none';
-                popup.classList.remove('mobile-categories-popup-exit');
             }
+            isAnimating = false;
         }, 300);
     }
 
@@ -204,18 +231,6 @@
 
         console.log('=== MOBILE CATEGORY CLICK ===');
         console.log('MobileNavbar - Category clicked:', href);
-
-        // Visual feedback
-        const clickedCard = event.currentTarget.querySelector('.mobile-category-card');
-        if (clickedCard) {
-            clickedCard.style.transform = 'translateY(0) scale(0.95)';
-            clickedCard.style.borderColor = '#7abfba';
-
-            setTimeout(() => {
-                clickedCard.style.transform = '';
-                clickedCard.style.borderColor = '';
-            }, 150);
-        }
 
         // Close menus
         hideCategoriesPopup();
@@ -317,45 +332,6 @@
             });
         });
 
-        // Close menus on outside click
-        document.addEventListener('click', function(e) {
-            if (categoriesPopup && isCategoriesPopupOpen && e.target === categoriesPopup) {
-                hideCategoriesPopup();
-            }
-
-            if (mobileMenu && isMainMenuOpen &&
-                !e.target.closest('#menu-content-container') &&
-                !e.target.closest('#mobile-menu-toggle') &&
-                !e.target.closest('#mobile-categories-popup')) {
-                closeMainMenu();
-            }
-        });
-
-        // Close on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                if (isCategoriesPopupOpen) {
-                    hideCategoriesPopup();
-                } else if (isMainMenuOpen) {
-                    closeMainMenu();
-                }
-            }
-        });
-
-        // Close on scroll (but not during precision scroll)
-        let scrollTimeout;
-        window.addEventListener('scroll', function() {
-            if ((isCategoriesPopupOpen || isMainMenuOpen) && !window.scrollUtils?.isScrolling) {
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    if (!window.scrollUtils?.isScrolling) {
-                        if (isCategoriesPopupOpen) hideCategoriesPopup();
-                        if (isMainMenuOpen) closeMainMenu();
-                    }
-                }, 100);
-            }
-        }, { passive: true });
-
         // Expose global functions
         window.closeMainMenu = closeMainMenu;
         window.hideCategoriesPopup = hideCategoriesPopup;
@@ -375,7 +351,7 @@
         });
     }
 
-    // Multiple initialization strategies
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(tryInitialize, 200);
@@ -383,10 +359,6 @@
     } else {
         setTimeout(tryInitialize, 200);
     }
-
-    window.addEventListener('load', () => {
-        setTimeout(tryInitialize, 400);
-    });
 
     console.log('MobileNavbar module loaded');
 

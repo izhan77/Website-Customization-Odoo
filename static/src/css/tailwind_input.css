@@ -54,39 +54,50 @@ body {
 @tailwind components;
 @tailwind utilities;
 
-/* UPDATED: Minimal scroll margins for closer headings */
+/* FIXED: Perfect scroll margins - sections will appear just below category strip */
 .menu-section {
     position: relative;
-    scroll-margin-top: 40px; /* Reduced from 140px for closer positioning */
+    scroll-margin-top: 0px !important; /* Let JS handle the exact positioning */
 }
 
-/* Category strip placeholder - FIXED VERSION */
+section[id] {
+    scroll-margin-top: 0px !important; /* Let JS handle the exact positioning */
+    position: relative;
+}
+
+/* FIXED: Category strip placeholder */
 .category-strip-placeholder {
     width: 100%;
     height: 0px !important;
     background: transparent;
     display: none;
-    transition: height 0.3s ease;
     visibility: hidden;
     min-height: 0px !important;
     max-height: none !important;
+    transition: none; /* No animation for bulletproof behavior */
 }
 
-/* When category strip is sticky, placeholder maintains the space */
-.category-strip-container.sticky .category-strip-placeholder {
+/* When category strip is sticky, placeholder reserves exact space */
+.category-strip-container.sticky + .category-strip-placeholder {
     display: block !important;
-    height: 60px;
+    height: 60px !important; /* Matches category strip height */
     visibility: hidden !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1023px) {
-    .menu-section {
-        scroll-margin-top: 30px; /* Reduced from 100px */
+/* Responsive placeholder height adjustments */
+@media (max-width: 768px) {
+    .category-strip-container.sticky + .category-strip-placeholder {
+        height: 55px !important;
     }
 }
 
-/* Product cards styling */
+@media (max-width: 480px) {
+    .category-strip-container.sticky + .category-strip-placeholder {
+        height: 50px !important;
+    }
+}
+
+/* Product cards styling - Keep existing */
 .product-card {
     position: relative;
     overflow: hidden;
@@ -100,7 +111,7 @@ body {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Add to cart button styling */
+/* Add to cart button styling - Keep existing */
 .add-to-cart-btn {
     background-color: #7abfba;
     color: white;
@@ -117,6 +128,7 @@ body {
     transform: translateY(-2px);
 }
 
+/* Z-index management - Keep existing */
 .mobile-menu:not(.hidden) ~ * .category-strip-container,
 #mobile-categories-popup:not(.hidden) ~ * .category-strip-container {
     z-index: 500 !important;

@@ -1,7 +1,7 @@
 /**
- * COMPLETE SCROLL UTILITIES - FIXED FOR ALL COMPONENTS
+ * FIXED SCROLL UTILITIES - Perfect Precision Scrolling
  * File: /website_customizations/static/src/js/utils/scroll_utils.js
- * FIXES: Function availability, smooth scrolling, precise positioning
+ * FIXES: Precise offset calculation, perfect positioning
  */
 
 // Global state management
@@ -13,77 +13,70 @@ window.scrollUtils = window.scrollUtils || {
 };
 
 /**
- * Calculate exact scroll offset with caching for performance
+ * FIXED: Calculate exact scroll offset for perfect positioning
  */
 function calculatePreciseScrollOffset() {
     const now = Date.now();
 
-    // Use cached values if calculated recently (within 100ms)
-    if (now - window.scrollUtils.lastCalculationTime < 100 &&
+    // Recalculate more frequently for accuracy
+    if (now - window.scrollUtils.lastCalculationTime < 50 &&
         (window.scrollUtils.cachedNavbarHeight + window.scrollUtils.cachedStripHeight) > 0) {
-        const total = window.scrollUtils.cachedNavbarHeight + window.scrollUtils.cachedStripHeight + 15;
-        console.log('Using cached offset:', total);
+        const total = window.scrollUtils.cachedNavbarHeight + window.scrollUtils.cachedStripHeight + 10;
         return total;
     }
 
     let totalOffset = 0;
     window.scrollUtils.lastCalculationTime = now;
 
-    // Calculate navbar height
-    const navbar = document.querySelector('header, .navbar, #main-navbar, nav');
+    // FIXED: Better navbar detection and height calculation
+    const navbar = document.querySelector('#main-navbar, header, .navbar, nav');
     if (navbar) {
-        const navbarStyle = window.getComputedStyle(navbar);
-        const position = navbarStyle.position;
-
-        if (position === 'fixed' || position === 'sticky') {
-            const navbarRect = navbar.getBoundingClientRect();
-            const navbarHeight = Math.round(navbarRect.height);
-            totalOffset += navbarHeight;
-            window.scrollUtils.cachedNavbarHeight = navbarHeight;
-            console.log('ScrollUtils - Navbar height:', navbarHeight);
-        }
+        const navbarHeight = navbar.offsetHeight;
+        totalOffset += navbarHeight;
+        window.scrollUtils.cachedNavbarHeight = navbarHeight;
     }
 
-    // Calculate category strip height
+    // FIXED: Category strip height - always account for it when sticky
     const categoryStrip = document.getElementById('category-strip-wrapper');
-    if (categoryStrip && categoryStrip.offsetParent !== null) {
-        const categoryStyle = window.getComputedStyle(categoryStrip);
-        const position = categoryStyle.position;
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (categoryStrip) {
+        const stripHeight = categoryStrip.offsetHeight;
 
-        const isSticky = position === 'fixed' || position === 'sticky';
-        const isScrolledPast = scrollTop > categoryStrip.offsetTop;
-
-        if (isSticky || isScrolledPast) {
-            const categoryRect = categoryStrip.getBoundingClientRect();
-            const stripHeight = Math.round(categoryRect.height);
-            totalOffset += stripHeight;
-            window.scrollUtils.cachedStripHeight = stripHeight;
-            console.log('ScrollUtils - Category strip height:', stripHeight);
-        }
+        // If the strip exists, always add its height (it will be sticky during scroll)
+        totalOffset += stripHeight;
+        window.scrollUtils.cachedStripHeight = stripHeight;
     }
 
-    // MINIMAL buffer - headings will be very close to category strip
-    totalOffset -= 20; // NEGATIVE buffer to position headings even closer
+    // FIXED: Increased buffer to hide separator lines from previous sections
+    totalOffset -= 20; // Increased buffer to scroll past separator lines
 
-    console.log('ScrollUtils - Total calculated offset:', totalOffset);
+    console.log('ScrollUtils - Calculated offset:', totalOffset, {
+        navbar: window.scrollUtils.cachedNavbarHeight,
+        strip: window.scrollUtils.cachedStripHeight
+    });
+
     return totalOffset;
 }
 
 /**
- * Get element's exact position relative to document
+ * FIXED: Get element's exact position
  */
 function getElementDocumentTop(element) {
     if (!element) return 0;
 
-    const rect = element.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return Math.round(rect.top + scrollTop);
+    let offsetTop = 0;
+    let currentElement = element;
+
+    // More accurate position calculation
+    while (currentElement) {
+        offsetTop += currentElement.offsetTop;
+        currentElement = currentElement.offsetParent;
+    }
+
+    return offsetTop;
 }
 
 /**
- * MAIN SMOOTH SCROLL FUNCTION - Used by all components
- * This provides smooth scrolling with precise positioning
+ * FIXED: Main smooth scroll function with perfect precision
  */
 function scrollToSectionWithPrecision(targetElement) {
     if (!targetElement) {
@@ -92,7 +85,6 @@ function scrollToSectionWithPrecision(targetElement) {
     }
 
     console.log('=== PRECISION SCROLL START ===');
-
     console.log('ScrollUtils - Target:', targetElement.id || 'unnamed element');
 
     return new Promise((resolve) => {
@@ -104,96 +96,83 @@ function scrollToSectionWithPrecision(targetElement) {
 
         window.scrollUtils.isScrolling = true;
 
-        // Calculate target position
-        const offset = calculatePreciseScrollOffset();
-        const elementTop = getElementDocumentTop(targetElement);
-        const targetPosition = Math.max(0, elementTop - offset);
+        // FIXED: Force category strip to be sticky immediately
+        const categoryStrip = document.getElementById('category-strip-wrapper');
+        if (categoryStrip) {
+            // Make sure it becomes sticky before calculating
+            categoryStrip.classList.add('sticky');
+            categoryStrip.style.position = 'fixed';
+            categoryStrip.style.top = '0px';
+            categoryStrip.style.left = '0';
+            categoryStrip.style.right = '0';
+            categoryStrip.style.width = '100%';
+            categoryStrip.style.zIndex = '9999';
 
-        console.log('ScrollUtils - Scroll calculation:', {
-            elementTop,
-            offset,
-            targetPosition,
-            currentScroll: window.pageYOffset
-        });
-
-        // Force category strip to remain sticky during and after scroll
-    const categoryStrip = document.getElementById('category-strip-wrapper');
-    if (categoryStrip && !categoryStrip.classList.contains('sticky')) {
-        categoryStrip.classList.add('sticky');
-        // Also update placeholder
-        const placeholder = document.querySelector('.category-strip-placeholder');
-        if (placeholder) {
-            placeholder.style.display = 'block';
-            placeholder.style.height = categoryStrip.offsetHeight + 'px';
+            // Show placeholder
+            const placeholder = document.querySelector('.category-strip-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'block';
+                placeholder.style.height = categoryStrip.offsetHeight + 'px';
+            }
         }
-    }
 
-        // Initial smooth scroll
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
+        // Wait a moment for sticky to apply, then calculate
+        setTimeout(() => {
+            // Calculate target position
+            const offset = calculatePreciseScrollOffset();
+            const elementTop = getElementDocumentTop(targetElement);
+            const targetPosition = Math.max(0, elementTop - offset);
 
-        // Multi-step correction for perfect positioning
-        let correctionStep = 0;
-        const maxCorrections = 3;
+            console.log('ScrollUtils - Scroll calculation:', {
+                elementTop,
+                offset,
+                targetPosition,
+                currentScroll: window.pageYOffset
+            });
 
-        function performCorrection() {
+            // Perform the scroll
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+
+            // Single correction after scroll completes
             setTimeout(() => {
-                correctionStep++;
-
-                // Recalculate for precision
-                const currentOffset = calculatePreciseScrollOffset();
-                const currentElementTop = getElementDocumentTop(targetElement);
-                const currentTarget = Math.max(0, currentElementTop - currentOffset);
+                const finalOffset = calculatePreciseScrollOffset();
+                const finalElementTop = getElementDocumentTop(targetElement);
+                const finalTarget = Math.max(0, finalElementTop - finalOffset);
                 const currentScroll = window.pageYOffset;
-                const difference = Math.abs(currentScroll - currentTarget);
+                const difference = Math.abs(currentScroll - finalTarget);
 
-                console.log(`ScrollUtils - Correction ${correctionStep}:`, {
-                    currentTarget,
+                console.log('ScrollUtils - Final check:', {
+                    finalTarget,
                     currentScroll,
                     difference
                 });
 
-                if (difference > 3 && correctionStep < maxCorrections) {
-                    // Smooth correction
+                // Final correction if needed
+                if (difference > 5) {
                     window.scrollTo({
-                        top: currentTarget,
-                        behavior: correctionStep === maxCorrections ? 'auto' : 'smooth'
+                        top: finalTarget,
+                        behavior: 'auto'
                     });
-
-                    performCorrection();
-                } else {
-                    // Final pixel-perfect adjustment
-                    setTimeout(() => {
-                        const finalOffset = calculatePreciseScrollOffset();
-                        const finalElementTop = getElementDocumentTop(targetElement);
-                        const finalTarget = Math.max(0, finalElementTop - finalOffset);
-                        const finalScroll = window.pageYOffset;
-
-                        if (Math.abs(finalScroll - finalTarget) > 1) {
-                            window.scrollTo(0, finalTarget);
-                            console.log('ScrollUtils - Final pixel correction applied');
-                        }
-
-                        // Reset state
-                        setTimeout(() => {
-                            window.scrollUtils.isScrolling = false;
-                            console.log('=== PRECISION SCROLL COMPLETE ===');
-                            resolve();
-                        }, 100);
-                    }, 150);
+                    console.log('ScrollUtils - Final correction applied');
                 }
-            }, correctionStep === 1 ? 600 : 300); // Longer delay for first correction
-        }
 
-        // Start correction sequence
-        performCorrection();
+                // Reset state
+                setTimeout(() => {
+                    window.scrollUtils.isScrolling = false;
+                    console.log('=== PRECISION SCROLL COMPLETE ===');
+                    resolve();
+                }, 100);
+            }, 800); // Wait for smooth scroll to complete
+
+        }, 50); // Small delay for sticky to apply
     });
 }
 
 /**
- * Enhanced category click handler with smooth scrolling
+ * FIXED: Category click handler
  */
 function handleCategoryClick(event) {
     event.preventDefault();
@@ -219,7 +198,7 @@ function handleCategoryClick(event) {
         closeMainMenu();
     }
 
-    // Close desktop menu popup if open
+    // Close desktop menu popup
     const menuPopup = document.getElementById('menu-categories-popup');
     if (menuPopup && menuPopup.classList.contains('show')) {
         menuPopup.classList.remove('show');
@@ -231,21 +210,19 @@ function handleCategoryClick(event) {
             // Update URL after successful scroll
             history.replaceState(null, null, href);
         });
-    }, 200);
+    }, 100); // Reduced delay
 }
 
 /**
- * Initialize scroll utilities when DOM is ready
+ * Initialize scroll utilities
  */
 function initializeScrollUtils() {
     console.log('Initializing Scroll Utils...');
 
-    // Handle all category items with unified approach
     function attachCategoryHandlers() {
-        // Desktop category items (menu popup)
+        // Desktop category items
         const desktopItems = document.querySelectorAll('.menu-popup-item, .category-item');
         desktopItems.forEach(item => {
-            // Remove existing listeners to prevent duplicates
             item.removeEventListener('click', handleCategoryClick);
             item.addEventListener('click', handleCategoryClick);
         });
@@ -263,14 +240,14 @@ function initializeScrollUtils() {
     // Initial setup
     attachCategoryHandlers();
 
-    // Re-attach handlers when new content is added dynamically
+    // Re-attach handlers for dynamic content
     const observer = new MutationObserver((mutations) => {
         let shouldReattach = false;
 
         mutations.forEach((mutation) => {
             if (mutation.addedNodes) {
                 mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1) { // Element node
+                    if (node.nodeType === 1) {
                         if (node.classList?.contains('menu-popup-item') ||
                             node.classList?.contains('category-item') ||
                             node.classList?.contains('mobile-category-item') ||
@@ -283,12 +260,10 @@ function initializeScrollUtils() {
         });
 
         if (shouldReattach) {
-            console.log('ScrollUtils - Reattaching handlers for new elements');
             setTimeout(attachCategoryHandlers, 100);
         }
     });
 
-    // Start observing
     observer.observe(document.body, {
         childList: true,
         subtree: true
@@ -297,13 +272,13 @@ function initializeScrollUtils() {
     console.log('Scroll utilities initialized successfully!');
 }
 
-// Expose functions globally for other scripts
+// Expose functions globally
 window.scrollToSectionWithPrecision = scrollToSectionWithPrecision;
 window.calculatePreciseScrollOffset = calculatePreciseScrollOffset;
 window.getElementDocumentTop = getElementDocumentTop;
 window.handleCategoryClick = handleCategoryClick;
 
-// Initialize based on document state
+// Initialize
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(initializeScrollUtils, 100);
@@ -312,7 +287,6 @@ if (document.readyState === 'loading') {
     setTimeout(initializeScrollUtils, 100);
 }
 
-// Fallback initialization
 window.addEventListener('load', () => {
     setTimeout(initializeScrollUtils, 200);
 });
