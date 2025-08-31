@@ -26,7 +26,9 @@
 
         # Product Cards Components
         'views/components/product_cards/single_product_card.xml',
-        # 'views/components/product_popup/product_popup_modal.xml',
+
+        # FIXED Product Popup Components - Navbar-Safe
+        'views/components/product_popup/cravely_product_popup_modal.xml',
 
         # Category Strip Components
         'views/components/category_strip/category_strip_complete.xml',
@@ -70,7 +72,7 @@
             'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
-            # 'website_customizations/static/src/css/components/product_popup/product_popup.css',
+            'website_customizations/static/src/css/components/product_popup/cravely_product_popup.css',
             'website_customizations/static/src/css/components/cart_popup/cravely_cart.css',
             'website_customizations/static/src/css/components/footer/footer.css',
 

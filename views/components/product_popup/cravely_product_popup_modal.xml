@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- ================================= PRODUCT POPUP MODAL TEMPLATE ================================= -->
-    <template id="product_popup_modal" name="Product Popup Modal">
-        <!-- Modal Overlay -->
-        <div id="product-popup-overlay" class="product-popup-overlay hidden">
+    <!-- ================================= CRAVELY PRODUCT POPUP MODAL TEMPLATE (NAVBAR-SAFE) ================================= -->
+    <template id="cravely_product_popup_modal" name="Cravely Product Popup Modal">
+        <!-- Modal Overlay - Fully namespaced -->
+        <div id="cravely-product-popup-overlay" class="cravely-product-popup-overlay cravely-popup-hidden">
             <!-- Modal Container -->
-            <div id="product-popup-modal" class="product-popup-modal">
+            <div id="cravely-product-popup-modal" class="cravely-product-popup-modal">
                 <!-- Close Button -->
-                <button id="close-product-popup" class="close-product-popup">
-                    <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button id="cravely-close-product-popup" class="cravely-close-product-popup">
+                    <svg class="cravely-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
 
                 <!-- Modal Content -->
-                <div class="product-popup-content">
+                <div class="cravely-product-popup-content">
                     <!-- Left Side: Product Image -->
-                    <div class="product-popup-image-section">
-                        <div class="product-popup-image-container">
-                            <img id="popup-product-image"
+                    <div class="cravely-product-popup-image-section">
+                        <div class="cravely-product-popup-image-container">
+                            <img id="cravely-popup-product-image"
                                  src="/website_customizations/static/src/images/product_1.jpg"
                                  alt="Product Image"
                                  loading="lazy"/>
@@ -27,49 +27,49 @@
                     </div>
 
                     <!-- Right Side: Product Details -->
-                    <div class="product-popup-details-section">
+                    <div class="cravely-product-popup-details-section">
                         <!-- Product Title -->
-                        <h2 id="popup-product-title" class="popup-product-title">Product Name</h2>
+                        <h2 id="cravely-popup-product-title" class="cravely-popup-product-title">Product Name</h2>
 
                         <!-- Product Description -->
-                        <p id="popup-product-description" class="popup-product-description">
+                        <p id="cravely-popup-product-description" class="cravely-popup-product-description">
                             Product description will appear here
                         </p>
 
                         <!-- Pricing Section -->
-                        <div class="popup-pricing-section">
-                            <div class="popup-price-container">
+                        <div class="cravely-popup-pricing-section">
+                            <div class="cravely-popup-price-container">
                                 <!-- Original Price (if different from discounted) -->
-                                <span id="popup-original-price" class="popup-original-price hidden">Rs. 0</span>
+                                <span id="cravely-popup-original-price" class="cravely-popup-original-price cravely-popup-hidden">Rs. 0</span>
                                 <!-- Current/Discounted Price -->
-                                <span id="popup-current-price" class="popup-current-price">Rs. 0</span>
+                                <span id="cravely-popup-current-price" class="cravely-popup-current-price">Rs. 0</span>
                             </div>
                         </div>
 
                         <!-- Special Instructions Section -->
-                        <div class="special-instructions-section">
-                            <label for="popup-special-instructions" class="instructions-label">
+                        <div class="cravely-special-instructions-section">
+                            <label for="cravely-popup-special-instructions" class="cravely-instructions-label">
                                 Special Instructions
                             </label>
-                            <textarea id="popup-special-instructions"
-                                      class="instructions-textarea"
+                            <textarea id="cravely-popup-special-instructions"
+                                      class="cravely-instructions-textarea"
                                       placeholder="Please enter instructions about this item"
                                       rows="3"></textarea>
                         </div>
 
                         <!-- Quantity and Add to Cart Section -->
-                        <div class="popup-cart-section">
+                        <div class="cravely-popup-cart-section">
                             <!-- Quantity Controls -->
-                            <div class="popup-quantity-controls">
-                                <button id="popup-quantity-decrease" class="popup-quantity-btn decrease">
+                            <div class="cravely-popup-quantity-controls">
+                                <button id="cravely-popup-quantity-decrease" class="cravely-popup-quantity-btn cravely-decrease">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <line x1="5" y1="12" x2="19" y2="12"></line>
                                     </svg>
                                 </button>
 
-                                <span id="popup-quantity-display" class="popup-quantity-display">1</span>
+                                <span id="cravely-popup-quantity-display" class="cravely-popup-quantity-display">1</span>
 
-                                <button id="popup-quantity-increase" class="popup-quantity-btn increase">
+                                <button id="cravely-popup-quantity-increase" class="cravely-popup-quantity-btn cravely-increase">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <line x1="12" y1="5" x2="12" y2="19"></line>
                                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -78,13 +78,13 @@
                             </div>
 
                             <!-- Total Price Display -->
-                            <div class="popup-total-price-section">
-                                <span id="popup-total-price" class="popup-total-price">Rs. 0</span>
-                            </div>
+<!--                            <div class="cravely-popup-total-price-section">-->
+<!--                                <span id="cravely-popup-total-price" class="cravely-popup-total-price">Rs. 0</span>-->
+<!--                            </div>-->
 
                             <!-- Add to Cart Button -->
-                            <button id="popup-add-to-cart" class="popup-add-to-cart-btn">
-                                <span class="popup-cart-icon">
+                            <button id="cravely-popup-add-to-cart" class="cravely-popup-add-to-cart-btn">
+                                <span class="cravely-popup-cart-icon">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M9 12l2 2 4-4"/>
                                         <circle cx="12" cy="12" r="9"/>
