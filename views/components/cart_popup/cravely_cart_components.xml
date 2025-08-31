@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ================================= NAVBAR-SAFE CART COMPONENTS ================================= -->
+    <!-- All IDs and classes use "cravely-cart-" prefix to avoid navbar conflicts -->
+
+    <!-- Cart View Popup Template -->
+    <template id="cravely_cart_view_popup" name="Cravely Cart View Popup">
+        <div id="cravely-cart-view-popup" class="cravely-cart-view-popup cravely-cart-hidden">
+            <div class="cravely-cart-popup-container">
+                <div class="cravely-success-notification">
+                    <div class="cravely-success-icon">
+                        <svg class="checkmark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4"/>
+                            <circle cx="12" cy="12" r="9"/>
+                        </svg>
+                    </div>
+                    <span class="cravely-success-text">Item added to cart</span>
+                </div>
+                <button id="cravely-view-cart-btn" class="cravely-view-cart-button">
+                    <span class="cravely-cart-count-badge">0</span>
+                    <span class="cravely-view-cart-text">View Cart</span>
+                    <span class="cravely-cart-total-price">Rs. 0</span>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Enhanced Cart Sidebar Template with Popular Items -->
+    <template id="cravely_cart_sidebar" name="Cravely Cart Sidebar Enhanced">
+        <div id="cravely-cart-sidebar-overlay" class="cravely-cart-sidebar-overlay cravely-cart-hidden">
+            <div id="cravely-cart-sidebar" class="cravely-cart-sidebar">
+                <!-- Cart Header -->
+                <div class="cravely-cart-sidebar-header">
+                    <h2 class="cravely-cart-title">Your Cart</h2>
+                    <button id="cravely-close-cart-btn" class="cravely-close-cart-btn">
+                        <svg class="cravely-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Scrollable Content Container -->
+                <div class="cravely-cart-scrollable-content" id="cravely-cart-scrollable-content">
+
+                    <!-- Cart Items Section -->
+                    <div class="cravely-cart-items-section" id="cravely-cart-items-container">
+                        <!-- Cart items will be dynamically inserted here -->
+                        <div class="cravely-empty-cart-state">
+                            <div class="cravely-empty-cart-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="m1 1 4 4 2.4 12h11.6"></path>
+                                </svg>
+                            </div>
+                            <p class="cravely-empty-cart-message">Your cart is empty</p>
+                            <p class="cravely-empty-cart-subtitle">Add some delicious items to get started</p>
+                        </div>
+                    </div>
+
+                    <!-- Add More Items Section -->
+                    <div class="cravely-add-more-items-section" id="cravely-add-more-section">
+                        <button class="cravely-add-more-items-btn" id="cravely-add-more-items-btn">
+                            <span class="cravely-add-icon">+</span>
+                            Add more items
+                        </button>
+                    </div>
+
+                    <!-- Popular Items Section with Horizontal Scroll -->
+                    <div class="cravely-popular-items-section" id="cravely-popular-items-section">
+                        <h3 class="cravely-popular-items-title">Popular with your order</h3>
+                        <p class="cravely-popular-items-subtitle">Customers often buy these together</p>
+
+                        <div class="cravely-popular-items-scroll-container">
+                            <!-- Left Scroll Button -->
+                            <button class="cravely-scroll-nav-btn cravely-scroll-left-btn" id="cravely-scroll-left">
+                                <svg class="cravely-scroll-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15,18 9,12 15,6"></polyline>
+                                </svg>
+                            </button>
+
+                            <!-- Horizontal Scrolling Grid -->
+                            <div class="cravely-popular-items-grid" id="cravely-popular-items-grid">
+                                <!-- Popular items will be dynamically inserted here -->
+                                <!-- Example structure:
+                                <div class="cravely-popular-item" data-product-id="sample-id">
+                                    <img src="/path/to/image.jpg" alt="Product Name" class="cravely-popular-item-image"/>
+                                    <div class="cravely-popular-item-content">
+                                        <h4 class="cravely-popular-item-name">Product Name</h4>
+                                        <span class="cravely-popular-item-price">Rs. 999</span>
+                                        <button class="cravely-popular-item-add-btn">+</button>
+                                    </div>
+                                </div>
+                                -->
+                            </div>
+
+                            <!-- Right Scroll Button -->
+                            <button class="cravely-scroll-nav-btn cravely-scroll-right-btn" id="cravely-scroll-right">
+                                <svg class="cravely-scroll-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9,18 15,12 9,6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Summary Section -->
+                    <div class="cravely-cart-summary-section" id="cravely-cart-summary">
+                        <div class="cravely-summary-row">
+                            <span class="cravely-summary-label">Subtotal</span>
+                            <span class="cravely-summary-value" id="cravely-subtotal-amount">Rs. 0</span>
+                        </div>
+                        <div class="cravely-summary-row">
+                            <span class="cravely-summary-label">Tax (15%)</span>
+                            <span class="cravely-summary-value" id="cravely-tax-amount">Rs. 0</span>
+                        </div>
+                        <div class="cravely-summary-row">
+                            <span class="cravely-summary-label">Delivery Fee</span>
+                            <span class="cravely-summary-value">Rs. 200</span>
+                        </div>
+                        <div class="cravely-summary-row cravely-total-row">
+                            <span class="cravely-summary-label">Grand Total</span>
+                            <span class="cravely-summary-value" id="cravely-grand-total-amount">Rs. 200</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Section -->
+                    <div class="cravely-checkout-section" id="cravely-checkout-section">
+                        <button class="cravely-checkout-btn" id="cravely-checkout-btn">
+                            <span class="cravely-checkout-text">Checkout</span>
+                            <svg class="cravely-checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12,5 19,12 12,19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Delivery Info Section -->
+                    <div class="cravely-delivery-info" id="cravely-delivery-info">
+                        <p class="cravely-delivery-text">Sorry, we are closed right now but pre-orders can be placed.</p>
+                        <p class="cravely-delivery-text">Your order will be delivered approximately on <span class="cravely-delivery-date">August 31, 2025</span> at <span class="cravely-delivery-time">1:30 PM</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Optional: Popular Item Component Template (for dynamic generation) -->
+    <template id="cravely_popular_item_template" name="Popular Item Template">
+        <div class="cravely-popular-item" data-product-id="">
+            <img src="" alt="" class="cravely-popular-item-image"/>
+            <div class="cravely-popular-item-content">
+                <h4 class="cravely-popular-item-name"></h4>
+                <span class="cravely-popular-item-price"></span>
+                <button class="cravely-popular-item-add-btn" title="Add to cart">+</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Optional: Cart Item Template (for dynamic generation) -->
+    <template id="cravely_cart_item_template" name="Cart Item Template">
+        <div class="cravely-cart-item" data-product-id="">
+            <div class="cravely-cart-item-image">
+                <img src="" alt="" loading="lazy"/>
+            </div>
+            <div class="cravely-cart-item-details">
+                <h4 class="cravely-cart-item-name"></h4>
+                <span class="cravely-cart-item-price"></span>
+                <div class="cravely-cart-item-instructions" style="display: none;">
+                    <span class="cravely-instructions-label">Special Instructions:</span>
+                    <p class="cravely-instructions-text"></p>
+                </div>
+            </div>
+            <div class="cravely-cart-item-controls">
+                <button class="cravely-delete-item-btn">
+                    <svg class="cravely-delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3,6 5,6 21,6"></polyline>
+                        <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+                    </svg>
+                </button>
+                <div class="cravely-quantity-controls">
+                    <button class="cravely-quantity-minus-btn">-</button>
+                    <span class="cravely-quantity-number">1</span>
+                    <button class="cravely-quantity-plus-btn">+</button>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

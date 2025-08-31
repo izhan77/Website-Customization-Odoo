@@ -15,6 +15,8 @@
                     <section class="menu-sections">
                         <t t-call="website_customizations.menu_sections_complete"/>
                     </section>
+
+<!--                    <t t-call="website_customizations.product_popup_modal"/>-->
                 </main>
             </div>
         </xpath>

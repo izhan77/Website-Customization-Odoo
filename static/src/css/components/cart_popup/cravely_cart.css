@@ -1,0 +1,812 @@
+/* ================================= NAVBAR-SAFE CART POPUP STYLES ================================= */
+/*
+   CRITICAL: All classes use "cravely-cart-" prefix to avoid conflicts with navbar
+   No broad selectors that could affect navbar elements
+*/
+
+/* Cart View Popup - Completely isolated */
+.cravely-cart-view-popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 950 !important; /* Lower than navbar (999) but higher than content */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: auto;
+    max-width: 90%;
+}
+
+.cravely-cart-view-popup.cravely-cart-show {
+    opacity: 1;
+    visibility: visible;
+    animation: cravelySlideUpBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cravely-cart-view-popup.cravely-cart-hide {
+    opacity: 0;
+    visibility: hidden;
+    animation: cravelySlideDownFade 0.3s ease-in-out;
+}
+
+@keyframes cravelySlideUpBounce {
+    0% { opacity: 0; transform: translateX(-50%) translateY(60px) scale(0.8); }
+    70% { transform: translateX(-50%) translateY(-10px) scale(1.02); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes cravelySlideDownFade {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(60px) scale(0.9); }
+}
+
+.cravely-cart-popup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.cravely-success-notification {
+    background: #ecfdf5;
+    color: #065f46;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border-left: 4px solid #10b981;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: cravelySlideInNotification 0.4s ease;
+}
+
+.cravely-success-icon {
+    width: 24px;
+    height: 24px;
+    color: #10b981;
+}
+
+.cravely-success-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cravely-view-cart-button {
+    background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 25px rgba(122, 191, 186, 0.4);
+    transition: all 0.3s ease;
+}
+
+.cravely-view-cart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(122, 191, 186, 0.5);
+}
+
+.cravely-cart-count-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.cravely-view-cart-text { flex: 1; }
+.cravely-cart-total-price { font-weight: 800; font-size: 16px; }
+
+/* CRITICAL: Specific hidden class to avoid navbar conflicts */
+.cravely-cart-hidden {
+    display: none !important;
+}
+
+/* ================================= CART SIDEBAR STYLES ================================= */
+.cravely-cart-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 950 !important; /* Lower than navbar to avoid conflicts */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+}
+
+.cravely-cart-sidebar-overlay.cravely-cart-show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cravely-cart-sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 420px;
+    height: 100%;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: -15px 0 40px rgba(0, 0, 0, 0.3);
+}
+
+.cravely-cart-sidebar-overlay.cravely-cart-show .cravely-cart-sidebar {
+    transform: translateX(0);
+}
+
+.cravely-cart-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(122, 191, 186, 0.4);
+    position: relative;
+    min-height: auto;
+}
+
+.cravely-cart-sidebar-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.cravely-cart-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.cravely-close-cart-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    border-radius: 12px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.cravely-close-cart-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.cravely-close-icon { width: 22px; height: 22px; }
+
+.cravely-cart-scrollable-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 80px);
+}
+
+.cravely-cart-items-section { padding: 0; min-height: auto; }
+
+.cravely-empty-cart-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    min-height: 200px;
+}
+
+.cravely-empty-cart-icon {
+    width: 60px;
+    height: 60px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+.cravely-empty-cart-message {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+}
+
+.cravely-empty-cart-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.cravely-cart-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    animation: cravelySlideInRight 0.4s ease;
+    transition: all 0.3s ease;
+}
+
+.cravely-cart-item:hover { background: #f9fafb; }
+.cravely-cart-item:last-child { border-bottom: none; }
+
+@keyframes cravelySlideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.cravely-cart-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cravely-cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cravely-cart-item-details {
+    flex: 1;
+    min-width: 0;
+    padding-top: 4px;
+}
+
+.cravely-cart-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cravely-cart-item-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #7abfba;
+}
+
+/* Special Instructions in Cart Items */
+.cravely-cart-item-instructions {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f0f9ff;
+    border-radius: 8px;
+    border-left: 3px solid #7abfba;
+}
+
+.cravely-cart-item-instructions .cravely-instructions-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7abfba;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.cravely-cart-item-instructions .cravely-instructions-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.4;
+    margin: 0;
+    font-style: italic;
+}
+
+.cravely-cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.cravely-delete-item-btn {
+    background: #fee2e2;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: #dc2626;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+}
+
+.cravely-delete-item-btn:hover {
+    background: #fecaca;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.cravely-delete-icon { width: 14px; height: 14px; }
+
+.cravely-quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.cravely-quantity-minus-btn,
+.cravely-quantity-plus-btn {
+    background: #7abfba;
+    color: #FFFFFF;
+    border: none;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.cravely-quantity-minus-btn {
+    border-radius: 0;
+    background: #f87171;
+}
+
+.cravely-quantity-minus-btn:hover { background: #ef4444; }
+.cravely-quantity-plus-btn { border-radius: 0; }
+.cravely-quantity-plus-btn:hover { background: #66a39e; }
+
+.cravely-quantity-number {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    min-width: 32px;
+    text-align: center;
+    padding: 6px 8px;
+    background: #ffffff;
+}
+
+/* ================================= ADD MORE ITEMS SECTION ================================= */
+.cravely-add-more-items-section {
+    padding: 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.cravely-add-more-items-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: 2px dashed #d1d5db;
+    color: #6b7280;
+    padding: 16px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.cravely-add-more-items-btn:hover {
+    border-color: #7abfba;
+    color: #7abfba;
+    background: rgba(122, 191, 186, 0.05);
+    transform: translateY(-2px);
+}
+
+.cravely-add-icon {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ================================= POPULAR ITEMS SECTION ================================= */
+.cravely-popular-items-section {
+    padding: 20px;
+    border-bottom: 1px solid #f3f4f6;
+    background: #fafbfc;
+}
+
+.cravely-popular-items-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+}
+
+.cravely-popular-items-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+}
+
+.cravely-popular-items-scroll-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.cravely-popular-items-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: 4px 0 8px 0;
+}
+
+.cravely-popular-items-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.cravely-popular-item {
+    flex: 0 0 auto;
+    width: 130px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+.cravely-popular-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #7abfba;
+}
+
+.cravely-popular-item-image {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+
+.cravely-popular-item-content {
+    padding: 10px 8px 8px 8px;
+}
+
+.cravely-popular-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 32px;
+}
+
+.cravely-popular-item-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #7abfba;
+    margin: 0;
+}
+
+.cravely-popular-item-add-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: #7abfba;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.cravely-popular-item:hover .cravely-popular-item-add-btn {
+    opacity: 1;
+}
+
+.cravely-popular-item-add-btn:hover {
+    background: #66a39e;
+    transform: scale(1.1);
+}
+
+/* Scroll Navigation Buttons */
+.cravely-scroll-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.cravely-popular-items-scroll-container:hover .cravely-scroll-nav-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cravely-scroll-nav-btn:hover {
+    background: #7abfba;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.cravely-scroll-left-btn {
+    left: 8px;
+}
+
+.cravely-scroll-right-btn {
+    right: 8px;
+}
+
+.cravely-scroll-nav-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* ================================= CART SUMMARY SECTION ================================= */
+.cravely-cart-summary-section {
+    padding: 20px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.cravely-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.cravely-summary-row:last-child {
+    margin-bottom: 0;
+}
+
+.cravely-summary-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.cravely-summary-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.cravely-total-row {
+    border-top: 1px solid #d1d5db;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+.cravely-total-row .cravely-summary-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.cravely-total-row .cravely-summary-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #7abfba;
+}
+
+/* ================================= CHECKOUT SECTION ================================= */
+.cravely-checkout-section {
+    padding: 20px;
+    background: #ffffff;
+}
+
+.cravely-checkout-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    color: white;
+    border: none;
+    padding: 16px 20px;
+    border-radius: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(31, 41, 55, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.cravely-checkout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(31, 41, 55, 0.4);
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+}
+
+.cravely-checkout-btn:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.cravely-checkout-text {
+    flex: 1;
+    text-align: center;
+}
+
+.cravely-checkout-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.cravely-checkout-btn:hover .cravely-checkout-arrow {
+    transform: translateX(4px);
+}
+
+/* ================================= DELIVERY INFO SECTION ================================= */
+.cravely-delivery-info {
+    padding: 16px 20px;
+    background: #fef3cd;
+    border-top: 1px solid #f59e0b;
+    text-align: center;
+}
+
+.cravely-delivery-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #92400e;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+}
+
+.cravely-delivery-text:last-child {
+    margin-bottom: 0;
+}
+
+.cravely-delivery-date,
+.cravely-delivery-time {
+    font-weight: 600;
+    color: #78350f;
+}
+
+/* ================================= RESPONSIVE DESIGN ================================= */
+@media (max-width: 500px) {
+    .cravely-cart-sidebar {
+        width: 100vw;
+    }
+
+    .cravely-popular-item {
+        width: 120px;
+    }
+
+    .cravely-popular-item-image {
+        height: 70px;
+    }
+
+    .cravely-cart-sidebar-header {
+        padding: 16px 20px;
+    }
+
+    .cravely-cart-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 380px) {
+    .cravely-cart-sidebar {
+        width: 100vw;
+    }
+
+    .cravely-popular-item {
+        width: 110px;
+    }
+
+    .cravely-popular-items-section,
+    .cravely-add-more-items-section,
+    .cravely-cart-summary-section,
+    .cravely-checkout-section {
+        padding: 16px;
+    }
+}
+
+/* Animation keyframes */
+@keyframes cravelySlideInNotification {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes cravelyPopularItemSlideIn {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cravely-popular-item {
+    animation: cravelyPopularItemSlideIn 0.4s ease forwards;
+}
+
+/* Prevent body scrolling when cart is open - specific class name */
+body.cravely-cart-modal-open {
+    overflow: hidden;
+}

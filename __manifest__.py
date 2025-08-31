@@ -26,6 +26,7 @@
 
         # Product Cards Components
         'views/components/product_cards/single_product_card.xml',
+        # 'views/components/product_popup/product_popup_modal.xml',
 
         # Category Strip Components
         'views/components/category_strip/category_strip_complete.xml',
@@ -34,7 +35,7 @@
         'views/components/menu_sections/menu_sections_complete.xml',
 
         # Cart Popup Components
-        'views/components/cart_popup/cart_popup_components.xml',
+        'views/components/cart_popup/cravely_cart_components.xml',
 
         # Homepage Components
         'views/pages/homepage.xml',
@@ -69,6 +70,8 @@
             'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
+            # 'website_customizations/static/src/css/components/product_popup/product_popup.css',
+            'website_customizations/static/src/css/components/cart_popup/cravely_cart.css',
             'website_customizations/static/src/css/components/footer/footer.css',
 
             # JavaScript files in dependency order
