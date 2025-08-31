@@ -1,7 +1,7 @@
-/* ================================= CRAVELY PRODUCT POPUP MODAL STYLES (OPTIMIZED) ================================= */
-/* Optimized based on your feedback with perfect responsiveness */
+/* ================================= CRAVELY PRODUCT POPUP MODAL STYLES (ENHANCED) ================================= */
+/* Enhanced with better scrolling, modal layering, and smooth animations */
 
-/* Modal Overlay */
+/* Modal Overlay - ENHANCED: Higher z-index than cart popup */
 .cravely-product-popup-overlay {
     position: fixed;
     top: 0;
@@ -9,7 +9,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
-    z-index: 9999;
+    z-index: 10500; /* ENHANCED: Higher than cart popup (9999) */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,18 +24,20 @@
     visibility: visible;
 }
 
-/* Modal Container */
+/* Modal Container - ENHANCED: Better max-height and scrolling */
 .cravely-product-popup-modal {
     background: #ffffff;
     border-radius: 16px;
     position: relative;
     max-width: 900px;
     width: 100%;
-    max-height: 90vh;
+    max-height: 85vh; /* ENHANCED: Reduced max-height for better scrolling */
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     transform: scale(0.95);
     transition: transform 0.2s ease-out;
+    display: flex;
+    flex-direction: column; /* ENHANCED: For better layout control */
 }
 
 .cravely-product-popup-overlay.cravely-show .cravely-product-popup-modal {
@@ -71,41 +73,69 @@
     color: #374151;
 }
 
-/* Modal Content Layout */
+/* Modal Content Layout - ENHANCED: Better overflow handling */
 .cravely-product-popup-content {
     display: flex;
-    min-height: 500px;
+    min-height: 450px;
+    max-height: 100%;
+    overflow: hidden; /* ENHANCED: Better overflow control */
 }
 
-/* Left Side: Product Image - OPTIMIZED */
+/* Left Side: Product Image */
 .cravely-product-popup-image-section {
     flex: 1;
     background: #f8fafc;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 25px; /* Reduced padding for less gap */
+    padding: 25px;
     position: relative;
     overflow: hidden;
+    min-height: 450px; /* ENHANCED: Consistent minimum height */
 }
 
 .cravely-product-popup-image-section img {
-    width: 90%; /* Reduced from 100% for smaller size */
-    height: 90%; /* Reduced from 100% for smaller size */
+    width: 90%;
+    height: 90%;
     object-fit: cover;
     display: block;
-    border-radius: 12px; /* Added smooth border radius */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Right Side: Product Details */
+/* Right Side: Product Details - ENHANCED: Proper scrolling */
 .cravely-product-popup-details-section {
     flex: 1;
     padding: 30px;
     display: flex;
     flex-direction: column;
     background: #FFFFFF;
-    overflow-y: auto;
+    overflow-y: auto; /* ENHANCED: Enable scrolling */
+    max-height: 100%;
+    position: relative;
+    /* ENHANCED: Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #7abfba #f3f4f6;
+}
+
+/* ENHANCED: Webkit scrollbar styling for better appearance */
+.cravely-product-popup-details-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cravely-product-popup-details-section::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+}
+
+.cravely-product-popup-details-section::-webkit-scrollbar-thumb {
+    background: #7abfba;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.cravely-product-popup-details-section::-webkit-scrollbar-thumb:hover {
+    background: #66a39e;
 }
 
 /* Product Title */
@@ -127,7 +157,7 @@
     margin: 0 0 25px 0;
 }
 
-/* Pricing Section */
+/* Pricing Section - ENHANCED: Smooth price animations */
 .cravely-popup-pricing-section {
     margin-bottom: 25px;
     padding: 0;
@@ -146,6 +176,7 @@
     color: #9ca3af;
     text-decoration: line-through;
     font-weight: 500;
+    transition: all 0.3s ease; /* ENHANCED: Smooth transitions */
 }
 
 .cravely-popup-current-price {
@@ -153,11 +184,32 @@
     font-size: 32px;
     font-weight: 700;
     color: #7abfba;
+    transition: all 0.3s ease; /* ENHANCED: Smooth transitions */
+    position: relative;
 }
 
-/* Special Instructions Section */
+/* ENHANCED: Price update animation */
+.cravely-popup-current-price.cravely-price-updating,
+.cravely-popup-original-price.cravely-price-updating {
+    transform: scale(1.05);
+    color: #059669; /* Temporary green color during update */
+}
+
+/* ENHANCED: Price pulse effect */
+@keyframes cravely-price-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.cravely-popup-current-price.cravely-price-updating {
+    animation: cravely-price-pulse 0.3s ease-in-out;
+}
+
+/* Special Instructions Section - ENHANCED: Better textarea handling */
 .cravely-special-instructions-section {
     margin-bottom: 25px;
+    flex-shrink: 0; /* ENHANCED: Prevent shrinking */
 }
 
 .cravely-instructions-label {
@@ -179,36 +231,42 @@
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: #374151;
-    resize: vertical;
+    resize: vertical; /* ENHANCED: Allow vertical resizing */
     min-height: 80px;
+    max-height: 200px; /* ENHANCED: Limit maximum height */
     background: #f9fafb;
     line-height: 1.5;
+    transition: all 0.2s ease;
 }
 
 .cravely-instructions-textarea:focus {
     outline: none;
     border-color: #7abfba;
     background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(122, 191, 186, 0.1); /* ENHANCED: Focus ring */
 }
 
 .cravely-instructions-textarea::placeholder {
     color: #9ca3af;
 }
 
-/* Cart Section - OPTIMIZED: Removed total price, added space-between */
+/* Cart Section - ENHANCED: Always visible at bottom */
 .cravely-popup-cart-section {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Added space-between */
+    justify-content: space-between;
     gap: 15px;
-    margin-top: auto;
+    margin-top: auto; /* ENHANCED: Push to bottom */
     padding: 20px 0 0 0;
     border-top: 1px solid #e5e7eb;
+    flex-shrink: 0; /* ENHANCED: Prevent shrinking */
+    background: #ffffff; /* ENHANCED: Ensure visibility */
+    position: sticky; /* ENHANCED: Stick to bottom when scrolling */
+    bottom: 0;
+    z-index: 10;
 }
 
-/* REMOVED: .cravely-popup-total-price-section (as requested) */
-
-/* Quantity Controls */
+/* Quantity Controls - ENHANCED: Better visual feedback */
 .cravely-popup-quantity-controls {
     display: flex;
     align-items: center;
@@ -217,6 +275,12 @@
     padding: 4px;
     border: 1px solid #e5e7eb;
     gap: 0;
+    transition: all 0.2s ease;
+}
+
+.cravely-popup-quantity-controls:hover {
+    border-color: #7abfba;
+    box-shadow: 0 2px 4px rgba(122, 191, 186, 0.1);
 }
 
 .cravely-popup-quantity-btn {
@@ -236,6 +300,11 @@
 
 .cravely-popup-quantity-btn:hover {
     background: #66a39e;
+    transform: scale(1.05); /* ENHANCED: Hover effect */
+}
+
+.cravely-popup-quantity-btn:active {
+    transform: scale(0.95); /* ENHANCED: Active effect */
 }
 
 .cravely-popup-quantity-btn.cravely-decrease {
@@ -264,9 +333,10 @@
     border-radius: 4px;
     margin: 0 6px;
     line-height: 40px;
+    transition: all 0.2s ease; /* ENHANCED: Smooth transitions */
 }
 
-/* Add to Cart Button */
+/* Add to Cart Button - ENHANCED: Better animations */
 .cravely-popup-add-to-cart-btn {
     background: #7abfba;
     color: #FFFFFF;
@@ -285,15 +355,27 @@
     letter-spacing: 0.5px;
     min-width: 140px;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .cravely-popup-add-to-cart-btn:hover {
     background: #66a39e;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(122, 191, 186, 0.3);
 }
 
 .cravely-popup-add-to-cart-btn:active {
     transform: translateY(0);
+}
+
+.cravely-popup-add-to-cart-btn.cravely-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.cravely-popup-add-to-cart-btn.cravely-loading .cravely-popup-cart-icon {
+    animation: cravely-spin 1s linear infinite;
 }
 
 .cravely-popup-cart-icon {
@@ -302,39 +384,54 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.2s ease;
 }
 
-/* ================================= RESPONSIVE DESIGN (OPTIMIZED) ================================= */
+/* ================================= RESPONSIVE DESIGN (ENHANCED) ================================= */
 
-/* Medium Screens (680px - 1000px) - FIXED */
+/* Large Screens - Ensure cart popup is always behind product popup */
+@media (min-width: 1001px) {
+    /* ENHANCED: Ensure cart popup has lower z-index */
+    .cravely-cart-view-popup {
+        z-index: 9999 !important;
+    }
+
+    .cravely-cart-sidebar-overlay {
+        z-index: 9998 !important;
+    }
+}
+
+/* Medium Screens (680px - 1000px) - ENHANCED */
 @media (max-width: 1000px) and (min-width: 681px) {
     .cravely-product-popup-modal {
         max-width: 95%;
+        max-height: 90vh; /* ENHANCED: More space */
         margin: 0 auto;
     }
 
     .cravely-product-popup-content {
-        flex-direction: row; /* Keep side-by-side layout */
-        min-height: 400px; /* Reduced height */
+        flex-direction: row;
+        min-height: 400px;
     }
 
     .cravely-product-popup-image-section {
         height: auto;
-        padding: 20px; /* Further reduced padding */
-        flex: 0.9; /* Slightly smaller image section */
+        padding: 20px;
+        flex: 0.9;
+        min-height: 350px; /* ENHANCED: Maintain aspect ratio */
     }
 
     .cravely-product-popup-image-section img {
         width: 85%;
         height: 85%;
-        max-height: 350px; /* Limit maximum height */
+        max-height: 320px;
     }
 
     .cravely-product-popup-details-section {
         padding: 25px 20px;
-        flex: 1.1; /* Slightly larger details section */
+        flex: 1.1;
         overflow-y: auto;
-        max-height: 500px;
+        max-height: 90vh; /* ENHANCED: Allow more scrolling space */
     }
 
     .cravely-popup-product-title {
@@ -359,30 +456,22 @@
         flex-wrap: wrap;
         gap: 12px;
         padding: 15px 0 0 0;
+        position: sticky;
+        bottom: 0;
+        background: #ffffff;
     }
 
     .cravely-popup-quantity-controls {
-        margin-right: auto; /* Push to left */
+        margin-right: auto;
     }
 
     .cravely-popup-add-to-cart-btn {
         min-width: 120px;
         padding: 12px 20px;
     }
-
-    /* Ensure add to cart button is always visible */
-    .cravely-product-popup-details-section {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .cravely-popup-cart-section {
-        margin-top: auto;
-        padding-bottom: 10px;
-    }
 }
 
-/* Tablet (Fixed for 680px-1000px) */
+/* Tablet */
 @media (max-width: 1024px) {
     .cravely-product-popup-content {
         flex-direction: column;
@@ -392,7 +481,8 @@
     .cravely-product-popup-image-section {
         height: 300px;
         flex: none;
-        padding: 20px; /* Consistent padding */
+        padding: 20px;
+        min-height: 280px;
     }
 
     .cravely-product-popup-image-section img {
@@ -403,8 +493,9 @@
 
     .cravely-product-popup-details-section {
         padding: 25px;
-        overflow-y: visible;
+        overflow-y: auto;
         flex: none;
+        max-height: 60vh; /* ENHANCED: Allow scrolling on tablet */
     }
 
     .cravely-popup-product-title {
@@ -416,10 +507,13 @@
     }
 
     .cravely-popup-cart-section {
-        flex-direction: row; /* Keep horizontal layout */
+        flex-direction: row;
         justify-content: space-between;
         gap: 15px;
         align-items: center;
+        position: sticky;
+        bottom: 0;
+        background: #ffffff;
     }
 
     .cravely-popup-quantity-controls {
@@ -434,20 +528,22 @@
     }
 }
 
-/* Mobile */
+/* Mobile - ENHANCED: Better mobile experience */
 @media (max-width: 680px) {
     .cravely-product-popup-overlay {
-        padding: 15px;
+        padding: 10px;
     }
 
     .cravely-product-popup-modal {
         max-width: 100%;
+        max-height: 95vh; /* ENHANCED: More screen real estate */
         border-radius: 12px;
     }
 
     .cravely-product-popup-image-section {
         height: 250px;
         padding: 15px;
+        min-height: 230px;
     }
 
     .cravely-product-popup-image-section img {
@@ -458,6 +554,8 @@
 
     .cravely-product-popup-details-section {
         padding: 20px;
+        max-height: 65vh; /* ENHANCED: Allow more content */
+        overflow-y: auto;
     }
 
     .cravely-popup-product-title {
@@ -482,11 +580,19 @@
         margin-bottom: 20px;
     }
 
+    .cravely-instructions-textarea {
+        max-height: 120px; /* ENHANCED: Limit height on mobile */
+    }
+
     .cravely-popup-cart-section {
-        padding: 15px 0 0 0;
+        padding: 15px 0 5px 0; /* ENHANCED: Less bottom padding */
         gap: 12px;
         flex-direction: column;
         align-items: stretch;
+        position: sticky;
+        bottom: 0;
+        background: #ffffff;
+        border-top: 2px solid #e5e7eb; /* ENHANCED: More prominent border */
     }
 
     .cravely-popup-quantity-controls {
@@ -499,6 +605,7 @@
         order: 2;
         width: 100%;
         min-width: auto;
+        margin-bottom: 5px; /* ENHANCED: Small bottom margin */
     }
 
     .cravely-close-product-popup {
@@ -514,21 +621,31 @@
     }
 }
 
-/* Small Mobile */
+/* Small Mobile - ENHANCED */
 @media (max-width: 400px) {
+    .cravely-product-popup-overlay {
+        padding: 5px;
+    }
+
+    .cravely-product-popup-modal {
+        max-height: 98vh; /* ENHANCED: Nearly full screen */
+    }
+
     .cravely-product-popup-image-section {
         height: 200px;
         padding: 12px;
+        min-height: 180px;
     }
 
     .cravely-product-popup-image-section img {
         width: 88%;
         height: 88%;
-        max-height: 180px;
+        max-height: 170px;
     }
 
     .cravely-product-popup-details-section {
         padding: 15px;
+        max-height: 70vh; /* ENHANCED: More content space */
     }
 
     .cravely-popup-product-title {
@@ -541,6 +658,11 @@
 
     .cravely-popup-current-price {
         font-size: 24px;
+    }
+
+    .cravely-instructions-textarea {
+        max-height: 100px; /* ENHANCED: Smaller on tiny screens */
+        font-size: 13px;
     }
 
     .cravely-popup-quantity-btn {
@@ -559,11 +681,16 @@
         line-height: 32px;
         padding: 0 10px;
     }
+
+    .cravely-popup-add-to-cart-btn {
+        font-size: 14px;
+        padding: 12px 20px;
+    }
 }
 
-/* ================================= SMOOTH ANIMATIONS ================================= */
+/* ================================= ANIMATIONS & EFFECTS (ENHANCED) ================================= */
 
-/* Fast animations */
+/* Smooth animations */
 @keyframes cravely-fastFadeIn {
     from {
         opacity: 0;
@@ -586,18 +713,40 @@
     }
 }
 
-.cravely-popup-add-to-cart-btn.cravely-loading {
-    pointer-events: none;
-    opacity: 0.8;
-}
-
-.cravely-popup-add-to-cart-btn.cravely-loading .cravely-popup-cart-icon {
-    animation: cravely-spin 1s linear infinite;
-}
-
 @keyframes cravely-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* ENHANCED: Button ripple effect */
+@keyframes cravely-ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.cravely-popup-add-to-cart-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.cravely-popup-add-to-cart-btn:active::before {
+    width: 300px;
+    height: 300px;
+    animation: cravely-ripple 0.6s ease-out;
 }
 
 .cravely-product-popup-overlay.cravely-show .cravely-product-popup-modal {
@@ -617,7 +766,7 @@ body.cravely-modal-open {
     overflow: hidden;
 }
 
-/* Focus states */
+/* Focus states - ENHANCED */
 .cravely-popup-quantity-btn:focus,
 .cravely-popup-add-to-cart-btn:focus,
 .cravely-close-product-popup:focus,
@@ -626,11 +775,14 @@ body.cravely-modal-open {
     outline-offset: 2px;
 }
 
+/* ENHANCED: Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     .cravely-product-popup-modal,
     .cravely-popup-quantity-btn,
     .cravely-popup-add-to-cart-btn,
-    .cravely-close-product-popup {
+    .cravely-close-product-popup,
+    .cravely-popup-current-price,
+    .cravely-popup-original-price {
         transition: none;
         animation: none;
     }

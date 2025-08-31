@@ -1,7 +1,6 @@
 /**
- * ================================= CRAVELY PRODUCT POPUP SYSTEM (NAVBAR-SAFE) =================================
- * Complete product popup functionality that won't interfere with navbar or any other components
- * Uses strict namespacing and event isolation to prevent conflicts
+ * ================================= CRAVELY PRODUCT POPUP SYSTEM (ENHANCED) =================================
+ * Enhanced product popup functionality with dynamic pricing and improved UX
  * File: /website_customizations/static/src/js/components/product_popup/cravely_product_popup.js
  */
 
@@ -25,7 +24,7 @@ class CravelyProductPopupManager {
      * Initialize the popup system - completely isolated from navbar and other components
      */
     init() {
-        console.log('🎯 Initializing Cravely Product Popup Manager (Navbar-Safe)...');
+        console.log('🎯 Initializing Cravely Product Popup Manager (Enhanced)...');
 
         // Prevent multiple initializations
         if (this.initialized) {
@@ -130,10 +129,6 @@ class CravelyProductPopupManager {
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
                                         </svg>
                                     </button>
-                                </div>
-
-                                <div class="cravely-popup-total-price-section">
-                                    <span id="cravely-popup-total-price" class="cravely-popup-total-price">Rs. 0</span>
                                 </div>
 
                                 <button id="cravely-popup-add-to-cart" class="cravely-popup-add-to-cart-btn" type="button">
@@ -377,27 +372,49 @@ class CravelyProductPopupManager {
             description.textContent = this.currentProductData.description;
         }
 
-        // Update pricing
+        // Update pricing - ENHANCED: Show original price based on quantity
+        this.updatePricingDisplay();
+
+        // Reset quantity and update displays
+        this.currentQuantity = 1;
+        this.updateQuantityDisplay();
+    }
+
+    /**
+     * ENHANCED: Update pricing display with smooth animations
+     */
+    updatePricingDisplay() {
         const currentPrice = document.getElementById('cravely-popup-current-price');
         const originalPrice = document.getElementById('cravely-popup-original-price');
 
         if (currentPrice) {
-            currentPrice.textContent = `Rs. ${this.currentProductData.price}`;
+            const totalCurrentPrice = this.currentProductData.price * this.currentQuantity;
+
+            // Add animation class
+            currentPrice.classList.add('cravely-price-updating');
+
+            setTimeout(() => {
+                currentPrice.textContent = `Rs. ${totalCurrentPrice}`;
+                currentPrice.classList.remove('cravely-price-updating');
+            }, 150);
         }
 
         if (originalPrice && this.currentProductData.originalPrice &&
             this.currentProductData.originalPrice !== this.currentProductData.price &&
             this.currentProductData.originalPrice > 0) {
-            originalPrice.textContent = `Rs. ${this.currentProductData.originalPrice}`;
-            originalPrice.classList.remove('cravely-popup-hidden');
+
+            const totalOriginalPrice = this.currentProductData.originalPrice * this.currentQuantity;
+
+            originalPrice.classList.add('cravely-price-updating');
+
+            setTimeout(() => {
+                originalPrice.textContent = `Rs. ${totalOriginalPrice}`;
+                originalPrice.classList.remove('cravely-popup-hidden');
+                originalPrice.classList.remove('cravely-price-updating');
+            }, 150);
         } else if (originalPrice) {
             originalPrice.classList.add('cravely-popup-hidden');
         }
-
-        // Reset quantity and update displays
-        this.currentQuantity = 1;
-        this.updateQuantityDisplay();
-        this.updateTotalPrice();
     }
 
     /**
@@ -411,23 +428,12 @@ class CravelyProductPopupManager {
     }
 
     /**
-     * Update total price based on quantity
-     */
-    updateTotalPrice() {
-        const totalPriceElement = document.getElementById('cravely-popup-total-price');
-        if (totalPriceElement && this.currentProductData) {
-            const totalPrice = this.currentProductData.price * this.currentQuantity;
-            totalPriceElement.textContent = `Rs. ${totalPrice}`;
-        }
-    }
-
-    /**
-     * Increase quantity
+     * ENHANCED: Increase quantity with smooth price update
      */
     increaseQuantity() {
         this.currentQuantity += 1;
         this.updateQuantityDisplay();
-        this.updateTotalPrice();
+        this.updatePricingDisplay(); // ENHANCED: Dynamic price update
 
         // Add visual feedback
         const button = document.getElementById('cravely-popup-quantity-increase');
@@ -442,13 +448,13 @@ class CravelyProductPopupManager {
     }
 
     /**
-     * Decrease quantity
+     * ENHANCED: Decrease quantity with smooth price update
      */
     decreaseQuantity() {
         if (this.currentQuantity > 1) {
             this.currentQuantity -= 1;
             this.updateQuantityDisplay();
-            this.updateTotalPrice();
+            this.updatePricingDisplay(); // ENHANCED: Dynamic price update
 
             // Add visual feedback
             const button = document.getElementById('cravely-popup-quantity-decrease');
@@ -464,7 +470,7 @@ class CravelyProductPopupManager {
     }
 
     /**
-     * Handle add to cart from popup
+     * ENHANCED: Handle add to cart from popup - NO UNWANTED NOTIFICATIONS
      */
     handleAddToCartFromPopup() {
         if (!this.currentProductData) return;
@@ -493,7 +499,7 @@ class CravelyProductPopupManager {
 
         // Simulate cart addition process
         setTimeout(() => {
-            // Get the cart manager instance - try multiple possible names
+            // Get the cart manager instance
             const cartManager = window.cravelyCartManager ||
                                window.cartManager ||
                                window.CartManager ||
@@ -518,7 +524,10 @@ class CravelyProductPopupManager {
                     }
                 }
 
-                this.showNotification('Product added to cart successfully!', 'success');
+                // ENHANCED: Reset and show success notification with auto-hide timer
+                if (cartManager.resetAndShowSuccessNotification && typeof cartManager.resetAndShowSuccessNotification === 'function') {
+                    cartManager.resetAndShowSuccessNotification();
+                }
 
                 // Hide popup first
                 this.hidePopup();
@@ -532,10 +541,6 @@ class CravelyProductPopupManager {
 
             } else {
                 console.warn('Cart manager not available or addToCart method not found');
-                this.showNotification('Added to cart! (Cart system integrating...)', 'success');
-
-                // Still hide the popup even if cart manager isn't ready
-                this.hidePopup();
             }
 
             // Reset button state
@@ -551,51 +556,7 @@ class CravelyProductPopupManager {
                     Add to Cart
                 `;
             }
-        }, 800);
-    }
-
-    /**
-     * Show notification
-     */
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        const colors = {
-            success: { bg: '#ecfdf5', border: '#10b981', text: '#065f46' },
-            error: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' },
-            warning: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e' },
-            info: { bg: '#f0f9ff', border: '#7abfba', text: '#0c4a6e' }
-        };
-
-        const color = colors[type] || colors.info;
-
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${color.bg};
-            color: ${color.text};
-            padding: 16px 20px;
-            border-radius: 12px;
-            border-left: 4px solid ${color.border};
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            z-index: 10001;
-            font-weight: 600;
-            max-width: 350px;
-            font-family: 'Montserrat', sans-serif;
-            animation: cravely-slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        `;
-
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.animation = 'cravely-slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1) reverse';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 400);
-        }, 3000);
+        }, 600);
     }
 
     /**

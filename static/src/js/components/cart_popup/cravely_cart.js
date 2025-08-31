@@ -1,7 +1,6 @@
 /**
- * ================================= NAVBAR-SAFE CART SYSTEM =================================
- * Complete cart functionality that won't interfere with navbar
- * Uses "cravely" namespace to avoid conflicts
+ * ================================= NAVBAR-SAFE CART SYSTEM (FIXED) =================================
+ * Fixed cart functionality with proper success notification timing
  * File: /website_customizations/static/src/js/components/cart_popup/cravely_cart.js
  */
 
@@ -17,7 +16,7 @@ class CravelyCartManager {
         // Settings
         this.deliveryFee = 200;
         this.taxRate = 0.15;
-        this.popupDisplayTime = 3500;
+        this.popupDisplayTime = 3000; // FIXED: 3 seconds for success notification
 
         // Namespace for all cart operations
         this.namespace = 'cravely-cart-';
@@ -25,6 +24,10 @@ class CravelyCartManager {
         // Popular items state
         this.popularItems = [];
         this.scrollPosition = 0;
+
+        // FIXED: Proper timer management to prevent conflicts
+        this.successNotificationTimer = null;
+        this.cartPopupState = 'hidden'; // 'hidden', 'showing', 'visible', 'hiding'
 
         // Initialize the cart system
         this.init();
@@ -34,7 +37,7 @@ class CravelyCartManager {
      * Initialize the cart system - completely isolated from navbar
      */
     init() {
-        console.log('🛒 Initializing Cravely Cart Manager (Navbar-Safe)...');
+        console.log('🛒 Initializing Cravely Cart Manager (Fixed)...');
 
         // Wait for DOM to be fully ready
         if (document.readyState === 'loading') {
@@ -93,9 +96,9 @@ class CravelyCartManager {
 
         console.log('🏗️ Creating Cravely cart UI elements...');
 
-        // Create cart popup with namespace-specific elements
+        // Create cart popup with namespace-specific elements - FIXED: Lower z-index
         const popupHTML = `
-            <div id="cravely-cart-view-popup" class="cravely-cart-view-popup cravely-cart-hidden">
+            <div id="cravely-cart-view-popup" class="cravely-cart-view-popup cravely-cart-hidden" style="z-index: 9999;">
                 <div class="cravely-cart-popup-container">
                     <div class="cravely-success-notification">
                         <div class="cravely-success-icon">
@@ -116,9 +119,9 @@ class CravelyCartManager {
         `;
         document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-        // Create cart sidebar with namespace-specific elements
+        // Create cart sidebar with namespace-specific elements - FIXED: Lower z-index
         const sidebarHTML = `
-            <div id="cravely-cart-sidebar-overlay" class="cravely-cart-sidebar-overlay cravely-cart-hidden">
+            <div id="cravely-cart-sidebar-overlay" class="cravely-cart-sidebar-overlay cravely-cart-hidden" style="z-index: 9998;">
                 <div id="cravely-cart-sidebar" class="cravely-cart-sidebar">
                     <div class="cravely-cart-sidebar-header">
                         <h2 class="cravely-cart-title">Your Cart</h2>
@@ -495,40 +498,40 @@ class CravelyCartManager {
             this.updateCartSidebarContent();
             this.updateCartSummary();
 
-            // Show cart popup briefly
-            this.showCartPopup();
+            // FIXED: Show success notification with proper timing
+            this.showSuccessNotificationWithTimer();
         }
     }
 
     /**
-     * Handle add to cart button click
+     * FIXED: Handle add to cart button click with proper success notification timing
      */
     handleAddToCart(event) {
-    const button = event.target.closest('.add-to-cart-btn');
-    const productCard = button.closest('.product-card');
+        const button = event.target.closest('.add-to-cart-btn');
+        const productCard = button.closest('.product-card');
 
-    if (!productCard) {
-        console.warn('Product card not found');
-        return;
+        if (!productCard) {
+            console.warn('Product card not found');
+            return;
+        }
+
+        const productData = this.getProductDataFromCard(productCard);
+
+        // Add loading state
+        this.setButtonLoadingState(button, true);
+
+        // Simulate brief loading for better UX
+        setTimeout(() => {
+            this.addToCart(productData);
+            this.showQuantityControls(productCard, 1);
+
+            // FIXED: Show success notification with proper timing
+            this.showSuccessNotificationWithTimer();
+
+            this.setButtonLoadingState(button, false);
+            this.updatePopularItems(); // Refresh popular items
+        }, 300);
     }
-
-    const productData = this.getProductDataFromCard(productCard);
-
-    // Add loading state
-    this.setButtonLoadingState(button, true);
-
-    // Simulate brief loading for better UX
-    setTimeout(() => {
-        this.addToCart(productData);
-        this.showQuantityControls(productCard, 1);
-
-        // Reset and show the success notification every time
-        this.resetAndShowSuccessNotification();
-
-        this.setButtonLoadingState(button, false);
-        this.updatePopularItems(); // Refresh popular items
-    }, 300);
-}
 
     /**
      * Handle quantity increase from product card
@@ -546,7 +549,9 @@ class CravelyCartManager {
             this.updateCartPopupDisplay();
             this.updateCartSidebarContent();
             this.updateCartSummary();
-            this.showCartPopup();
+
+            // Show cart popup but NO success notification for quantity changes
+            this.showCartPopupOnly();
         }
     }
 
@@ -569,6 +574,9 @@ class CravelyCartManager {
                 this.updateCartPopupDisplay();
                 this.updateCartSidebarContent();
                 this.updateCartSummary();
+
+                // Show cart popup but NO success notification for quantity changes
+                this.showCartPopupOnly();
             } else {
                 // Remove item from cart and show add to cart button
                 this.cart.splice(cartItemIndex, 1);
@@ -652,29 +660,105 @@ class CravelyCartManager {
     }
 
     /**
-     * Show cart popup with animation
+     * FIXED: Show cart popup only (without success notification)
      */
-    showCartPopup() {
-    const popup = document.getElementById('cravely-cart-view-popup');
-    if (!popup) return;
+    showCartPopupOnly() {
+        const popup = document.getElementById('cravely-cart-view-popup');
+        if (!popup) return;
 
-    // Reset classes
-    popup.classList.remove('cravely-cart-show', 'cravely-cart-hide', 'cravely-cart-hidden');
+        // Skip if already visible or showing
+        if (this.cartPopupState === 'visible' || this.cartPopupState === 'showing') {
+            return;
+        }
 
-    // Show popup
-    setTimeout(() => {
-        popup.classList.add('cravely-cart-show');
-    }, 10);
+        this.cartPopupState = 'showing';
 
-    // Don't set the auto-hide timer here anymore - it's handled in resetAndShowSuccessNotification
-}
+        // Reset classes
+        popup.classList.remove('cravely-cart-show', 'cravely-cart-hide', 'cravely-cart-hidden');
+
+        // Show popup
+        setTimeout(() => {
+            popup.classList.add('cravely-cart-show');
+            this.cartPopupState = 'visible';
+        }, 10);
+    }
+
+    /**
+     * FIXED: Show success notification with proper timer - single call, no conflicts
+     */
+    showSuccessNotificationWithTimer() {
+        const popup = document.getElementById('cravely-cart-view-popup');
+        const successNotification = popup?.querySelector('.cravely-success-notification');
+
+        if (!popup || !successNotification) return;
+
+        // Clear any existing timer to prevent conflicts
+        if (this.successNotificationTimer) {
+            clearTimeout(this.successNotificationTimer);
+            this.successNotificationTimer = null;
+        }
+
+        // Reset popup state
+        this.cartPopupState = 'showing';
+
+        // Reset all classes and ensure fresh start
+        popup.classList.remove('cravely-cart-show', 'cravely-cart-hide', 'cravely-cart-hidden');
+
+        // Ensure success notification is visible
+        successNotification.style.display = 'flex';
+        successNotification.style.opacity = '1';
+        successNotification.style.transform = 'scale(1)';
+        successNotification.style.transition = 'all 0.3s ease';
+
+        // Show the popup with a small delay to ensure smooth animation
+        setTimeout(() => {
+            popup.classList.add('cravely-cart-show');
+            this.cartPopupState = 'visible';
+        }, 50);
+
+        // Set timer to hide success notification after specified time
+        this.successNotificationTimer = setTimeout(() => {
+            this.hideSuccessNotificationOnly();
+        }, this.popupDisplayTime);
+
+        console.log('✅ Success notification shown with timer set for', this.popupDisplayTime, 'ms');
+    }
+
+    /**
+     * FIXED: Hide only success notification smoothly, keep cart popup if cart has items
+     */
+    hideSuccessNotificationOnly() {
+        const popup = document.getElementById('cravely-cart-view-popup');
+        const successNotification = popup?.querySelector('.cravely-success-notification');
+
+        if (!successNotification) return;
+
+        // Clear timer
+        if (this.successNotificationTimer) {
+            clearTimeout(this.successNotificationTimer);
+            this.successNotificationTimer = null;
+        }
+
+        // Hide success notification with smooth animation
+        successNotification.style.opacity = '0';
+        successNotification.style.transform = 'scale(0.9)';
+        successNotification.style.transition = 'all 0.3s ease';
+
+        setTimeout(() => {
+            successNotification.style.display = 'none';
+        }, 300);
+
+        console.log('✅ Success notification hidden smoothly');
+    }
 
     /**
      * Hide cart popup only if cart is empty
      */
     hideCartPopup() {
         const popup = document.getElementById('cravely-cart-view-popup');
-        if (!popup || popup.classList.contains('cravely-cart-hidden') || this.cart.length > 0) return;
+        if (!popup || this.cart.length > 0) return;
+
+        this.cartPopupState = 'hiding';
 
         popup.classList.remove('cravely-cart-show');
         popup.classList.add('cravely-cart-hide');
@@ -682,6 +766,7 @@ class CravelyCartManager {
         setTimeout(() => {
             popup.classList.add('cravely-cart-hidden');
             popup.classList.remove('cravely-cart-hide');
+            this.cartPopupState = 'hidden';
         }, 300);
     }
 
@@ -1025,41 +1110,22 @@ class CravelyCartManager {
         return parseInt(matches) || 0;
     }
 
+    /**
+     * FIXED: Reset and show success notification - called from product popup
+     */
     resetAndShowSuccessNotification() {
-    const popup = document.getElementById('cravely-cart-view-popup');
-    const successNotification = popup?.querySelector('.cravely-success-notification');
-
-    if (successNotification) {
-        // Reset styles to ensure it's visible
-        successNotification.style.display = 'flex';
-        successNotification.style.opacity = '1';
-        successNotification.style.transform = 'scale(1)';
-        successNotification.style.transition = 'all 0.3s ease';
-
-        // Show the cart popup
-        this.showCartPopup();
-
-        // Set a timer to hide just the notification after 3.5 seconds
-        setTimeout(() => {
-            this.hideSuccessNotification();
-        }, this.popupDisplayTime);
+        // This method is called from the product popup
+        // Use the same logic as showSuccessNotificationWithTimer
+        this.showSuccessNotificationWithTimer();
     }
-}
 
+    /**
+     * FIXED: Legacy method for compatibility
+     */
     hideSuccessNotification() {
-    const popup = document.getElementById('cravely-cart-view-popup');
-    const successNotification = popup?.querySelector('.cravely-success-notification');
-
-    if (successNotification) {
-        successNotification.style.opacity = '0';
-        successNotification.style.transform = 'scale(0.8)';
-        successNotification.style.transition = 'all 0.3s ease';
-
-        setTimeout(() => {
-            successNotification.style.display = 'none';
-        }, 300);
+        // Use the new method for consistency
+        this.hideSuccessNotificationOnly();
     }
-}
 
     handleAddMoreItems() {
         this.hideCartSidebar();
