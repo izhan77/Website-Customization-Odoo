@@ -1,38 +1,7 @@
-/* ================================= NAVBAR-SAFE CHECKOUT PAGE STYLES ================================= */
-/* CRITICAL: All styles scoped to .checkout-page-wrapper to avoid navbar conflicts */
+/* ================================= CHECKOUT PAGE STYLES ================================= */
+/* Color Palette: Primary #7abfba, Secondary #FFFFFF, Text variations */
+/* APPROACH: Preserve original design but scope dangerous selectors to .checkout-page-wrapper */
 
-/* Emergency navbar protection - MUST be at the top */
-.navbar,
-.navbar-nav,
-.navbar-brand,
-.nav-link,
-.dropdown-menu,
-.navbar-toggler,
-.navbar-collapse {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 999 !important;
-    position: relative !important;
-}
-
-.navbar {
-    background: #7abfba !important;
-    width: 100% !important;
-    top: 0 !important;
-}
-
-.nav-link {
-    color: white !important;
-    text-decoration: none !important;
-    padding: 8px 16px !important;
-}
-
-.nav-link:hover {
-    color: #f0f9f8 !important;
-}
-
-/* Scoped checkout styles - ALL prefixed with .checkout-page-wrapper */
 .checkout-page-wrapper {
     min-height: 100vh;
     background: #FFFFFF;
@@ -43,7 +12,7 @@
 }
 
 /* ================================= MAIN CONTAINER ================================= */
-.checkout-page-wrapper .checkout-main-container {
+.checkout-main-container {
     display: flex;
     min-height: 100vh;
     max-width: 100%;
@@ -53,7 +22,7 @@
 }
 
 /* ================================= LEFT COLUMN ================================= */
-.checkout-page-wrapper .checkout-left-column {
+.checkout-left-column {
     flex: 1;
     min-width: 0;
     padding: 40px 60px;
@@ -62,7 +31,7 @@
 }
 
 /* ================================= RIGHT COLUMN ================================= */
-.checkout-page-wrapper .checkout-right-column {
+.checkout-right-column {
     flex: 0 0 420px;
     background: #f8fffe;
     border-left: 1px solid #e5f4f3;
@@ -74,11 +43,11 @@
 }
 
 /* ================================= HEADER SECTION ================================= */
-.checkout-page-wrapper .checkout-header {
+.checkout-header {
     margin-bottom: 30px;
 }
 
-.checkout-page-wrapper .checkout-header .checkout-logo {
+.checkout-header .checkout-logo {
     font-family: 'Roboto Condensed', sans-serif !important;
     font-size: 44px !important;
     font-weight: 700 !important;
@@ -88,7 +57,7 @@
 }
 
 /* ================================= SECTION STYLING ================================= */
-.checkout-page-wrapper .checkout-section {
+.checkout-section {
     margin-bottom: 40px;
     background: #FFFFFF;
     border-radius: 16px;
@@ -98,11 +67,12 @@
     width: 100%;
 }
 
-.checkout-page-wrapper .checkout-section.customer-info-section:hover,
-.checkout-page-wrapper .checkout-section.payment-method-section:hover {
-    box-shadow: 0 4px 20px rgba(122, 191, 186, 0.3);
+.checkout-section .customer-info-section,
+.checkout-section .payment-method-section:hover {
+    box-shadow: 0 4px 20px rgba(122, 191, 186, 0.7);
 }
 
+/* SCOPED: Only apply to checkout page */
 .checkout-page-wrapper .section-title {
     font-size: 22px;
     font-weight: 700;
@@ -113,12 +83,13 @@
 }
 
 /* ================================= FORM STYLING ================================= */
-.checkout-page-wrapper .checkout-form {
+.checkout-form {
     padding: 0 30px 30px 30px;
     width: 100%;
     box-sizing: border-box;
 }
 
+/* SCOPED: Only apply form styles inside checkout page */
 .checkout-page-wrapper .form-group {
     margin-bottom: 25px;
     position: relative;
@@ -146,7 +117,7 @@
     flex: 1.8;
 }
 
-/* ================================= INPUT STYLING ================================= */
+/* ================================= INPUT STYLING - SCOPED ================================= */
 .checkout-page-wrapper .form-input,
 .checkout-page-wrapper .form-select,
 .checkout-page-wrapper .form-textarea {
@@ -184,7 +155,7 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-/* ================================= PHONE INPUT SPECIAL STYLING ================================= */
+/* ================================= PHONE INPUT SPECIAL STYLING - SCOPED ================================= */
 .checkout-page-wrapper .phone-input-container {
     display: flex;
     gap: 0;
@@ -235,7 +206,7 @@
     transform: none !important;
 }
 
-/* ================================= PAYMENT METHOD STYLING ================================= */
+/* ================================= PAYMENT METHOD STYLING - SCOPED ================================= */
 .checkout-page-wrapper .payment-method-section {
     margin-bottom: 30px;
 }
@@ -339,7 +310,7 @@
     transition: all 0.3s ease;
 }
 
-/* ================================= ONLINE PAYMENT DETAILS ================================= */
+/* ================================= ONLINE PAYMENT DETAILS - SCOPED ================================= */
 .checkout-page-wrapper .online-payment-details {
     padding: 0 25px 25px 25px;
     border-top: 1px solid #e5f4f3;
@@ -384,7 +355,7 @@
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16"><rect fill="%23EB001B" width="24" height="16" rx="2"/><circle cx="9" cy="8" r="3" fill="%23FF5F00"/><circle cx="15" cy="8" r="3" fill="%23F79E1B"/></svg>');
 }
 
-/* ================================= BANK SELECTION ================================= */
+/* ================================= BANK SELECTION - SCOPED ================================= */
 .checkout-page-wrapper .bank-selection-section {
     border-top: 1px solid #e5f4f3;
     padding-top: 25px;
@@ -413,7 +384,7 @@
     font-weight: 500;
 }
 
-/* ================================= PLACE ORDER BUTTON ================================= */
+/* ================================= PLACE ORDER BUTTON - SCOPED ================================= */
 .checkout-page-wrapper .place-order-section {
     margin-top: 40px;
     width: 100%;
@@ -483,7 +454,7 @@
     to { transform: rotate(360deg); }
 }
 
-/* ================================= ORDER SUMMARY STYLING ================================= */
+/* ================================= ORDER SUMMARY STYLING - SCOPED ================================= */
 .checkout-page-wrapper .order-summary-section {
     background: #FFFFFF;
     border-radius: 16px;
@@ -493,7 +464,7 @@
     width: 100%;
 }
 
-/* ================================= TOTAL AMOUNT DISPLAY ================================= */
+/* ================================= TOTAL AMOUNT DISPLAY - SCOPED ================================= */
 .checkout-page-wrapper .total-amount-display {
     background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
     color: #FFFFFF;
@@ -531,7 +502,7 @@
     height: 16px;
 }
 
-/* ================================= ORDER SUMMARY DETAILS ================================= */
+/* ================================= ORDER SUMMARY DETAILS - SCOPED ================================= */
 .checkout-page-wrapper .order-summary-details {
     padding: 25px;
 }
@@ -543,7 +514,7 @@
     margin: 0 0 20px 0;
 }
 
-/* ================================= ORDER ITEMS ================================= */
+/* ================================= ORDER ITEMS - SCOPED ================================= */
 .checkout-page-wrapper .order-items {
     margin-bottom: 25px;
 }
@@ -604,7 +575,7 @@
     flex-shrink: 0;
 }
 
-/* ================================= SUMMARY CALCULATIONS ================================= */
+/* ================================= SUMMARY CALCULATIONS - SCOPED ================================= */
 .checkout-page-wrapper .summary-calculations {
     border-top: 1px solid #f0f9f8;
     padding-top: 20px;
@@ -649,17 +620,14 @@
     color: #2d3748;
 }
 
-/* Continue with ALL other checkout styles but prefix with .checkout-page-wrapper */
-/* This ensures they NEVER affect navbar or other page elements */
-
-/* Modal and other elements also need scoping */
+/* ================================= ORDER CONFIRMATION MODAL - SCOPED ================================= */
 .checkout-page-wrapper .confirmation-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1000;
+    z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -668,56 +636,210 @@
     transition: all 0.4s ease;
 }
 
-/* Add all other remaining styles with .checkout-page-wrapper prefix... */
-/* For brevity, I'm showing the pattern - apply this to ALL checkout styles */
-
-/* ================================= RESPONSIVE DESIGN ================================= */
-@media (max-width: 1400px) {
-    .checkout-page-wrapper .checkout-main-container {
-        max-width: 100%;
-    }
-
-    .checkout-page-wrapper .checkout-left-column {
-        padding: 30px 40px;
-    }
-
-    .checkout-page-wrapper .checkout-right-column {
-        flex: 0 0 380px;
-        padding: 30px 25px;
-    }
+.checkout-page-wrapper .confirmation-modal.show {
+    opacity: 1;
+    visibility: visible;
 }
 
-@media (max-width: 968px) {
-    .checkout-page-wrapper .checkout-main-container {
-        flex-direction: column;
-    }
-
-    .checkout-page-wrapper .checkout-left-column {
-        padding: 25px;
-        width: 100%;
-    }
-
-    .checkout-page-wrapper .checkout-right-column {
-        flex: none;
-        position: static;
-        height: auto;
-        padding: 25px;
-        order: -1;
-        width: 100%;
-    }
+.checkout-page-wrapper .confirmation-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
 }
 
-/* ================================= CRITICAL OVERRIDES ================================= */
-/* Ensure these override any problematic selectors */
-.checkout-page-wrapper #wrapwrap,
-.checkout-page-wrapper #wrap {
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+.checkout-page-wrapper .confirmation-modal-content {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 40px 35px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8) translateY(50px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Form validation states - scoped */
+.checkout-page-wrapper .confirmation-modal.show .confirmation-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* ================================= CONFIRMATION HEADER - SCOPED ================================= */
+.checkout-page-wrapper .confirmation-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.checkout-page-wrapper .success-checkmark {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    animation: successPulse 0.6s ease;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.checkout-page-wrapper .success-checkmark svg {
+    width: 40px;
+    height: 40px;
+    color: #FFFFFF;
+}
+
+.checkout-page-wrapper .confirmation-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2d3748;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.checkout-page-wrapper .confirmation-subtitle {
+    font-size: 16px;
+    color: #6a7a85;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* ================================= CONFIRMATION DETAILS - SCOPED ================================= */
+.checkout-page-wrapper .confirmation-details {
+    margin-bottom: 35px;
+}
+
+.checkout-page-wrapper .order-info {
+    background: #f8fffe;
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid #e5f4f3;
+}
+
+.checkout-page-wrapper .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5f4f3;
+}
+
+.checkout-page-wrapper .info-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.checkout-page-wrapper .info-label {
+    font-size: 14px;
+    color: #6a7a85;
+    font-weight: 500;
+}
+
+.checkout-page-wrapper .info-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/* ================================= CONFIRMATION ACTIONS - SCOPED ================================= */
+.checkout-page-wrapper .confirmation-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.checkout-page-wrapper .secondary-btn,
+.checkout-page-wrapper .primary-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+
+.checkout-page-wrapper .secondary-btn {
+    background: #f8fffe;
+    color: #7abfba;
+    border: 2px solid #7abfba;
+}
+
+.checkout-page-wrapper .secondary-btn:hover {
+    background: #7abfba;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.checkout-page-wrapper .primary-btn {
+    background: linear-gradient(135deg, #7abfba 0%, #66a39e 100%);
+    color: #FFFFFF;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(122, 191, 186, 0.4);
+}
+
+.checkout-page-wrapper .primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(122, 191, 186, 0.5);
+}
+
+.checkout-page-wrapper .close-confirmation-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f0f9f8;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6a7a85;
+    transition: all 0.3s ease;
+}
+
+.checkout-page-wrapper .close-confirmation-btn:hover {
+    background: #e5f4f3;
+    color: #2d3748;
+    transform: scale(1.1);
+}
+
+.checkout-page-wrapper .close-confirmation-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ================================= UTILITY CLASSES - SCOPED ================================= */
+.checkout-page-wrapper .hidden {
+    display: none !important;
+}
+
+.checkout-page-wrapper .visible {
+    display: block !important;
+}
+
+.checkout-page-wrapper .fade-in {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================= FORM VALIDATION STATES - SCOPED ================================= */
 .checkout-page-wrapper .form-input.error,
 .checkout-page-wrapper .form-select.error,
 .checkout-page-wrapper .form-textarea.error {
@@ -740,18 +862,33 @@
     display: block;
 }
 
-/* Notification styles - scoped */
-.checkout-page-wrapper .checkout-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10001;
-    max-width: 350px;
-    border-radius: 12px;
-    font-family: 'Montserrat', sans-serif;
-    animation: slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+.checkout-page-wrapper .success-message {
+    color: #38a169;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
+    display: block;
 }
 
+/* ================================= SCOPED CONTAINER OVERRIDES - SAFE ================================= */
+/* CRITICAL: Only override containers INSIDE checkout page wrapper */
+.checkout-page-wrapper #wrapwrap,
+.checkout-page-wrapper #wrap {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.checkout-page-wrapper .container,
+.checkout-page-wrapper .container-fluid {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ================================= NOTIFICATION STYLES - SCOPED ================================= */
 @keyframes slideInNotification {
     from {
         transform: translateX(100%);
@@ -763,44 +900,248 @@
     }
 }
 
-/* Final navbar protection - MUST be last */
-.navbar,
-.navbar-nav,
-.navbar-brand,
-.nav-link,
-.dropdown-menu,
-.navbar-toggler,
-.navbar-collapse,
-.navbar .container,
-.navbar .container-fluid {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 999 !important;
-    position: relative !important;
+.checkout-page-wrapper .checkout-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10001;
+    max-width: 350px;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    animation: slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.navbar {
-    background: #7abfba !important;
-    width: 100% !important;
-    top: 0 !important;
+/* ================================= IMPROVED STYLES - SCOPED ================================= */
+.checkout-page-wrapper .form-input:focus,
+.checkout-page-wrapper .form-select:focus,
+.checkout-page-wrapper .form-textarea:focus {
+    outline: none;
+    border-color: #7abfba;
+    box-shadow: 0 0 0 3px rgba(122, 191, 186, 0.15);
+    transform: translateY(-1px);
 }
 
-.nav-link {
-    color: white !important;
-    text-decoration: none !important;
-    padding: 8px 16px !important;
+.checkout-page-wrapper .place-order-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
 }
 
-.nav-link:hover {
-    color: #f0f9f8 !important;
+.checkout-page-wrapper .confirmation-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(45, 55, 72, 0.8);
+    backdrop-filter: blur(10px);
 }
 
-/* Utility classes - scoped */
-.checkout-page-wrapper .hidden {
-    display: none !important;
+/* ================================= SCROLLBAR STYLING - SCOPED ================================= */
+.checkout-right-column::-webkit-scrollbar {
+    width: 6px;
 }
 
-.checkout-page-wrapper .visible {
-    display: block !important;
+.checkout-right-column::-webkit-scrollbar-track {
+    background: #f8fffe;
+}
+
+.checkout-right-column::-webkit-scrollbar-thumb {
+    background: #e5f4f3;
+    border-radius: 3px;
+}
+
+.checkout-right-column::-webkit-scrollbar-thumb:hover {
+    background: #7abfba;
+}
+
+/* ================================= RESPONSIVE DESIGN - SCOPED ================================= */
+@media (max-width: 1400px) {
+    .checkout-main-container {
+        max-width: 100%;
+    }
+
+    .checkout-left-column {
+        padding: 30px 40px;
+    }
+
+    .checkout-right-column {
+        flex: 0 0 380px;
+        padding: 30px 25px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .checkout-left-column {
+        padding: 30px;
+    }
+
+    .checkout-right-column {
+        flex: 0 0 350px;
+        padding: 30px 20px;
+    }
+
+    .checkout-page-wrapper .form-input,
+    .checkout-page-wrapper .form-select,
+    .checkout-page-wrapper .form-textarea {
+        padding: 16px 20px;
+        min-height: 52px;
+    }
+
+    .checkout-page-wrapper .phone-input-container {
+        min-height: 52px;
+    }
+
+    .checkout-page-wrapper .country-code-select {
+        padding: 16px 14px;
+        min-width: 90px;
+    }
+
+    .checkout-page-wrapper .phone-input {
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 968px) {
+    .checkout-main-container {
+        flex-direction: column;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .checkout-left-column {
+        max-width: none;
+        padding: 25px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .checkout-right-column {
+        flex: none;
+        position: static;
+        height: auto;
+        padding: 25px;
+        order: -1;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .checkout-page-wrapper .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .checkout-page-wrapper .phone-group,
+    .checkout-page-wrapper .email-group {
+        flex: 1;
+    }
+
+    .checkout-page-wrapper .confirmation-modal-content {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+
+    .checkout-page-wrapper .confirmation-actions {
+        flex-direction: column;
+    }
+
+    .checkout-page-wrapper .form-input,
+    .checkout-page-wrapper .form-select,
+    .checkout-page-wrapper .form-textarea {
+        padding: 18px 22px;
+        font-size: 16px;
+        min-height: 56px;
+    }
+
+    .checkout-page-wrapper .phone-input-container {
+        min-height: 56px;
+    }
+
+    .checkout-page-wrapper .country-code-select {
+        padding: 18px 16px;
+        min-width: 100px;
+    }
+
+    .checkout-page-wrapper .phone-input {
+        padding: 18px 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-left-column {
+        padding: 20px 15px;
+    }
+
+    .checkout-right-column {
+        padding: 20px 15px;
+    }
+
+    .checkout-page-wrapper .section-title {
+        font-size: 20px;
+        padding: 20px 25px 0 25px;
+    }
+
+    .checkout-form {
+        padding: 0 25px 25px 25px;
+    }
+
+    .checkout-page-wrapper .payment-options {
+        padding: 0 25px 25px 25px;
+    }
+
+    .checkout-page-wrapper .total-amount {
+        font-size: 30px;
+    }
+
+    .checkout-page-wrapper .confirmation-title {
+        font-size: 24px;
+    }
+
+    .checkout-page-wrapper .form-row {
+        gap: 15px;
+    }
+
+    .checkout-page-wrapper .form-group {
+        margin-bottom: 20px;
+    }
+
+    .checkout-page-wrapper .form-input,
+    .checkout-page-wrapper .form-select,
+    .checkout-page-wrapper .form-textarea {
+        padding: 20px 24px;
+        font-size: 16px;
+        min-height: 60px;
+    }
+
+    .checkout-page-wrapper .phone-input-container {
+        min-height: 60px;
+    }
+
+    .checkout-page-wrapper .country-code-select {
+        padding: 20px 18px;
+        min-width: 110px;
+    }
+
+    .checkout-page-wrapper .phone-input {
+        padding: 20px 24px;
+    }
+
+    .checkout-page-wrapper .place-order-btn {
+        padding: 22px 30px;
+        font-size: 16px;
+        min-height: 68px;
+    }
+}
+
+/* ================================= MOBILE OPTIMIZATIONS - SCOPED ================================= */
+@media (max-width: 768px) {
+    .checkout-page-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .checkout-main-container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
 }

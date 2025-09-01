@@ -133,3 +133,4 @@ section[id] {
 #mobile-categories-popup:not(.hidden) ~ * .category-strip-container {
     z-index: 500 !important;
 }
+

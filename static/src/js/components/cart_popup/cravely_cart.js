@@ -1,6 +1,6 @@
 /**
- * ================================= ENHANCED CART MANAGER WITH CHECKOUT TRANSITION =================================
- * Enhanced cart functionality with beautiful checkout transition
+ * ================================= NAVBAR-SAFE CART SYSTEM (FIXED) =================================
+ * Fixed cart functionality with proper success notification timing
  * File: /website_customizations/static/src/js/components/cart_popup/cravely_cart.js
  */
 
@@ -16,7 +16,7 @@ class CravelyCartManager {
         // Settings
         this.deliveryFee = 200;
         this.taxRate = 0.15;
-        this.popupDisplayTime = 3000;
+        this.popupDisplayTime = 3000; // FIXED: 3 seconds for success notification
 
         // Namespace for all cart operations
         this.namespace = 'cravely-cart-';
@@ -25,12 +25,9 @@ class CravelyCartManager {
         this.popularItems = [];
         this.scrollPosition = 0;
 
-        // Timer management
+        // FIXED: Proper timer management to prevent conflicts
         this.successNotificationTimer = null;
-        this.cartPopupState = 'hidden';
-
-        // Checkout transition state
-        this.isCheckingOut = false;
+        this.cartPopupState = 'hidden'; // 'hidden', 'showing', 'visible', 'hiding'
 
         // Initialize the cart system
         this.init();
@@ -40,7 +37,7 @@ class CravelyCartManager {
      * Initialize the cart system - completely isolated from navbar
      */
     init() {
-        console.log('🛒 Initializing Enhanced Cravely Cart Manager with Checkout Transition...');
+        console.log('🛒 Initializing Cravely Cart Manager (Fixed)...');
 
         // Wait for DOM to be fully ready
         if (document.readyState === 'loading') {
@@ -60,7 +57,7 @@ class CravelyCartManager {
         this.createCartElements();
         this.bindAllEvents();
         this.initializeQuantityControls();
-        console.log('✅ Enhanced Cravely Cart Manager initialized successfully');
+        console.log('✅ Cravely Cart Manager initialized successfully');
     }
 
     /**
@@ -97,9 +94,9 @@ class CravelyCartManager {
             return;
         }
 
-        console.log('🏗️ Creating Enhanced Cravely cart UI elements...');
+        console.log('🏗️ Creating Cravely cart UI elements...');
 
-        // Create cart popup with namespace-specific elements
+        // Create cart popup with namespace-specific elements - FIXED: Lower z-index
         const popupHTML = `
             <div id="cravely-cart-view-popup" class="cravely-cart-view-popup cravely-cart-hidden" style="z-index: 9999;">
                 <div class="cravely-cart-popup-container">
@@ -122,7 +119,7 @@ class CravelyCartManager {
         `;
         document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-        // Create cart sidebar with enhanced checkout functionality
+        // Create cart sidebar with namespace-specific elements - FIXED: Lower z-index
         const sidebarHTML = `
             <div id="cravely-cart-sidebar-overlay" class="cravely-cart-sidebar-overlay cravely-cart-hidden" style="z-index: 9998;">
                 <div id="cravely-cart-sidebar" class="cravely-cart-sidebar">
@@ -199,32 +196,11 @@ class CravelyCartManager {
 
                         <div class="cravely-checkout-section" id="cravely-checkout-section">
                             <button class="cravely-checkout-btn" id="cravely-checkout-btn">
-                                <div class="cravely-checkout-content">
-                                    <div class="cravely-checkout-normal-state">
-                                        <span class="cravely-checkout-text">Checkout</span>
-                                        <svg class="cravely-checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            <polyline points="12,5 19,12 12,19"></polyline>
-                                        </svg>
-                                    </div>
-                                    <div class="cravely-checkout-loading-state" style="display: none;">
-                                        <div class="cravely-checkout-spinner">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                                            </svg>
-                                        </div>
-                                        <span class="cravely-checkout-loading-text">Proceeding to checkout...</span>
-                                    </div>
-                                    <div class="cravely-checkout-success-state" style="display: none;">
-                                        <div class="cravely-checkout-success-icon">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M9 12l2 2 4-4"/>
-                                                <circle cx="12" cy="12" r="9"/>
-                                            </svg>
-                                        </div>
-                                        <span class="cravely-checkout-success-text">Redirecting...</span>
-                                    </div>
-                                </div>
+                                <span class="cravely-checkout-text">Checkout</span>
+                                <svg class="cravely-checkout-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12,5 19,12 12,19"></polyline>
+                                </svg>
                             </button>
                         </div>
 
@@ -252,7 +228,7 @@ class CravelyCartManager {
         this.bindKeyboardEvents();
         this.bindPopularItemsEvents();
 
-        console.log('🎯 Enhanced Cravely cart event listeners bound successfully (navbar-safe)');
+        console.log('🎯 Cravely cart event listeners bound successfully (navbar-safe)');
     }
 
     /**
@@ -362,11 +338,11 @@ class CravelyCartManager {
             }
         });
 
-        // Enhanced checkout button with beautiful transition
+        // Checkout button
         document.addEventListener('click', (e) => {
             if (e.target.closest('#cravely-checkout-btn')) {
                 e.stopPropagation();
-                this.handleEnhancedCheckout();
+                this.handleCheckout();
             }
         });
     }
@@ -382,296 +358,6 @@ class CravelyCartManager {
             }
         });
     }
-
-    /**
-     * ENHANCED: Beautiful checkout transition with multiple states
-     */
-    async handleEnhancedCheckout() {
-        if (this.cart.length === 0 || this.isCheckingOut) {
-            return;
-        }
-
-        console.log('🚀 Starting enhanced checkout process...');
-
-        this.isCheckingOut = true;
-        const checkoutBtn = document.getElementById('cravely-checkout-btn');
-
-        if (!checkoutBtn) {
-            console.error('Checkout button not found');
-            return;
-        }
-
-        try {
-            // PHASE 1: Show loading state with animation
-            await this.showCheckoutLoadingState(checkoutBtn);
-
-            // PHASE 2: Prepare cart data for checkout
-            const checkoutData = this.prepareCheckoutData();
-
-            // PHASE 3: Store cart data for checkout page
-            await this.storeCheckoutData(checkoutData);
-
-            // PHASE 4: Show success state
-            await this.showCheckoutSuccessState(checkoutBtn);
-
-            // PHASE 5: Navigate to checkout page with smooth transition
-            await this.navigateToCheckout();
-
-        } catch (error) {
-            console.error('Enhanced checkout error:', error);
-            this.showCheckoutError(checkoutBtn);
-        }
-    }
-
-    /**
-     * Show loading state with beautiful animation
-     */
-    async showCheckoutLoadingState(checkoutBtn) {
-        return new Promise((resolve) => {
-            const normalState = checkoutBtn.querySelector('.cravely-checkout-normal-state');
-            const loadingState = checkoutBtn.querySelector('.cravely-checkout-loading-state');
-
-            // Disable button
-            checkoutBtn.disabled = true;
-            checkoutBtn.classList.add('loading');
-
-            // Hide normal state
-            normalState.style.opacity = '0';
-            normalState.style.transform = 'scale(0.9)';
-
-            setTimeout(() => {
-                normalState.style.display = 'none';
-                loadingState.style.display = 'flex';
-
-                // Animate loading state in
-                setTimeout(() => {
-                    loadingState.style.opacity = '1';
-                    loadingState.style.transform = 'scale(1)';
-
-                    // Start spinner animation
-                    const spinner = loadingState.querySelector('.cravely-checkout-spinner svg');
-                    if (spinner) {
-                        spinner.style.animation = 'spin 1s linear infinite';
-                    }
-
-                    // Resolve after loading animation completes
-                    setTimeout(resolve, 1500); // 1.5 seconds loading
-                }, 50);
-            }, 300);
-        });
-    }
-
-    /**
-     * Prepare checkout data
-     */
-    prepareCheckoutData() {
-        const tax = Math.round(this.cartTotal * this.taxRate);
-        const grandTotal = this.cartTotal + tax + this.deliveryFee;
-
-        return {
-            items: this.cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                image: item.image,
-                specialInstructions: item.specialInstructions || null
-            })),
-            subtotal: this.cartTotal,
-            tax: tax,
-            deliveryFee: this.deliveryFee,
-            grandTotal: grandTotal,
-            itemCount: this.cartCount,
-            timestamp: Date.now()
-        };
-    }
-
-    /**
-     * Store checkout data for checkout page
-     */
-    async storeCheckoutData(checkoutData) {
-        return new Promise((resolve) => {
-            try {
-                // Store in sessionStorage for checkout page
-                sessionStorage.setItem('checkoutCart', JSON.stringify(checkoutData));
-
-                // Also send to server if needed
-                if (window.location.origin) {
-                    fetch('/checkout/update-cart', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(checkoutData)
-                    }).catch(error => {
-                        console.log('Server update failed, using local storage only:', error);
-                    });
-                }
-
-                setTimeout(resolve, 500); // Simulate processing time
-            } catch (error) {
-                console.error('Error storing checkout data:', error);
-                resolve(); // Continue even if storage fails
-            }
-        });
-    }
-
-    /**
-     * Show success state with beautiful animation
-     */
-    async showCheckoutSuccessState(checkoutBtn) {
-        return new Promise((resolve) => {
-            const loadingState = checkoutBtn.querySelector('.cravely-checkout-loading-state');
-            const successState = checkoutBtn.querySelector('.cravely-checkout-success-state');
-
-            // Hide loading state
-            loadingState.style.opacity = '0';
-            loadingState.style.transform = 'scale(0.9)';
-
-            setTimeout(() => {
-                loadingState.style.display = 'none';
-                successState.style.display = 'flex';
-
-                // Animate success state in
-                setTimeout(() => {
-                    successState.style.opacity = '1';
-                    successState.style.transform = 'scale(1)';
-
-                    // Success icon animation
-                    const successIcon = successState.querySelector('.cravely-checkout-success-icon');
-                    if (successIcon) {
-                        successIcon.style.animation = 'successPulse 0.6s ease';
-                    }
-
-                    // Update button styling
-                    checkoutBtn.classList.add('success');
-
-                    setTimeout(resolve, 800); // Show success for 0.8 seconds
-                }, 50);
-            }, 300);
-        });
-    }
-
-    /**
-     * Navigate to checkout page with smooth transition
-     */
-    async navigateToCheckout() {
-        return new Promise((resolve) => {
-            // Add page transition class
-            document.body.classList.add('page-transitioning');
-
-            // Start sidebar fade out
-            const sidebar = document.getElementById('cravely-cart-sidebar-overlay');
-            if (sidebar) {
-                sidebar.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
-                sidebar.style.opacity = '0';
-                sidebar.style.visibility = 'hidden';
-            }
-
-            // Navigate after transition
-            setTimeout(() => {
-                // Clear checkout state
-                this.isCheckingOut = false;
-
-                // Navigate to checkout page
-                window.location.href = '/checkout';
-                resolve();
-            }, 600);
-        });
-    }
-
-    /**
-     * Show checkout error state
-     */
-    showCheckoutError(checkoutBtn) {
-        const loadingState = checkoutBtn.querySelector('.cravely-checkout-loading-state');
-        const normalState = checkoutBtn.querySelector('.cravely-checkout-normal-state');
-
-        // Reset to normal state
-        loadingState.style.display = 'none';
-        normalState.style.display = 'flex';
-        normalState.style.opacity = '1';
-        normalState.style.transform = 'scale(1)';
-
-        // Reset button
-        checkoutBtn.disabled = false;
-        checkoutBtn.classList.remove('loading');
-        this.isCheckingOut = false;
-
-        // Show error message
-        this.showNotification('Checkout failed. Please try again.', 'error');
-    }
-
-    /**
-     * Show notification message
-     */
-    showNotification(message, type = 'info') {
-        // Remove existing notifications
-        document.querySelectorAll('.cravely-notification').forEach(n => n.remove());
-
-        const notification = document.createElement('div');
-        notification.className = `cravely-notification ${type}`;
-
-        const colors = {
-            success: { bg: '#ecfdf5', border: '#10b981', text: '#065f46' },
-            error: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' },
-            warning: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e' },
-            info: { bg: '#f0f9ff', border: '#7abfba', text: '#0c4a6e' }
-        };
-
-        const color = colors[type] || colors.info;
-
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${color.bg};
-            color: ${color.text};
-            padding: 16px 20px;
-            border-radius: 12px;
-            border-left: 4px solid ${color.border};
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            z-index: 10001;
-            font-weight: 600;
-            max-width: 350px;
-            font-family: 'Montserrat', sans-serif;
-            animation: slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        `;
-
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        // Auto remove after 4 seconds
-        setTimeout(() => {
-            notification.style.animation = 'slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1) reverse';
-            setTimeout(() => {
-                notification.remove();
-            }, 400);
-        }, 4000);
-    }
-
-    // [Rest of the methods remain the same as in the original cart manager...]
-    // Including all the existing methods like:
-    // - initializeQuantityControls()
-    // - generatePopularItems()
-    // - updatePopularItems()
-    // - scrollPopularItems()
-    // - handlePopularItemAdd()
-    // - handleAddToCart()
-    // - handleQuantityIncrease/Decrease()
-    // - addToCart()
-    // - updateCartTotals()
-    // - updateCartSummary()
-    // - showSuccessNotificationWithTimer()
-    // - hideSuccessNotificationOnly()
-    // - showCartSidebar()
-    // - hideCartSidebar()
-    // - updateCartPopupDisplay()
-    // - updateCartSidebarContent()
-    // - handleCartItemDelete()
-    // - handleCartItemQuantity methods
-    // - All utility methods
-    // - handleAddMoreItems()
 
     /**
      * Initialize quantity controls for all product cards
@@ -812,13 +498,13 @@ class CravelyCartManager {
             this.updateCartSidebarContent();
             this.updateCartSummary();
 
-            // Show success notification with proper timing
+            // FIXED: Show success notification with proper timing
             this.showSuccessNotificationWithTimer();
         }
     }
 
     /**
-     * Handle add to cart button click with proper success notification timing
+     * FIXED: Handle add to cart button click with proper success notification timing
      */
     handleAddToCart(event) {
         const button = event.target.closest('.add-to-cart-btn');
@@ -839,7 +525,7 @@ class CravelyCartManager {
             this.addToCart(productData);
             this.showQuantityControls(productCard, 1);
 
-            // Show success notification with proper timing
+            // FIXED: Show success notification with proper timing
             this.showSuccessNotificationWithTimer();
 
             this.setButtonLoadingState(button, false);
@@ -974,7 +660,7 @@ class CravelyCartManager {
     }
 
     /**
-     * Show cart popup only (without success notification)
+     * FIXED: Show cart popup only (without success notification)
      */
     showCartPopupOnly() {
         const popup = document.getElementById('cravely-cart-view-popup');
@@ -998,7 +684,7 @@ class CravelyCartManager {
     }
 
     /**
-     * Show success notification with proper timer - single call, no conflicts
+     * FIXED: Show success notification with proper timer - single call, no conflicts
      */
     showSuccessNotificationWithTimer() {
         const popup = document.getElementById('cravely-cart-view-popup');
@@ -1039,7 +725,7 @@ class CravelyCartManager {
     }
 
     /**
-     * Hide only success notification smoothly, keep cart popup if cart has items
+     * FIXED: Hide only success notification smoothly, keep cart popup if cart has items
      */
     hideSuccessNotificationOnly() {
         const popup = document.getElementById('cravely-cart-view-popup');
@@ -1199,6 +885,42 @@ class CravelyCartManager {
                 </div>
             </div>
         `).join('');
+    }
+
+    /**
+     * Handle checkout button click
+     */
+    handleCheckout() {
+        if (this.cart.length === 0) {
+            return;
+        }
+
+        console.log('🚀 Proceeding to checkout with cart:', this.cart);
+
+        // Add checkout visual feedback
+        const checkoutBtn = document.getElementById('cravely-checkout-btn');
+        if (checkoutBtn) {
+            const originalText = checkoutBtn.querySelector('.cravely-checkout-text').textContent;
+            checkoutBtn.querySelector('.cravely-checkout-text').textContent = 'Processing...';
+            checkoutBtn.disabled = true;
+
+            setTimeout(() => {
+                checkoutBtn.querySelector('.cravely-checkout-text').textContent = originalText;
+                checkoutBtn.disabled = false;
+
+                // Here you can integrate with your checkout system
+                // For now, we'll just show a success message
+                this.showCheckoutSuccess();
+            }, 2000);
+        }
+    }
+
+    /**
+     * Show checkout success (placeholder for actual checkout integration)
+     */
+    showCheckoutSuccess() {
+        // This is where you'd integrate with your actual checkout system
+        alert('Checkout functionality - integrate with your payment system here!');
     }
 
     /**
@@ -1388,6 +1110,23 @@ class CravelyCartManager {
         return parseInt(matches) || 0;
     }
 
+    /**
+     * FIXED: Reset and show success notification - called from product popup
+     */
+    resetAndShowSuccessNotification() {
+        // This method is called from the product popup
+        // Use the same logic as showSuccessNotificationWithTimer
+        this.showSuccessNotificationWithTimer();
+    }
+
+    /**
+     * FIXED: Legacy method for compatibility
+     */
+    hideSuccessNotification() {
+        // Use the new method for consistency
+        this.hideSuccessNotificationOnly();
+    }
+
     handleAddMoreItems() {
         this.hideCartSidebar();
         // Scroll to menu sections
@@ -1404,7 +1143,7 @@ class CravelyCartManager {
     }
 }
 
-// Initialize Enhanced Cravely cart manager when DOM is ready
+// Initialize Cravely cart manager when DOM is ready - with namespace
 document.addEventListener('DOMContentLoaded', function() {
     if (!window.cravelyCartManager) {
         window.cravelyCartManager = new CravelyCartManager();

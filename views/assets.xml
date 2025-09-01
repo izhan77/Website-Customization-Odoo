@@ -25,6 +25,21 @@
                 html {
                 scroll-behavior: auto;
                 }
+                /* Integration-specific styles */
+                .checkout-integration-notice {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #7abfba;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                }
             </style>
         </xpath>
 
@@ -44,6 +59,9 @@
                     src="/website_customizations/static/src/js/components/product_popup/cravely_product_popup.js"></script>
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/cart_popup/cravely_cart.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/integration/cart_checkout_integration.js"></script>
+            <div id="checkout-integration-notice" class="checkout-integration-notice"></div>
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>
 

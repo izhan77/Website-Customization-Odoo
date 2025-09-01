@@ -5,6 +5,9 @@
     'category': 'Website',
     'author': 'eaxeesoft',
     'depends': ['web', 'website'],
+    'controllers': [
+        'controllers/checkout_controller.py'
+    ],
     'data': [
         # Core Assets
         'views/assets.xml',
