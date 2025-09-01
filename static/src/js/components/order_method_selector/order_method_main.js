@@ -1,7 +1,8 @@
 /**
- * Order Method Selector Main Controller
+ * Order Method Selector Main Controller - Frontend Only
  * File: static/src/js/components/order_method_selector/order_method_main.js
  * Purpose: Main controller that coordinates all order method selector components
+ * FIXED: Only initializes on frontend pages, not backend
  */
 
 (function() {
@@ -9,6 +10,27 @@
 
     // Debug logging
     console.log('🚀 Order Method Selector: Loading main controller...');
+
+    // CRITICAL: Check if we're on backend/admin pages and exit early
+    function isBackendPage() {
+        const path = window.location.pathname;
+        const isBackend = path.includes('/web') ||
+                         path.includes('/login') ||
+                         path.includes('/admin') ||
+                         path.includes('/database') ||
+                         document.body.classList.contains('o_backend');
+
+        if (isBackend) {
+            console.log('🚫 Order Method Selector: Backend page detected, skipping initialization');
+            return true;
+        }
+        return false;
+    }
+
+    // Exit early if we're on a backend page
+    if (isBackendPage()) {
+        return;
+    }
 
     // Main Order Method Selector Class
     class OrderMethodSelector {
@@ -30,7 +52,9 @@
                 },
                 animations: {
                     duration: 300
-                }
+                },
+                // Only show popup on homepage by default
+                autoShow: window.location.pathname === '/' || window.location.pathname === '/home'
             };
 
             console.log('📱 OrderMethodSelector: Instance created');
@@ -42,6 +66,12 @@
         init() {
             if (this.isInitialized) {
                 console.log('⚠️ OrderMethodSelector: Already initialized');
+                return;
+            }
+
+            // Double-check we're not on backend
+            if (isBackendPage()) {
+                console.log('🚫 OrderMethodSelector: Backend detected in init, aborting');
                 return;
             }
 
@@ -86,7 +116,7 @@
                 submitBtn: document.getElementById('order-submit-btn')
             };
 
-            console.log('📦 OrderMethodSelector: Elements cached', this.elements);
+            console.log('📦 OrderMethodSelector: Elements cached');
         }
 
         /**
@@ -97,7 +127,7 @@
             const missing = required.filter(key => !this.elements[key]);
 
             if (missing.length > 0) {
-                console.error('❌ Missing required elements:', missing);
+                console.log('❌ Missing required elements (may be backend page):', missing);
                 return false;
             }
 
@@ -179,8 +209,13 @@
             // Start with delivery selected
             this.switchOrderType('delivery');
 
-            // Show popup with animation
-            this.showPopup();
+            // Only auto-show popup if configured and not already shown
+            if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
+                // Show popup with slight delay to ensure page is loaded
+                setTimeout(() => {
+                    this.showPopup();
+                }, 1000);
+            }
         }
 
         /**
@@ -238,7 +273,7 @@
 
             // Show current location button
             if (this.elements.locationBtn) {
-                this.elements.locationBtn.classList.remove('hidden');
+                this.elements.locationBtn.style.display = 'inline-flex';
             }
 
             // Hide location details
@@ -263,7 +298,7 @@
 
             // Hide current location button
             if (this.elements.locationBtn) {
-                this.elements.locationBtn.classList.add('hidden');
+                this.elements.locationBtn.style.display = 'none';
             }
 
             // Show location details
@@ -451,15 +486,14 @@
                 return;
             }
 
-            // Store selection in session (could also use localStorage if needed)
+            // Store selection in session
             const orderData = {
                 type: this.currentOrderType,
                 location: this.selectedLocation,
                 timestamp: new Date().toISOString()
             };
 
-            // For now, just log and close popup
-            console.log('📝 Order data:', orderData);
+            sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
 
             // Close popup with success message
             this.showMessage('Order type selected successfully!', 'success');
@@ -509,7 +543,7 @@
          * Show success/error messages
          */
         showMessage(text, type = 'info') {
-            // Simple toast-like message (could be enhanced)
+            // Simple toast-like message
             const existingMessage = document.querySelector('.order-message');
             if (existingMessage) {
                 existingMessage.remove();
@@ -529,16 +563,29 @@
                 setTimeout(() => message.remove(), 300);
             }, 3000);
         }
+
+        /**
+         * Manual trigger for popup (for testing)
+         */
+        triggerPopup() {
+            this.showPopup();
+        }
     }
 
     // Global instance
     window.orderMethodSelector = null;
 
     /**
-     * Initialize the order method selector
+     * Initialize the order method selector - Frontend only
      */
     function initializeOrderMethodSelector() {
-        console.log('🎬 OrderMethodSelector: Starting initialization...');
+        // Triple check we're not on backend
+        if (isBackendPage()) {
+            console.log('🚫 OrderMethodSelector: Backend page, skipping initialization');
+            return;
+        }
+
+        console.log('🎬 OrderMethodSelector: Starting frontend initialization...');
 
         if (window.orderMethodSelector) {
             console.log('⚠️ OrderMethodSelector: Already exists, reinitializing...');
@@ -548,16 +595,20 @@
         window.orderMethodSelector.init();
     }
 
-    // Auto-initialize when DOM is ready
+    // Only initialize on frontend pages
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeOrderMethodSelector);
     } else {
         initializeOrderMethodSelector();
     }
 
-    // Fallback initialization
-    setTimeout(initializeOrderMethodSelector, 500);
+    // Fallback initialization (but check again)
+    setTimeout(() => {
+        if (!isBackendPage() && !window.orderMethodSelector?.isInitialized) {
+            initializeOrderMethodSelector();
+        }
+    }, 1000);
 
-    console.log('📜 OrderMethodSelector: Main script loaded');
+    console.log('📜 OrderMethodSelector: Main script loaded (frontend only)');
 
 })();

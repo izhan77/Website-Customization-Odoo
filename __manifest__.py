@@ -12,6 +12,11 @@
         # Core Assets
         'views/assets.xml',
 
+        # Order Method Components
+        'views/components/order_method_selector/order_method_selector_base.xml',
+        'views/components/order_method_selector/order_method_location.xml',
+        'views/components/order_method_selector/order_method_toggle.xml',
+
         # Navbar Components
         'views/components/navbar/navbar_base.xml',
         'views/components/navbar/navbar_logo.xml',
@@ -64,6 +69,9 @@
             # Core CSS and config
             'website_customizations/static/src/css/tailwind_input.css',
             'website_customizations/static/src/js/tailwind_config.js',
+
+            # Order Method CSS files
+            'website_customizations/static/src/css/components/order_method_selector/order_method_animations.css',
 
             # Component CSS files
             'website_customizations/static/src/css/components/navbar/navbar.css',

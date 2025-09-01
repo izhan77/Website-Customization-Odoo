@@ -50,6 +50,12 @@
 
             <!-- STEP 2: Component scripts in dependency order -->
             <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/order_method_selector/order_method_main.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/order_method_selector/order_method_location.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/order_method_selector/order_method_toggle.js"></script>
+            <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
