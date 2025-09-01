@@ -3,7 +3,7 @@
     <!-- Complete Category Strip Template - ALL CATEGORIES -->
     <template id="category_strip_complete" name="Category Strip Complete">
         <!-- Category Strip Container -->
-        <div id="category-strip-wrapper" class="category-strip-container">
+        <div id="" class="category-strip-container">
             <div class="category-strip-inner">
                 <div class="flex items-center justify-center relative">
 
@@ -96,6 +96,6 @@
         </div>
 
         <!-- Placeholder for sticky positioning -->
-        <div class="category-strip-placeholder"></div>
+        <!-- <div class="category-strip-placeholder"></div> -->
     </template>
 </odoo>

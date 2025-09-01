@@ -11,6 +11,7 @@
                     <div id="category-strip-wrapper" class="category-strip-container">
                         <t t-call="website_customizations.category_strip_complete"/>
                     </div>
+                    <div class="category-strip-placeholder"></div>
 
                     <section class="menu-sections">
                         <t t-call="website_customizations.menu_sections_complete"/>
