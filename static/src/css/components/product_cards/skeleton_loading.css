@@ -1,0 +1,444 @@
+/* ================================= ULTRA-SMOOTH SKELETON LOADER ANIMATIONS ================================= */
+
+/* GPU-accelerated container for all skeleton cards */
+.skeleton-cards-container {
+    display: contents;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    transform: translateZ(0); /* Force GPU acceleration */
+    will-change: opacity; /* Hint browser for smooth transitions */
+}
+
+/* Enhanced skeleton product card with hardware acceleration */
+.skeleton-product-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    position: relative;
+    min-height: 360px;
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    transform: translateZ(0); /* Force GPU acceleration */
+    backface-visibility: hidden; /* Improve performance */
+    perspective: 1000px; /* Improve performance */
+    will-change: transform, opacity; /* Hint browser for smooth animations */
+}
+
+/* Optimized fade-in animation for skeleton cards */
+@keyframes skeleton-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.skeleton-product-card {
+    animation: skeleton-fade-in 0.6s ease-out;
+}
+
+/* Subtle floating animation */
+@keyframes skeleton-float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.skeleton-product-card {
+    animation: skeleton-fade-in 0.6s ease-out, skeleton-float 3s ease-in-out infinite 0.6s;
+}
+
+/* Optimized shimmer animation using transform instead of background-position */
+@keyframes smooth-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Enhanced skeleton image with simplified animation */
+.skeleton-product-image {
+    height: 200px;
+    border-radius: 18px 18px 0 0;
+    margin: -2px -2px 0 -2px;
+    padding: 2px;
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0; /* Solid color fallback */
+}
+
+.skeleton-product-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 40%,
+        rgba(255, 255, 255, 0.8) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: smooth-shimmer 2.5s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Enhanced skeleton details section */
+.skeleton-product-details {
+    background: #FFFFFF;
+    padding: 18px;
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Enhanced skeleton title */
+.skeleton-product-title {
+    width: 85%;
+    height: 22px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-product-title::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.6) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: smooth-shimmer 2.2s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Enhanced skeleton description */
+.skeleton-product-description {
+    margin-bottom: auto;
+    min-height: 40px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 10px;
+}
+
+.skeleton-description-line {
+    height: 14px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-description-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.25) 40%,
+        rgba(255, 255, 255, 0.5) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: smooth-shimmer 2.3s ease-in-out infinite;
+    z-index: 1;
+}
+
+.skeleton-description-line:nth-child(1) {
+    width: 100%;
+    animation-delay: 0.1s;
+}
+
+.skeleton-description-line:nth-child(2) {
+    width: 85%;
+    animation-delay: 0.2s;
+}
+
+/* Enhanced skeleton pricing section */
+.skeleton-pricing-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.skeleton-price-container {
+    background: #374151;
+    padding: 6px 14px;
+    border-radius: 20px;
+    width: 120px;
+    height: 32px;
+    margin: 0 auto;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-price-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 40%,
+        rgba(255, 255, 255, 0.4) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: smooth-shimmer 2.1s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Enhanced skeleton cart action section */
+.skeleton-cart-action-section {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+/* Enhanced skeleton button */
+.skeleton-product-button {
+    width: 100%;
+    height: 48px;
+    border-radius: 22px;
+    background: #7abfba;
+    border: none;
+    padding: 12px 20px;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+}
+
+.skeleton-product-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.6) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: smooth-shimmer 2.4s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Subtle pulse animation for the button */
+@keyframes subtle-pulse {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(122, 191, 186, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 16px rgba(122, 191, 186, 0.4);
+    }
+}
+
+.skeleton-product-button {
+    animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Performance optimizations for all animations */
+.skeleton-product-card * {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Enhanced fade-in for backend products */
+.backend-product.fade-in {
+    animation: backend-product-entrance 1s ease-out;
+}
+
+@keyframes backend-product-entrance {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    60% {
+        opacity: 0.8;
+        transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Enhanced fade-out for skeleton when removing */
+.skeleton-cards-container.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ================================= RESPONSIVE DESIGN - SMOOTH ANIMATIONS ================================= */
+
+/* Tablet - Smooth responsive animations */
+@media (max-width: 768px) {
+    .skeleton-product-card {
+        min-height: 340px;
+        max-width: 280px;
+    }
+
+    .skeleton-product-image {
+        height: 160px;
+    }
+
+    .skeleton-pricing-section {
+        margin-top: 34px;
+    }
+
+    .skeleton-cart-action-section {
+        padding-top: 14px;
+    }
+}
+
+/* Mobile - Smooth responsive animations */
+@media (max-width: 640px) {
+    .skeleton-product-card {
+        min-height: 320px;
+        max-width: 260px;
+        animation: skeleton-float-mobile 3s ease-in-out infinite, skeleton-fade-in 0.8s ease-out;
+    }
+
+    @keyframes skeleton-float-mobile {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    .skeleton-product-title {
+        height: 20px;
+        width: 80%;
+    }
+
+    .skeleton-product-button {
+        height: 44px;
+        padding: 10px 16px;
+    }
+
+    .skeleton-pricing-section {
+        margin-top: 32px;
+    }
+
+    .skeleton-cart-action-section {
+        padding-top: 12px;
+    }
+}
+
+/* Very small mobile */
+@media (max-width: 480px) {
+    .skeleton-product-card {
+        min-height: 300px;
+        max-width: 240px;
+    }
+
+    .skeleton-product-button {
+        height: 40px;
+        padding: 8px 14px;
+    }
+
+    .skeleton-pricing-section {
+        margin-top: 30px;
+    }
+
+    .skeleton-cart-action-section {
+        padding-top: 10px;
+    }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-product-image::after,
+    .skeleton-product-title::after,
+    .skeleton-description-line::after,
+    .skeleton-price-container::after,
+    .skeleton-product-button::after {
+        animation: none;
+    }
+
+    .skeleton-product-card {
+        animation: skeleton-fade-in 0.6s ease-out !important;
+    }
+
+    .skeleton-product-button {
+        animation: none !important;
+    }
+
+    .backend-product.fade-in {
+        animation: backend-product-entrance 0.8s ease-out !important;
+    }
+}
+
+/* ENHANCED: After loading completes - show real products with better animation */
+.product-grid.loaded .product-card:not(.skeleton-product-card) {
+    display: flex;
+    animation: enhanced-product-fade-in 0.8s ease-out;
+}
+
+.product-grid.loaded .skeleton-cards-container {
+    display: none;
+}
+
+@keyframes enhanced-product-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hide static cards initially and show skeleton cards */
+.product-grid .product-card:not(.skeleton-product-card) {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}

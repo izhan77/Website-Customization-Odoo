@@ -6,7 +6,8 @@
     'author': 'eaxeesoft',
     'depends': ['web', 'website'],
     'controllers': [
-        'controllers/checkout_controller.py'
+        'controllers/checkout_controller.py',
+        'controllers/product_controller.py',
     ],
     'data': [
         # Core Assets
@@ -82,6 +83,7 @@
             'website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
+            'website_customizations/static/src/css/components/product_cards/skeleton_loading.css',
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
             'website_customizations/static/src/css/components/product_popup/cravely_product_popup.css',
             'website_customizations/static/src/css/components/cart_popup/cravely_cart.css',
