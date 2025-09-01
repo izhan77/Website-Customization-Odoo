@@ -10,20 +10,20 @@
             <style>
                 /* Ensure proper z-index layering */
                 .navbar, header {
-                    z-index: 999;
+                z-index: 999;
                 }
 
                 .menu-categories-popup {
-                    z-index: 998;
+                z-index: 998;
                 }
 
                 .mobile-categories-popup {
-                    z-index: 1001;
+                z-index: 1001;
                 }
 
                 /* Smooth scroll disabled - let JS handle it */
                 html {
-                    scroll-behavior: auto;
+                scroll-behavior: auto;
                 }
             </style>
         </xpath>
@@ -34,14 +34,22 @@
             <script type="text/javascript" src="/website_customizations/static/src/js/utils/scroll_utils.js"></script>
 
             <!-- STEP 2: Component scripts in dependency order -->
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/navbar/navbar_mobile.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/product_popup/cravely_product_popup.js"></script>
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/cart_popup/cravely_cart.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/hero_section/hero_carousel_config.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/navbar/navbar_mobile.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/product_popup/cravely_product_popup.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/cart_popup/cravely_cart.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>
 
             <!-- STEP 3: Category strip LAST -->
-            <script type="text/javascript" src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
         </xpath>
     </template>
 </odoo>

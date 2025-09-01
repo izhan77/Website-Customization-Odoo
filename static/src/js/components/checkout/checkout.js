@@ -142,92 +142,124 @@ class CheckoutManager {
     }
 
     /**
-     * Bind all event listeners
-     */
-    bindEventListeners() {
-        // Payment method change
-        document.addEventListener('change', (e) => {
-            if (e.target.name === 'payment-method') {
-                this.handlePaymentMethodChange(e.target.value);
+ * FIX for Payment Method Toggle in Checkout
+ * Add this to your checkout.js file or replace the existing bindEventListeners method
+ */
+
+// Replace the existing bindEventListeners method in your CheckoutManager class
+bindEventListeners() {
+    // Payment method change - MORE SPECIFIC EVENT HANDLING
+    document.addEventListener('change', (e) => {
+        if (e.target.name === 'payment-method') {
+            console.log('Payment method changed to:', e.target.value);
+            this.handlePaymentMethodChange(e.target.value);
+        }
+    });
+
+    // ADDITIONAL: Direct click handlers for payment options
+    document.addEventListener('click', (e) => {
+        // Handle clicks on payment option containers
+        if (e.target.closest('.payment-option')) {
+            const paymentOption = e.target.closest('.payment-option');
+            const paymentType = paymentOption.getAttribute('data-payment');
+            const radioInput = paymentOption.querySelector('input[type="radio"]');
+
+            if (radioInput && paymentType) {
+                radioInput.checked = true;
+                console.log('Payment option clicked:', paymentType);
+                this.handlePaymentMethodChange(paymentType);
             }
-        });
-
-        // Form submission
-        const placeOrderBtn = document.getElementById('place-order-btn');
-        if (placeOrderBtn) {
-            placeOrderBtn.addEventListener('click', (e) => {
-                this.handlePlaceOrder(e);
-            });
         }
+    });
 
-        // Modal close events
-        const closeConfirmationBtn = document.getElementById('close-confirmation-btn');
-        const viewMenuBtn = document.getElementById('view-menu-btn');
-        const trackOrderBtn = document.getElementById('track-order-btn');
-
-        if (closeConfirmationBtn) {
-            closeConfirmationBtn.addEventListener('click', () => {
-                this.hideOrderConfirmation();
-            });
-        }
-
-        if (viewMenuBtn) {
-            viewMenuBtn.addEventListener('click', () => {
-                this.redirectToMenu();
-            });
-        }
-
-        if (trackOrderBtn) {
-            trackOrderBtn.addEventListener('click', () => {
-                this.handleTrackOrder();
-            });
-        }
-
-        // Close modal on overlay click
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('confirmation-modal-overlay')) {
-                this.hideOrderConfirmation();
-            }
-        });
-
-        // Keyboard events
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.hideOrderConfirmation();
-            }
+    // Form submission
+    const placeOrderBtn = document.getElementById('place-order-btn');
+    if (placeOrderBtn) {
+        placeOrderBtn.addEventListener('click', (e) => {
+            this.handlePlaceOrder(e);
         });
     }
 
-    /**
-     * Handle payment method change
-     */
-    handlePaymentMethodChange(method) {
-        this.paymentMethod = method;
-        const onlineDetails = document.querySelector('.online-payment-details');
+    // Modal close events
+    const closeConfirmationBtn = document.getElementById('close-confirmation-btn');
+    const viewMenuBtn = document.getElementById('view-menu-btn');
+    const trackOrderBtn = document.getElementById('track-order-btn');
 
-        // Update payment option styling
-        document.querySelectorAll('.payment-option').forEach(option => {
-            option.classList.remove('selected');
+    if (closeConfirmationBtn) {
+        closeConfirmationBtn.addEventListener('click', () => {
+            this.hideOrderConfirmation();
         });
-
-        const selectedOption = document.querySelector(`[data-payment="${method}"]`);
-        if (selectedOption) {
-            selectedOption.classList.add('selected');
-        }
-
-        // Show/hide online payment details
-        if (method === 'online' && onlineDetails) {
-            onlineDetails.style.display = 'block';
-            onlineDetails.classList.add('fade-in');
-            this.makeCardFieldsRequired(true);
-        } else if (onlineDetails) {
-            onlineDetails.style.display = 'none';
-            onlineDetails.classList.remove('fade-in');
-            this.makeCardFieldsRequired(false);
-        }
-
-        console.log('💳 Payment method changed to:', method);
     }
+
+    if (viewMenuBtn) {
+        viewMenuBtn.addEventListener('click', () => {
+            this.redirectToMenu();
+        });
+    }
+
+    if (trackOrderBtn) {
+        trackOrderBtn.addEventListener('click', () => {
+            this.handleTrackOrder();
+        });
+    }
+
+    // Close modal on overlay click
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('confirmation-modal-overlay')) {
+            this.hideOrderConfirmation();
+        }
+    });
+
+    // Keyboard events
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            this.hideOrderConfirmation();
+        }
+    });
+}
+
+    // Also update the handlePaymentMethodChange method to add more debugging
+handlePaymentMethodChange(method) {
+    console.log('🔄 Handling payment method change:', method);
+
+    this.paymentMethod = method;
+    const onlineDetails = document.querySelector('.online-payment-details');
+
+    console.log('Online details element found:', !!onlineDetails);
+
+    // Update payment option styling
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+
+    const selectedOption = document.querySelector(`[data-payment="${method}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('selected');
+        console.log('Added selected class to payment option');
+    }
+
+    // Show/hide online payment details
+    if (method === 'online' && onlineDetails) {
+        console.log('Showing online payment details');
+        onlineDetails.style.display = 'block';
+        onlineDetails.classList.add('fade-in');
+        this.makeCardFieldsRequired(true);
+
+        // Force a reflow to ensure the element is visible
+        setTimeout(() => {
+            onlineDetails.style.opacity = '1';
+            onlineDetails.style.transform = 'translateY(0)';
+        }, 10);
+
+    } else if (onlineDetails) {
+        console.log('Hiding online payment details');
+        onlineDetails.style.display = 'none';
+        onlineDetails.classList.remove('fade-in');
+        this.makeCardFieldsRequired(false);
+    }
+
+    console.log('💳 Payment method successfully changed to:', method);
+}
 
     /**
      * Make card fields required or optional

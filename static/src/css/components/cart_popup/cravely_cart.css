@@ -810,3 +810,27 @@
 body.cravely-cart-modal-open {
     overflow: hidden;
 }
+
+/* Add this to your existing cart CSS file */
+/* Simple fix for checkout button layout */
+
+.cravely-checkout-normal-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+}
+
+.cravely-checkout-text {
+    flex: none; /* Changed from flex: 1 to flex: none */
+    text-align: center;
+}
+
+.cravely-checkout-arrow {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}

@@ -74,6 +74,7 @@
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
             'website_customizations/static/src/css/components/product_popup/cravely_product_popup.css',
             'website_customizations/static/src/css/components/cart_popup/cravely_cart.css',
+            'website_customizations/static/src/css/components/checkout/checkout.css',
             'website_customizations/static/src/css/components/footer/footer.css',
 
             # JavaScript files in dependency order
