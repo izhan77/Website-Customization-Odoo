@@ -14,6 +14,14 @@ class CheckoutManager {
         this.deliveryFee = 200;
         this.taxRate = 0.15;
 
+        // Order type detection
+        this.orderType = 'delivery'; // default
+        this.isDeliveryOrder = true;
+
+        // User and order IDs from sessionStorage
+        this.userId = null;
+        this.orderId = null;
+
         // Initialize when DOM is ready
         this.init();
     }
@@ -37,8 +45,11 @@ class CheckoutManager {
      * Setup all checkout functionality
      */
     setup() {
+        this.detectOrderType();
+        this.loadStoredIds();
         this.loadCartData();
         this.populateOrderSummary();
+        this.setupOrderTypeUI();
         this.bindEventListeners();
         this.initializeFormValidation();
         this.setupPaymentToggle();
@@ -46,6 +57,177 @@ class CheckoutManager {
         console.log('✅ Checkout Manager initialized successfully');
     }
 
+    /**
+     * Detect order type from URL parameters and sessionStorage
+     */
+    detectOrderType() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderTypeParam = urlParams.get('order_type');
+
+        if (orderTypeParam) {
+            this.orderType = orderTypeParam;
+            this.isDeliveryOrder = orderTypeParam === 'delivery';
+        } else {
+            // Check if order method selector has stored data
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                try {
+                    const parsedData = JSON.parse(storedOrderData);
+                    this.orderType = parsedData.type || 'delivery';
+                    this.isDeliveryOrder = this.orderType === 'delivery';
+                } catch (e) {
+                    console.warn('Failed to parse stored order data:', e);
+                }
+            }
+        }
+
+        console.log('🎯 Order type detected:', this.orderType);
+        console.log('🚚 Is delivery order:', this.isDeliveryOrder);
+    }
+
+    /**
+     * Load user ID and order ID from sessionStorage
+     */
+    loadStoredIds() {
+        try {
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                const parsedData = JSON.parse(storedOrderData);
+                this.userId = parsedData.userId || null;
+                this.orderId = parsedData.orderId || null;
+
+                console.log('👤 Loaded stored IDs - User:', this.userId, 'Order:', this.orderId);
+            }
+        } catch (e) {
+            console.warn('Failed to load stored IDs:', e);
+        }
+    }
+
+    /**
+     * Setup UI based on order type
+     */
+    setupOrderTypeUI() {
+        console.log('🎨 Setting up UI for order type:', this.orderType);
+
+        // Hide/show address fields based on order type
+        this.toggleAddressFields();
+
+        // Update payment method text
+        this.updatePaymentMethodText();
+
+        // Update delivery fee based on order type
+        this.updateDeliveryFee();
+
+        // Update order type indicator in UI if exists
+        this.updateOrderTypeIndicator();
+    }
+
+    /**
+     * Update order type indicator in UI
+     */
+    updateOrderTypeIndicator() {
+        const orderTypeIndicator = document.getElementById('order-type-indicator');
+        if (orderTypeIndicator) {
+            orderTypeIndicator.textContent = this.isDeliveryOrder ? 'Delivery Order' : 'Pickup Order';
+        }
+    }
+
+    /**
+     * Toggle address fields visibility based on order type
+     */
+    toggleAddressFields() {
+        const fieldsToHide = [
+            'customer-country',
+            'customer-state',
+            'customer-zipcode',
+            'customer-address'
+        ];
+
+        fieldsToHide.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const formGroup = field?.closest('.form-group');
+            const formRow = field?.closest('.form-row');
+
+            if (!this.isDeliveryOrder) {
+                // Hide field and its container
+                if (formGroup) {
+                    formGroup.style.display = 'none';
+                    // Remove required attribute for pickup orders
+                    if (field) {
+                        field.removeAttribute('required');
+                    }
+                }
+
+                // Hide entire form row if all fields in it are hidden
+                if (formRow) {
+                    const visibleFields = Array.from(formRow.querySelectorAll('.form-group'))
+                        .filter(group => group.style.display !== 'none');
+
+                    if (visibleFields.length === 0) {
+                        formRow.style.display = 'none';
+                    }
+                }
+            } else {
+                // Show field for delivery orders
+                if (formGroup) {
+                    formGroup.style.display = '';
+                    // Add back required attribute for delivery orders
+                    if (field) {
+                        field.setAttribute('required', 'required');
+                    }
+                }
+
+                if (formRow) {
+                    formRow.style.display = '';
+                }
+            }
+        });
+
+        // Update section titles and descriptions
+        const customerInfoSection = document.querySelector('.customer-info-section .section-title');
+        if (customerInfoSection) {
+            customerInfoSection.textContent = this.isDeliveryOrder
+                ? 'Delivery Information'
+                : 'Pickup Information';
+        }
+
+        console.log(`${this.isDeliveryOrder ? '🚚' : '🏪'} Address fields ${this.isDeliveryOrder ? 'shown' : 'hidden'}`);
+    }
+
+    /**
+     * Update payment method text based on order type
+     */
+    updatePaymentMethodText() {
+        const cashPaymentLabel = document.querySelector('label[for="payment-cash"] .payment-text');
+        if (cashPaymentLabel) {
+            cashPaymentLabel.textContent = this.isDeliveryOrder
+                ? 'Cash on Delivery'
+                : 'Pay with Cash on Counter';
+        }
+
+        console.log(`💳 Payment text updated to: ${this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter'}`);
+    }
+
+    /**
+     * Update delivery fee based on order type
+     */
+    updateDeliveryFee() {
+        if (!this.isDeliveryOrder) {
+            this.deliveryFee = 0; // No delivery fee for pickup orders
+
+            // Update the UI label
+            const shippingLabel = document.querySelector('.summary-row .summary-label');
+            if (shippingLabel && shippingLabel.textContent.includes('Shipping')) {
+                shippingLabel.textContent = 'Service Fee';
+            }
+        }
+
+        console.log(`💰 ${this.isDeliveryOrder ? 'Delivery' : 'Service'} fee set to: Rs. ${this.deliveryFee}`);
+    }
+
+    /**
+     * Load cart data from sessionStorage or fallback
+     */
     /**
      * Load cart data from sessionStorage or fallback
      */
@@ -56,6 +238,19 @@ class CheckoutManager {
             if (storedCart) {
                 this.cartData = JSON.parse(storedCart);
                 console.log('📦 Cart data loaded from storage:', this.cartData);
+
+                // Extract order type from cart data if available
+                if (this.cartData.orderType) {
+                    this.orderType = this.cartData.orderType;
+                    this.isDeliveryOrder = this.orderType === 'delivery';
+                    console.log('🎯 Order type from cart data:', this.orderType);
+                }
+
+                // Extract user and order IDs from cart data if available
+                if (this.cartData.userId) this.userId = this.cartData.userId;
+                if (this.cartData.orderId) this.orderId = this.cartData.orderId;
+
+                this.recalculateTotals();
                 return;
             }
 
@@ -67,13 +262,14 @@ class CheckoutManager {
                     subtotal: cartInfo.total,
                     tax: Math.round(cartInfo.total * this.taxRate),
                     deliveryFee: this.deliveryFee,
-                    grandTotal: cartInfo.grandTotal
+                    grandTotal: cartInfo.total + Math.round(cartInfo.total * this.taxRate) + this.deliveryFee
                 };
                 console.log('📦 Cart data loaded from cartManager:', this.cartData);
                 return;
             }
 
             // Final fallback: Demo data
+            const demoSubtotal = 2549;
             this.cartData = {
                 items: [
                     {
@@ -91,17 +287,81 @@ class CheckoutManager {
                         image: '/website_customizations/static/src/images/product_1.jpg'
                     }
                 ],
-                subtotal: 2549,
-                tax: Math.round(2549 * this.taxRate),
+                subtotal: demoSubtotal,
+                tax: Math.round(demoSubtotal * this.taxRate),
                 deliveryFee: this.deliveryFee,
-                grandTotal: 2549 + Math.round(2549 * this.taxRate) + this.deliveryFee
+                grandTotal: demoSubtotal + Math.round(demoSubtotal * this.taxRate) + this.deliveryFee
             };
             console.log('📦 Using demo cart data:', this.cartData);
 
         } catch (error) {
             console.error('Error loading cart data:', error);
-            this.cartData = { items: [], subtotal: 0, tax: 0, deliveryFee: this.deliveryFee, grandTotal: this.deliveryFee };
+            this.cartData = {
+                items: [],
+                subtotal: 0,
+                tax: 0,
+                deliveryFee: this.deliveryFee,
+                grandTotal: this.deliveryFee
+            };
         }
+    }
+
+    /**
+     * Collect all form data - ENHANCED FOR ODOO with order type
+     */
+    collectOrderData() {
+        this.orderData = {
+            // Customer information
+            customerName: document.getElementById('customer-name')?.value?.trim(),
+            customerPhone: document.getElementById('country-code')?.value + document.getElementById('customer-phone')?.value?.trim(),
+            customerEmail: document.getElementById('customer-email')?.value?.trim(),
+
+            // Order type information (CRITICAL for Odoo integration)
+            orderType: this.orderType,
+            isDeliveryOrder: this.isDeliveryOrder,
+
+            // Conditional address fields (only for delivery)
+            ...(this.isDeliveryOrder && {
+                customerCountry: document.getElementById('customer-country')?.value,
+                customerState: document.getElementById('customer-state')?.value,
+                customerZipcode: document.getElementById('customer-zipcode')?.value?.trim(),
+                customerAddress: document.getElementById('customer-address')?.value?.trim(),
+            }),
+
+            // Payment information
+            paymentMethod: this.paymentMethod,
+
+            // Order details - IMPORTANT: This is what Odoo needs
+            items: this.cartData.items.map(item => ({
+                name: item.name,
+                price: parseFloat(item.price),
+                quantity: parseInt(item.quantity),
+                image: item.image || '',
+                id: item.id || null
+            })),
+            subtotal: parseFloat(this.cartData.subtotal),
+            tax: parseFloat(this.cartData.tax),
+            deliveryFee: parseFloat(this.cartData.deliveryFee),
+            grandTotal: parseFloat(this.cartData.grandTotal),
+
+            // User and order IDs for tracking
+            userId: this.userId,
+            orderId: this.orderId,
+
+            // Metadata
+            orderDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+            orderTime: new Date().toTimeString().split(' ')[0], // HH:MM:SS format
+
+            // Card details (if online payment)
+            ...(this.paymentMethod === 'online' && {
+                cardNumber: document.getElementById('card-number')?.value?.replace(/\s/g, ''),
+                cardExpiry: document.getElementById('card-expiry')?.value,
+                cardName: document.getElementById('card-name')?.value?.trim(),
+                selectedBank: document.getElementById('bank-select')?.value
+            })
+        };
+
+        console.log('📦 Order data prepared for Odoo:', this.orderData);
     }
 
     /**
@@ -551,7 +811,8 @@ class CheckoutManager {
                     orderId: result.order_id,
                     salesOrderId: result.sales_order_id,
                     customerId: result.customer_id,
-                    total: result.order_total
+                    total: result.order_total,
+                    orderType: this.orderType
                 });
 
                 this.showNotification('Order placed successfully!', 'success');
@@ -573,10 +834,6 @@ class CheckoutManager {
 
                 // Show a different message
                 this.showNotification('Order may have been placed successfully. Please check Sales → Quotations to verify.', 'warning');
-
-                // Optionally show confirmation anyway (uncomment if you want this):
-                // this.showOrderConfirmation();
-                // sessionStorage.removeItem('checkoutCart');
 
             } else {
                 // Handle other errors normally
@@ -792,8 +1049,13 @@ async submitOrderToOdoo(orderData) {
         // Populate confirmation details
         document.getElementById('confirmation-order-id').textContent = this.orderData.orderId || '#12345';
         document.getElementById('confirmation-total').textContent = `Rs. ${this.orderData.grandTotal}`;
-        document.getElementById('confirmation-payment').textContent =
-            this.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Online Payment';
+        document.getElementById('confirmation-payment').textContent = this.getPaymentMethodDisplayText();
+
+        // Add order type to confirmation if available
+        const orderTypeElement = document.getElementById('confirmation-order-type');
+        if (orderTypeElement) {
+            orderTypeElement.textContent = this.isDeliveryOrder ? 'Delivery' : 'Pickup';
+        }
 
         // Calculate estimated delivery time
         const estimatedTime = this.calculateDeliveryTime();
@@ -810,6 +1072,16 @@ async submitOrderToOdoo(orderData) {
 
         console.log('Order confirmation displayed for Odoo order:', this.orderData.salesOrderId);
     }
+
+    /**
+ * Get payment method display text
+ */
+getPaymentMethodDisplayText() {
+    if (this.paymentMethod === 'cash') {
+        return this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter';
+    }
+    return 'Online Payment';
+}
 
     /**
      * Hide order confirmation modal
@@ -982,6 +1254,24 @@ async submitOrderToOdoo(orderData) {
             field.classList.remove('success', 'error');
         });
     }
+
+    /**
+ * Recalculate totals based on order type
+ */
+recalculateTotals() {
+    if (!this.cartData) return;
+
+    this.cartData.deliveryFee = this.deliveryFee;
+    this.cartData.tax = Math.round(this.cartData.subtotal * this.taxRate);
+    this.cartData.grandTotal = this.cartData.subtotal + this.cartData.tax + this.deliveryFee;
+
+    console.log('🔢 Totals recalculated:', {
+        subtotal: this.cartData.subtotal,
+        tax: this.cartData.tax,
+        deliveryFee: this.cartData.deliveryFee,
+        grandTotal: this.cartData.grandTotal
+    });
+}
 }
 
 // Initialize checkout manager when DOM is ready
@@ -1001,37 +1291,3 @@ if (document.readyState !== 'loading' && document.querySelector('.checkout-page-
     }
 }
 
-// Add CSS for loading animations
-const style = document.createElement('style');
-style.textContent = `
-@keyframes slideInNotification {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-.place-order-btn.loading {
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.loading-spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #ffffff;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-`;
-document.head.appendChild(style);

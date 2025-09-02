@@ -888,32 +888,58 @@ class CravelyCartManager {
     }
 
     /**
-     * Handle checkout button click
-     */
-    handleCheckout() {
-        if (this.cart.length === 0) {
-            return;
-        }
-
-        console.log('🚀 Proceeding to checkout with cart:', this.cart);
-
-        // Add checkout visual feedback
-        const checkoutBtn = document.getElementById('cravely-checkout-btn');
-        if (checkoutBtn) {
-            const originalText = checkoutBtn.querySelector('.cravely-checkout-text').textContent;
-            checkoutBtn.querySelector('.cravely-checkout-text').textContent = 'Processing...';
-            checkoutBtn.disabled = true;
-
-            setTimeout(() => {
-                checkoutBtn.querySelector('.cravely-checkout-text').textContent = originalText;
-                checkoutBtn.disabled = false;
-
-                // Here you can integrate with your checkout system
-                // For now, we'll just show a success message
-                this.showCheckoutSuccess();
-            }, 2000);
-        }
+ * Handle checkout button click - FIXED to redirect to checkout
+ */
+handleCheckout() {
+    if (this.cart.length === 0) {
+        return;
     }
+
+    console.log('🚀 Proceeding to checkout with cart:', this.cart);
+
+    // Use the cart-checkout integration if available
+    if (window.cartCheckoutIntegration) {
+        window.cartCheckoutIntegration.handleCheckout();
+        return;
+    }
+
+    // Fallback: Use the enhanced checkout handler
+    const orderType = this.getCurrentOrderType();
+    const checkoutUrl = this.buildCheckoutUrl(orderType);
+
+    console.log('🔗 Redirecting to checkout:', checkoutUrl);
+    window.location.href = checkoutUrl;
+}
+
+/**
+ * Get current order type (for fallback)
+ */
+getCurrentOrderType() {
+    try {
+        const storedOrder = sessionStorage.getItem('orderMethodSelected');
+        if (storedOrder) {
+            const orderData = JSON.parse(storedOrder);
+            return orderData.type || 'delivery';
+        }
+    } catch (e) {
+        console.warn('Failed to parse stored order data:', e);
+    }
+    return 'delivery';
+}
+
+/**
+ * Build checkout URL (for fallback)
+ */
+buildCheckoutUrl(orderType) {
+    const baseUrl = '/checkout';
+    const url = new URL(baseUrl, window.location.origin);
+
+    if (orderType) {
+        url.searchParams.set('order_type', orderType);
+    }
+
+    return url.toString();
+}
 
     /**
      * Show checkout success (placeholder for actual checkout integration)

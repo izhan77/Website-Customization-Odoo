@@ -1,14 +1,12 @@
 /**
  * Order Method Selector Main Controller - Frontend Only
+ * UPDATED: Added sessionStorage for user ID, order ID, and order method persistence
  * File: static/src/js/components/order_method_selector/order_method_main.js
- * Purpose: Main controller that coordinates all order method selector components
- * FIXED: Only initializes on frontend pages, not backend
  */
 
 (function() {
     'use strict';
 
-    // Debug logging
     console.log('🚀 Order Method Selector: Loading main controller...');
 
     // CRITICAL: Check if we're on backend/admin pages and exit early
@@ -38,6 +36,8 @@
             this.currentOrderType = 'delivery';
             this.selectedLocation = null;
             this.isInitialized = false;
+            this.userId = this.generateUserId();
+            this.orderId = this.generateOrderId();
 
             // DOM Elements
             this.elements = {};
@@ -54,10 +54,51 @@
                     duration: 300
                 },
                 // Only show popup on homepage by default
-                autoShow: window.location.pathname === '/' || window.location.pathname === '/home'
+                autoShow: window.location.pathname === '/' || window.location.pathname === '/',
+
+                // URL Configuration
+                url: {
+                    updateEnabled: true,
+                    paramName: 'order_type',
+                    deliveryValue: 'delivery',
+                    pickupValue: 'pickup'
+                }
             };
 
             console.log('📱 OrderMethodSelector: Instance created');
+        }
+
+        /**
+         * Generate unique user ID (persists across sessions)
+         */
+        generateUserId() {
+            let userId = sessionStorage.getItem('orderMethodUserId');
+            if (!userId) {
+                userId = 'USER_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+                sessionStorage.setItem('orderMethodUserId', userId);
+            }
+            return userId;
+        }
+
+        /**
+         * Generate unique order ID (changes per session)
+         */
+        generateOrderId() {
+            let orderId = sessionStorage.getItem('orderMethodOrderId');
+            if (!orderId) {
+                orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+                sessionStorage.setItem('orderMethodOrderId', orderId);
+            }
+            return orderId;
+        }
+
+        /**
+         * Reset order ID for new orders
+         */
+        resetOrderId() {
+            this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            sessionStorage.setItem('orderMethodOrderId', this.orderId);
+            return this.orderId;
         }
 
         /**
@@ -86,17 +127,79 @@
                 return;
             }
 
+            // Initialize URL handling
+            this.initializeUrlHandling();
+
             // Initialize components
             this.initializeToggleButtons();
             this.initializeLocationSelector();
             this.initializeSubmitButton();
             this.initializePopupControls();
 
-            // Set initial state
+            // Set initial state (this will also check URL)
             this.setInitialState();
 
             this.isInitialized = true;
             console.log('✅ OrderMethodSelector: Initialization complete');
+        }
+
+        /**
+         * Initialize URL handling
+         */
+        initializeUrlHandling() {
+            console.log('🔗 OrderMethodSelector: Initializing URL handling...');
+
+            // Listen for browser back/forward buttons
+            window.addEventListener('popstate', (event) => {
+                console.log('🔙 OrderMethodSelector: Popstate event detected');
+                this.handleUrlChange();
+            });
+
+            // Check initial URL state
+            this.handleUrlChange();
+        }
+
+        /**
+         * Handle URL changes (back/forward buttons)
+         */
+        handleUrlChange() {
+            if (!this.config.url.updateEnabled) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+
+            console.log('🔍 OrderMethodSelector: URL order type:', urlOrderType);
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                // Update current order type without triggering URL update again
+                this.switchOrderType(urlOrderType, false);
+            }
+        }
+
+        /**
+         * Update URL with current order type
+         */
+        updateUrl(orderType) {
+            if (!this.config.url.updateEnabled) {
+                console.log('🚫 OrderMethodSelector: URL updates disabled');
+                return;
+            }
+
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set(this.config.url.paramName, orderType);
+
+                // Update URL without page reload
+                window.history.pushState(
+                    { orderType: orderType },
+                    '',
+                    url.toString()
+                );
+
+                console.log('🔗 OrderMethodSelector: URL updated to:', url.toString());
+            } catch (error) {
+                console.error('❌ OrderMethodSelector: Failed to update URL:', error);
+            }
         }
 
         /**
@@ -206,8 +309,42 @@
         setInitialState() {
             console.log('🎯 OrderMethodSelector: Setting initial state...');
 
-            // Start with delivery selected
-            this.switchOrderType('delivery');
+            // Check URL first, then default to delivery
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+
+            let initialType = 'delivery';
+            let shouldUpdateUrl = true;
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                initialType = urlOrderType;
+                shouldUpdateUrl = false;
+                console.log('🔗 OrderMethodSelector: Using order type from URL:', initialType);
+            } else {
+                console.log('🔗 OrderMethodSelector: No URL parameter found, will set default delivery in URL');
+            }
+
+            // Start with the determined type and update URL if needed
+            this.switchOrderType(initialType, shouldUpdateUrl);
+
+            // Check if we have stored order method data
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                try {
+                    const orderData = JSON.parse(storedOrder);
+                    if (orderData.location) {
+                        this.selectedLocation = orderData.location;
+                        this.elements.dropdown.value = orderData.location;
+
+                        // Update location details if pickup
+                        if (orderData.type === 'pickup' && orderData.location) {
+                            this.updateLocationDetails(orderData.location);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse stored order data:', e);
+                }
+            }
 
             // Only auto-show popup if configured and not already shown
             if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
@@ -221,10 +358,15 @@
         /**
          * Switch between delivery and pickup modes
          */
-        switchOrderType(type) {
-            console.log(`🔄 OrderMethodSelector: Switching to ${type}`);
+        switchOrderType(type, updateUrl = true) {
+            console.log(`🔄 OrderMethodSelector: Switching to ${type}${updateUrl ? ' (with URL update)' : ' (without URL update)'}`);
 
             this.currentOrderType = type;
+
+            // Update URL if requested
+            if (updateUrl) {
+                this.updateUrl(type);
+            }
 
             // Update button states
             this.updateToggleButtons(type);
@@ -235,6 +377,27 @@
             } else {
                 this.setupPickupMode();
             }
+
+            // Dispatch custom event for other components
+            this.dispatchOrderTypeChangeEvent(type);
+        }
+
+        /**
+         * Dispatch custom event when order type changes
+         */
+        dispatchOrderTypeChangeEvent(orderType) {
+            const event = new CustomEvent('orderTypeChanged', {
+                detail: {
+                    orderType: orderType,
+                    timestamp: Date.now(),
+                    source: 'orderMethodSelector'
+                },
+                bubbles: true,
+                cancelable: true
+            });
+
+            document.dispatchEvent(event);
+            console.log('📡 OrderMethodSelector: Order type change event dispatched:', event.detail);
         }
 
         /**
@@ -486,10 +649,12 @@
                 return;
             }
 
-            // Store selection in session
+            // Store selection in session with user ID and order ID
             const orderData = {
                 type: this.currentOrderType,
                 location: this.selectedLocation,
+                userId: this.userId,
+                orderId: this.orderId,
                 timestamp: new Date().toISOString()
             };
 
@@ -565,10 +730,47 @@
         }
 
         /**
-         * Manual trigger for popup (for testing)
+         * Manual trigger for popup (for Order Mode link)
          */
         triggerPopup() {
+            // Reset order ID for new orders when reopening popup
+            this.resetOrderId();
             this.showPopup();
+        }
+
+        /**
+         * Get current URL parameters
+         */
+        getCurrentUrlParams() {
+            return new URLSearchParams(window.location.search);
+        }
+
+        /**
+         * Get order type from URL
+         */
+        getOrderTypeFromUrl() {
+            const params = this.getCurrentUrlParams();
+            return params.get(this.config.url.paramName);
+        }
+
+        /**
+         * Get current order type
+         */
+        getCurrentType() {
+            return this.currentOrderType;
+        }
+
+        /**
+         * Get stored order data
+         */
+        getStoredOrderData() {
+            try {
+                const storedData = sessionStorage.getItem('orderMethodSelected');
+                return storedData ? JSON.parse(storedData) : null;
+            } catch (e) {
+                console.error('Error parsing stored order data:', e);
+                return null;
+            }
         }
     }
 
