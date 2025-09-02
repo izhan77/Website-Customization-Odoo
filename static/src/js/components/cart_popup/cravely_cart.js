@@ -29,6 +29,9 @@ class CravelyCartManager {
         this.successNotificationTimer = null;
         this.cartPopupState = 'hidden'; // 'hidden', 'showing', 'visible', 'hiding'
 
+        // Storage management flags
+        this.isOrderCompleted = false;
+
         // Initialize the cart system
         this.init();
     }
@@ -49,16 +52,87 @@ class CravelyCartManager {
         }
     }
 
-    /**
-     * Setup all cart functionality
-     */
     setup() {
-        this.loadMenuProducts();
-        this.createCartElements();
-        this.bindAllEvents();
-        this.initializeQuantityControls();
-        console.log('✅ Cravely Cart Manager initialized successfully');
+    this.loadMenuProducts();
+    this.createCartElements();
+    this.bindAllEvents();
+    this.initializeQuantityControls();
+    this.loadCartFromStorage();
+
+    // Clear any lingering timers from previous page loads
+    this.clearAllTimers();
+
+    console.log('✅ Cravely Cart Manager initialized successfully');
+}
+
+    /**
+ * Load cart from sessionStorage
+ */
+loadCartFromStorage() {
+    try {
+        const storedCart = sessionStorage.getItem('cravely-cart-data');
+        if (storedCart) {
+            const cartData = JSON.parse(storedCart);
+            if (cartData && Array.isArray(cartData.items) && cartData.items.length > 0) {
+                this.cart = cartData.items;
+                this.updateCartTotals();
+                this.updateCartPopupDisplay();
+                this.updateCartSidebarContent();
+                this.updateCartSummary();
+                this.initializeQuantityControls();
+                if (this.cart.length > 0) {
+                    this.showCartPopupOnly();
+                }
+            }
+        }
+    } catch (error) {
+        this.clearCartStorage();
     }
+}
+
+/**
+ * Save cart to sessionStorage
+ */
+saveCartToStorage() {
+    try {
+        const cartData = {
+            items: this.cart,
+            total: this.cartTotal,
+            count: this.cartCount,
+            timestamp: Date.now()
+        };
+        sessionStorage.setItem('cravely-cart-data', JSON.stringify(cartData));
+    } catch (error) {
+        console.error('Failed to save cart:', error);
+    }
+}
+
+/**
+ * Clear cart storage
+ */
+clearCartStorage() {
+    sessionStorage.removeItem('cravely-cart-data');
+}
+
+/**
+ * Clear all timers to prevent conflicts
+ */
+clearAllTimers() {
+    if (this.successNotificationTimer) {
+        clearTimeout(this.successNotificationTimer);
+        this.successNotificationTimer = null;
+    }
+
+    // Hide any visible success notifications
+    const popup = document.getElementById('cravely-cart-view-popup');
+    const successNotification = popup?.querySelector('.cravely-success-notification');
+    if (successNotification) {
+        successNotification.style.display = 'none';
+    }
+
+    // Reset popup state
+    this.cartPopupState = 'hidden';
+}
 
     /**
      * Load all products from menu sections for dynamic functionality
@@ -549,6 +623,7 @@ class CravelyCartManager {
             this.updateCartPopupDisplay();
             this.updateCartSidebarContent();
             this.updateCartSummary();
+            this.saveCartToStorage();
 
             // Show cart popup but NO success notification for quantity changes
             this.showCartPopupOnly();
@@ -574,6 +649,7 @@ class CravelyCartManager {
                 this.updateCartPopupDisplay();
                 this.updateCartSidebarContent();
                 this.updateCartSummary();
+                this.saveCartToStorage();
 
                 // Show cart popup but NO success notification for quantity changes
                 this.showCartPopupOnly();
@@ -585,6 +661,7 @@ class CravelyCartManager {
                 this.updateCartPopupDisplay();
                 this.updateCartSidebarContent();
                 this.updateCartSummary();
+                this.saveCartToStorage();
                 this.updatePopularItems(); // Refresh popular items
 
                 if (this.cart.length === 0) {
@@ -612,6 +689,7 @@ class CravelyCartManager {
         this.updateCartTotals();
         this.updateCartPopupDisplay();
         this.updateCartSummary();
+        this.saveCartToStorage();
 
         console.log('🛒 Product added to Cravely cart:', productData);
     }
@@ -664,12 +742,17 @@ class CravelyCartManager {
      */
     showCartPopupOnly() {
         const popup = document.getElementById('cravely-cart-view-popup');
-        if (!popup) return;
+    if (!popup) return;
+
+    // Don't show cart popup on checkout page
+    if (window.location.pathname.includes('/checkout')) {
+        return;
+    }
 
         // Skip if already visible or showing
-        if (this.cartPopupState === 'visible' || this.cartPopupState === 'showing') {
-            return;
-        }
+    if (this.cartPopupState === 'visible' || this.cartPopupState === 'showing') {
+        return;
+    }
 
         this.cartPopupState = 'showing';
 
@@ -691,6 +774,11 @@ class CravelyCartManager {
         const successNotification = popup?.querySelector('.cravely-success-notification');
 
         if (!popup || !successNotification) return;
+
+        // Don't show success notification on checkout page
+    if (window.location.pathname.includes('/checkout')) {
+        return;
+    }
 
         // Clear any existing timer to prevent conflicts
         if (this.successNotificationTimer) {
@@ -978,6 +1066,7 @@ buildCheckoutUrl(orderType) {
 
             if (this.cart.length === 0) {
                 this.hideCartPopup();
+                this.saveCartToStorage();
             }
         }, 300);
     }
@@ -998,12 +1087,14 @@ buildCheckoutUrl(orderType) {
             this.updateCartSidebarContent();
             this.updateCartPopupDisplay();
             this.updateCartSummary();
+            this.saveCartToStorage();
 
             // Update product card quantity display
             const productCard = document.querySelector(`[data-product-id="${productId}"]`);
             if (productCard) {
                 this.updateQuantityDisplay(productCard, cartProduct.quantity);
             }
+            this.saveCartToStorage();
         }
     }
 
@@ -1026,12 +1117,14 @@ buildCheckoutUrl(orderType) {
                 this.updateCartSidebarContent();
                 this.updateCartPopupDisplay();
                 this.updateCartSummary();
+                this.saveCartToStorage();
 
                 // Update product card quantity display
                 const productCard = document.querySelector(`[data-product-id="${productId}"]`);
                 if (productCard) {
                     this.updateQuantityDisplay(productCard, cartProduct.quantity);
                 }
+                this.saveCartToStorage();
             } else {
                 // Remove item from cart
                 this.cart.splice(cartProductIndex, 1);
@@ -1039,6 +1132,7 @@ buildCheckoutUrl(orderType) {
                 this.updateCartSidebarContent();
                 this.updateCartPopupDisplay();
                 this.updateCartSummary();
+                this.saveCartToStorage();
                 this.updatePopularItems(); // Refresh popular items
 
                 // Reset product card to add to cart button
@@ -1050,6 +1144,7 @@ buildCheckoutUrl(orderType) {
                 if (this.cart.length === 0) {
                     this.hideCartPopup();
                 }
+                this.saveCartToStorage();
             }
         }
     }
@@ -1167,12 +1262,39 @@ buildCheckoutUrl(orderType) {
             });
         }
     }
+
+    /**
+ * Clear entire cart
+ */
+clearCartCompletely() {
+    this.cart = [];
+    this.cartTotal = 0;
+    this.cartCount = 0;
+    this.clearCartStorage();
+    this.updateCartPopupDisplay();
+    this.updateCartSidebarContent();
+    this.updateCartSummary();
+    this.hideCartPopup();
+
+    // Reset all product cards
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        this.showAddToCartButton(card);
+    });
+}
 }
 
 // Initialize Cravely cart manager when DOM is ready - with namespace
 document.addEventListener('DOMContentLoaded', function() {
     if (!window.cravelyCartManager) {
         window.cravelyCartManager = new CravelyCartManager();
+    }
+});
+
+// Clean up when leaving page
+window.addEventListener('beforeunload', () => {
+    if (window.cravelyCartManager && window.cravelyCartManager.successNotificationTimer) {
+        clearTimeout(window.cravelyCartManager.successNotificationTimer);
     }
 });
 

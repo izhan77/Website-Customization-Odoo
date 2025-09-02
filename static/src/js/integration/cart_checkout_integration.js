@@ -359,6 +359,29 @@ class CartCheckoutIntegration {
                 }
             };
         }
+
+        // Listen for order completion from checkout
+        document.addEventListener('orderCompleted', (e) => {
+    if (this.cartManager) {
+        this.cartManager.clearCartCompletely();
+        console.log('Cart cleared after successful order');
+    }
+});
+
+        // Listen for browse menu button specifically
+        document.addEventListener('click', (e) => {
+    if (e.target.id === 'view-menu-btn' || e.target.closest('#view-menu-btn')) {
+        console.log('Browse menu button clicked - clearing cart');
+        if (this.cartManager) {
+            this.cartManager.clearCartCompletely();
+        }
+
+        // Generate new order ID
+        if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+            window.orderMethodSelector.generateNewOrderId();
+        }
+    }
+});
     }
 
     showNotice(message, duration = 3000) {
@@ -444,4 +467,3 @@ document.addEventListener('DOMContentLoaded', function() {
 if (document.readyState !== 'loading' && !window.cartCheckoutIntegration) {
     window.cartCheckoutIntegration = new CartCheckoutIntegration();
 }
-

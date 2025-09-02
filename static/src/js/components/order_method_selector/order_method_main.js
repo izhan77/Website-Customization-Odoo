@@ -36,8 +36,9 @@
             this.currentOrderType = 'delivery';
             this.selectedLocation = null;
             this.isInitialized = false;
-            this.userId = this.generateUserId();
-            this.orderId = this.generateOrderId();
+            this.userId = this.getOrCreateUserId();
+            this.orderId = this.getOrCreateOrderId();
+            this.cleanupOldStorage();
 
             // DOM Elements
             this.elements = {};
@@ -54,7 +55,7 @@
                     duration: 300
                 },
                 // Only show popup on homepage by default
-                autoShow: window.location.pathname === '/' || window.location.pathname === '/',
+                autoShow: true,
 
                 // URL Configuration
                 url: {
@@ -69,28 +70,37 @@
         }
 
         /**
-         * Generate unique user ID (persists across sessions)
-         */
-        generateUserId() {
-            let userId = sessionStorage.getItem('orderMethodUserId');
-            if (!userId) {
-                userId = 'USER_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-                sessionStorage.setItem('orderMethodUserId', userId);
-            }
-            return userId;
-        }
+ * Get or create User ID from localStorage (persistent)
+ */
+getOrCreateUserId() {
+    let userId = localStorage.getItem('orderMethodUserId');
+    if (!userId) {
+        userId = 'USER_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        localStorage.setItem('orderMethodUserId', userId);
+    }
+    return userId;
+}
 
         /**
-         * Generate unique order ID (changes per session)
-         */
-        generateOrderId() {
-            let orderId = sessionStorage.getItem('orderMethodOrderId');
-            if (!orderId) {
-                orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-                sessionStorage.setItem('orderMethodOrderId', orderId);
-            }
-            return orderId;
-        }
+ * Get or create Order ID from sessionStorage (per session)
+ */
+getOrCreateOrderId() {
+    let orderId = sessionStorage.getItem('orderMethodOrderId');
+    if (!orderId) {
+        orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        sessionStorage.setItem('orderMethodOrderId', orderId);
+    }
+    return orderId;
+}
+
+/**
+ * Generate new Order ID for new orders
+ */
+generateNewOrderId() {
+    this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    sessionStorage.setItem('orderMethodOrderId', this.orderId);
+    return this.orderId;
+}
 
         /**
          * Reset order ID for new orders
@@ -100,6 +110,49 @@
             sessionStorage.setItem('orderMethodOrderId', this.orderId);
             return this.orderId;
         }
+
+        /**
+ * Check if popup should show
+ */
+shouldShowPopup() {
+    const isHomepage = window.location.pathname === '/' || window.location.pathname === '';
+    if (!isHomepage) return false;
+
+    const storedOrder = sessionStorage.getItem('orderMethodSelected');
+    if (storedOrder) {
+        try {
+            const orderData = JSON.parse(storedOrder);
+            if (orderData.orderId === this.orderId && orderData.type && orderData.location) {
+                return false;
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored order data:', e);
+        }
+    }
+    return true;
+}
+
+        /**
+ * Clean up old storage items
+ */
+cleanupOldStorage() {
+    // Remove old storage keys that shouldn't exist
+    const oldKeys = [
+        'cravelyOrderId',
+        'cravelyUserId',
+        'lastOrder',
+        'current_action',
+        'menu_id'
+    ];
+
+    oldKeys.forEach(key => {
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
+    });
+
+    console.log('🧹 Cleaned up old storage items');
+}
+
 
         /**
          * Initialize the order method selector
@@ -346,13 +399,12 @@
                 }
             }
 
-            // Only auto-show popup if configured and not already shown
-            if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
-                // Show popup with slight delay to ensure page is loaded
-                setTimeout(() => {
-                    this.showPopup();
-                }, 1000);
-            }
+            // Only auto-show popup if configured and should show
+if (this.config.autoShow && this.shouldShowPopup()) {
+    setTimeout(() => {
+        this.showPopup();
+    }, 1500);
+}
         }
 
         /**

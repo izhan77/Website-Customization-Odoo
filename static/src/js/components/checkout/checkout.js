@@ -1071,6 +1071,12 @@ async submitOrderToOdoo(orderData) {
         document.body.style.overflow = 'hidden';
 
         console.log('Order confirmation displayed for Odoo order:', this.orderData.salesOrderId);
+
+        // Dispatch order completion event
+const orderCompletedEvent = new CustomEvent('orderCompleted', {
+    detail: { orderData: this.orderData }
+});
+document.dispatchEvent(orderCompletedEvent);
     }
 
     /**
@@ -1114,17 +1120,26 @@ getPaymentMethodDisplayText() {
         return `${timeString} (35-45 minutes)`;
     }
 
-    /**
-     * Handle view menu button click
-     */
     redirectToMenu() {
-        this.hideOrderConfirmation();
+    this.hideOrderConfirmation();
 
-        // Redirect to homepage or menu section
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 500);
+    // Clear cart completely
+    if (window.cravelyCartManager) {
+        window.cravelyCartManager.clearCartCompletely();
     }
+
+    // Generate new order ID
+    if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+        window.orderMethodSelector.generateNewOrderId();
+    }
+
+    // Clear checkout storage
+    sessionStorage.removeItem('checkoutCart');
+
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 500);
+}
 
     /**
      * Handle track order button click
@@ -1290,4 +1305,3 @@ if (document.readyState !== 'loading' && document.querySelector('.checkout-page-
         window.checkoutManager = new CheckoutManager();
     }
 }
-
