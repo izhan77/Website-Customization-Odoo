@@ -2,7 +2,7 @@
  * Order Method Selector Main Controller - Frontend Only
  * File: static/src/js/components/order_method_selector/order_method_main.js
  * Purpose: Main controller that coordinates all order method selector components
- * FIXED: Only initializes on frontend pages, not backend
+ * UPDATED: Added URL updating functionality when toggling order types
  */
 
 (function() {
@@ -54,7 +54,15 @@
                     duration: 300
                 },
                 // Only show popup on homepage by default
-                autoShow: window.location.pathname === '/' || window.location.pathname === '/home'
+                autoShow: window.location.pathname === '/' || window.location.pathname === '/home',
+                
+                // URL Configuration
+                url: {
+                    updateEnabled: true,
+                    paramName: 'order_type', // URL parameter name
+                    deliveryValue: 'delivery',
+                    pickupValue: 'pickup'
+                }
             };
 
             console.log('📱 OrderMethodSelector: Instance created');
@@ -86,17 +94,80 @@
                 return;
             }
 
+            // Initialize URL handling
+            this.initializeUrlHandling();
+
             // Initialize components
             this.initializeToggleButtons();
             this.initializeLocationSelector();
             this.initializeSubmitButton();
             this.initializePopupControls();
 
-            // Set initial state
+            // Set initial state (this will also check URL)
             this.setInitialState();
 
             this.isInitialized = true;
             console.log('✅ OrderMethodSelector: Initialization complete');
+        }
+
+        /**
+         * Initialize URL handling
+         */
+        initializeUrlHandling() {
+            console.log('🔗 OrderMethodSelector: Initializing URL handling...');
+
+            // Listen for browser back/forward buttons
+            window.addEventListener('popstate', (event) => {
+                console.log('🔙 OrderMethodSelector: Popstate event detected');
+                this.handleUrlChange();
+            });
+
+            // Check initial URL state
+            this.handleUrlChange();
+        }
+
+        /**
+         * Handle URL changes (back/forward buttons)
+         */
+        handleUrlChange() {
+            if (!this.config.url.updateEnabled) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+
+            console.log('🔍 OrderMethodSelector: URL order type:', urlOrderType);
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                // Update current order type without triggering URL update again
+                this.switchOrderType(urlOrderType, false);
+            }
+        }
+
+        /**
+         * Update URL with current order type
+         * @param {string} orderType - The order type to set in URL
+         */
+        updateUrl(orderType) {
+            if (!this.config.url.updateEnabled) {
+                console.log('🚫 OrderMethodSelector: URL updates disabled');
+                return;
+            }
+
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set(this.config.url.paramName, orderType);
+                
+                // Update URL without page reload
+                window.history.pushState(
+                    { orderType: orderType }, 
+                    '', 
+                    url.toString()
+                );
+
+                console.log('🔗 OrderMethodSelector: URL updated to:', url.toString());
+            } catch (error) {
+                console.error('❌ OrderMethodSelector: Failed to update URL:', error);
+            }
         }
 
         /**
@@ -206,8 +277,24 @@
         setInitialState() {
             console.log('🎯 OrderMethodSelector: Setting initial state...');
 
-            // Start with delivery selected
-            this.switchOrderType('delivery');
+            // Check URL first, then default to delivery
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+            
+            let initialType = 'delivery';
+            let shouldUpdateUrl = true;
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                initialType = urlOrderType;
+                shouldUpdateUrl = false; // Don't update URL if we're reading from it
+                console.log('🔗 OrderMethodSelector: Using order type from URL:', initialType);
+            } else {
+                // No URL parameter exists, so we should set it for the default delivery
+                console.log('🔗 OrderMethodSelector: No URL parameter found, will set default delivery in URL');
+            }
+
+            // Start with the determined type and update URL if needed
+            this.switchOrderType(initialType, shouldUpdateUrl);
 
             // Only auto-show popup if configured and not already shown
             if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
@@ -220,11 +307,18 @@
 
         /**
          * Switch between delivery and pickup modes
+         * @param {string} type - 'delivery' or 'pickup'
+         * @param {boolean} updateUrl - Whether to update the URL (default: true)
          */
-        switchOrderType(type) {
-            console.log(`🔄 OrderMethodSelector: Switching to ${type}`);
+        switchOrderType(type, updateUrl = true) {
+            console.log(`🔄 OrderMethodSelector: Switching to ${type}${updateUrl ? ' (with URL update)' : ' (without URL update)'}`);
 
             this.currentOrderType = type;
+
+            // Update URL if requested
+            if (updateUrl) {
+                this.updateUrl(type);
+            }
 
             // Update button states
             this.updateToggleButtons(type);
@@ -235,6 +329,28 @@
             } else {
                 this.setupPickupMode();
             }
+
+            // Dispatch custom event for other components
+            this.dispatchOrderTypeChangeEvent(type);
+        }
+
+        /**
+         * Dispatch custom event when order type changes
+         * @param {string} orderType - The new order type
+         */
+        dispatchOrderTypeChangeEvent(orderType) {
+            const event = new CustomEvent('orderTypeChanged', {
+                detail: {
+                    orderType: orderType,
+                    timestamp: Date.now(),
+                    source: 'orderMethodSelector'
+                },
+                bubbles: true,
+                cancelable: true
+            });
+
+            document.dispatchEvent(event);
+            console.log('📡 OrderMethodSelector: Order type change event dispatched:', event.detail);
         }
 
         /**
@@ -569,6 +685,21 @@
          */
         triggerPopup() {
             this.showPopup();
+        }
+
+        /**
+         * Get current URL parameters
+         */
+        getCurrentUrlParams() {
+            return new URLSearchParams(window.location.search);
+        }
+
+        /**
+         * Get order type from URL
+         */
+        getOrderTypeFromUrl() {
+            const params = this.getCurrentUrlParams();
+            return params.get(this.config.url.paramName);
         }
     }
 

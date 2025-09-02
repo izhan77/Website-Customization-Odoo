@@ -1,6 +1,7 @@
 /**
  * ================================= CHECKOUT PAGE JAVASCRIPT =================================
  * Complete checkout functionality with form validation, payment handling, and order processing
+ * UPDATED: Added order type detection and conditional field display
  * File: /website_customizations/static/src/js/components/checkout/checkout.js
  */
 
@@ -13,6 +14,10 @@ class CheckoutManager {
         this.formValid = false;
         this.deliveryFee = 200;
         this.taxRate = 0.15;
+        
+        // Order type detection
+        this.orderType = 'delivery'; // default
+        this.isDeliveryOrder = true;
 
         // Initialize when DOM is ready
         this.init();
@@ -37,13 +42,152 @@ class CheckoutManager {
      * Setup all checkout functionality
      */
     setup() {
+        this.detectOrderType();
         this.loadCartData();
         this.populateOrderSummary();
+        this.setupOrderTypeUI();
         this.bindEventListeners();
         this.initializeFormValidation();
         this.setupPaymentToggle();
         this.setupCardFormatting();
         console.log('✅ Checkout Manager initialized successfully');
+    }
+
+    /**
+     * Detect order type from URL parameters
+     */
+    detectOrderType() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderTypeParam = urlParams.get('order_type');
+        
+        if (orderTypeParam) {
+            this.orderType = orderTypeParam;
+            this.isDeliveryOrder = orderTypeParam === 'delivery';
+        } else {
+            // Check if order method selector has stored data
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                try {
+                    const parsedData = JSON.parse(storedOrderData);
+                    this.orderType = parsedData.type || 'delivery';
+                    this.isDeliveryOrder = this.orderType === 'delivery';
+                } catch (e) {
+                    console.warn('Failed to parse stored order data:', e);
+                }
+            }
+        }
+
+        console.log('🎯 Order type detected:', this.orderType);
+        console.log('🚚 Is delivery order:', this.isDeliveryOrder);
+    }
+
+    /**
+     * Setup UI based on order type
+     */
+    setupOrderTypeUI() {
+        console.log('🎨 Setting up UI for order type:', this.orderType);
+
+        // Hide/show address fields based on order type
+        this.toggleAddressFields();
+        
+        // Update payment method text
+        this.updatePaymentMethodText();
+        
+        // Update delivery fee based on order type
+        this.updateDeliveryFee();
+    }
+
+    /**
+     * Toggle address fields visibility based on order type
+     */
+    toggleAddressFields() {
+        const fieldsToHide = [
+            'customer-country',
+            'customer-state', 
+            'customer-zipcode',
+            'customer-address'
+        ];
+
+        fieldsToHide.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const formGroup = field?.closest('.form-group');
+            const formRow = field?.closest('.form-row');
+            
+            if (!this.isDeliveryOrder) {
+                // Hide field and its container
+                if (formGroup) {
+                    formGroup.style.display = 'none';
+                    // Remove required attribute for pickup orders
+                    if (field) {
+                        field.removeAttribute('required');
+                    }
+                }
+                
+                // Hide entire form row if all fields in it are hidden
+                if (formRow) {
+                    const visibleFields = Array.from(formRow.querySelectorAll('.form-group'))
+                        .filter(group => group.style.display !== 'none');
+                    
+                    if (visibleFields.length === 0) {
+                        formRow.style.display = 'none';
+                    }
+                }
+            } else {
+                // Show field for delivery orders
+                if (formGroup) {
+                    formGroup.style.display = '';
+                    // Add back required attribute for delivery orders
+                    if (field) {
+                        field.setAttribute('required', 'required');
+                    }
+                }
+                
+                if (formRow) {
+                    formRow.style.display = '';
+                }
+            }
+        });
+
+        // Update section titles and descriptions
+        const customerInfoSection = document.querySelector('.customer-info-section .section-title');
+        if (customerInfoSection) {
+            customerInfoSection.textContent = this.isDeliveryOrder 
+                ? 'Customer Information' 
+                : 'Customer Information';
+        }
+
+        console.log(`${this.isDeliveryOrder ? '🚚' : '🏪'} Address fields ${this.isDeliveryOrder ? 'shown' : 'hidden'}`);
+    }
+
+    /**
+     * Update payment method text based on order type
+     */
+    updatePaymentMethodText() {
+        const cashPaymentLabel = document.querySelector('label[for="payment-cash"] .payment-text');
+        if (cashPaymentLabel) {
+            cashPaymentLabel.textContent = this.isDeliveryOrder 
+                ? 'Cash on Delivery' 
+                : 'Pay with Cash on Counter';
+        }
+
+        console.log(`💳 Payment text updated to: ${this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter'}`);
+    }
+
+    /**
+     * Update delivery fee based on order type
+     */
+    updateDeliveryFee() {
+        if (!this.isDeliveryOrder) {
+            this.deliveryFee = 0; // No delivery fee for pickup orders
+            
+            // Update the UI label
+            const shippingLabel = document.querySelector('.summary-row .summary-label');
+            if (shippingLabel && shippingLabel.textContent.includes('Shipping')) {
+                shippingLabel.textContent = 'Service Fee';
+            }
+        }
+
+        console.log(`💰 ${this.isDeliveryOrder ? 'Delivery' : 'Service'} fee set to: Rs. ${this.deliveryFee}`);
     }
 
     /**
@@ -56,6 +200,7 @@ class CheckoutManager {
             if (storedCart) {
                 this.cartData = JSON.parse(storedCart);
                 console.log('📦 Cart data loaded from storage:', this.cartData);
+                this.recalculateTotals();
                 return;
             }
 
@@ -67,13 +212,14 @@ class CheckoutManager {
                     subtotal: cartInfo.total,
                     tax: Math.round(cartInfo.total * this.taxRate),
                     deliveryFee: this.deliveryFee,
-                    grandTotal: cartInfo.grandTotal
+                    grandTotal: cartInfo.total + Math.round(cartInfo.total * this.taxRate) + this.deliveryFee
                 };
                 console.log('📦 Cart data loaded from cartManager:', this.cartData);
                 return;
             }
 
             // Final fallback: Demo data
+            const demoSubtotal = 2549;
             this.cartData = {
                 items: [
                     {
@@ -91,17 +237,40 @@ class CheckoutManager {
                         image: '/website_customizations/static/src/images/product_1.jpg'
                     }
                 ],
-                subtotal: 2549,
-                tax: Math.round(2549 * this.taxRate),
+                subtotal: demoSubtotal,
+                tax: Math.round(demoSubtotal * this.taxRate),
                 deliveryFee: this.deliveryFee,
-                grandTotal: 2549 + Math.round(2549 * this.taxRate) + this.deliveryFee
+                grandTotal: demoSubtotal + Math.round(demoSubtotal * this.taxRate) + this.deliveryFee
             };
             console.log('📦 Using demo cart data:', this.cartData);
 
         } catch (error) {
             console.error('Error loading cart data:', error);
-            this.cartData = { items: [], subtotal: 0, tax: 0, deliveryFee: this.deliveryFee, grandTotal: this.deliveryFee };
+            this.cartData = { 
+                items: [], 
+                subtotal: 0, 
+                tax: 0, 
+                deliveryFee: this.deliveryFee, 
+                grandTotal: this.deliveryFee 
+            };
         }
+    }
+
+    /**
+     * Recalculate totals based on order type
+     */
+    recalculateTotals() {
+        if (!this.cartData) return;
+
+        this.cartData.deliveryFee = this.deliveryFee;
+        this.cartData.grandTotal = this.cartData.subtotal + this.cartData.tax + this.deliveryFee;
+        
+        console.log('🔢 Totals recalculated:', {
+            subtotal: this.cartData.subtotal,
+            tax: this.cartData.tax,
+            deliveryFee: this.cartData.deliveryFee,
+            grandTotal: this.cartData.grandTotal
+        });
     }
 
     /**
@@ -139,6 +308,12 @@ class CheckoutManager {
         document.getElementById('checkout-shipping').textContent = `Rs. ${this.cartData.deliveryFee}`;
         document.getElementById('checkout-tax').textContent = `Rs. ${this.cartData.tax}`;
         document.getElementById('checkout-final-total').textContent = `Rs. ${this.cartData.grandTotal}`;
+
+        // Update shipping label based on order type
+        const shippingLabelElement = document.querySelector('.summary-row .summary-label');
+        if (shippingLabelElement && shippingLabelElement.textContent.includes('Shipping')) {
+            shippingLabelElement.textContent = this.isDeliveryOrder ? 'Shipping' : 'Service Fee';
+        }
     }
 
     /**
@@ -341,8 +516,8 @@ class CheckoutManager {
         // Remove existing error
         this.clearFieldError(field);
 
-        // Skip validation if field is not required
-        if (!field.hasAttribute('required') && !value) {
+        // Skip validation if field is not required or hidden
+        if (!field.hasAttribute('required') || field.closest('.form-group')?.style.display === 'none') {
             return true;
         }
 
@@ -455,6 +630,11 @@ class CheckoutManager {
         const requiredFields = form.querySelectorAll('[required]');
 
         requiredFields.forEach(field => {
+            // Skip hidden fields
+            if (field.closest('.form-group')?.style.display === 'none') {
+                return;
+            }
+            
             if (!this.validateField(field)) {
                 allValid = false;
             }
@@ -519,10 +699,18 @@ class CheckoutManager {
             customerName: document.getElementById('customer-name')?.value?.trim(),
             customerPhone: document.getElementById('customer-phone')?.value?.trim(),
             customerEmail: document.getElementById('customer-email')?.value?.trim(),
-            customerCountry: document.getElementById('customer-country')?.value,
-            customerState: document.getElementById('customer-state')?.value,
-            customerZipcode: document.getElementById('customer-zipcode')?.value?.trim(),
-            customerAddress: document.getElementById('customer-address')?.value?.trim(),
+
+            // Order type information
+            orderType: this.orderType,
+            isDeliveryOrder: this.isDeliveryOrder,
+
+            // Conditional address fields (only for delivery)
+            ...(this.isDeliveryOrder && {
+                customerCountry: document.getElementById('customer-country')?.value,
+                customerState: document.getElementById('customer-state')?.value,
+                customerZipcode: document.getElementById('customer-zipcode')?.value?.trim(),
+                customerAddress: document.getElementById('customer-address')?.value?.trim(),
+            }),
 
             // Payment information
             paymentMethod: this.paymentMethod,
@@ -611,11 +799,10 @@ class CheckoutManager {
         // Populate confirmation details
         document.getElementById('confirmation-order-id').textContent = this.orderData.orderId;
         document.getElementById('confirmation-total').textContent = `Rs. ${this.orderData.grandTotal}`;
-        document.getElementById('confirmation-payment').textContent =
-            this.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Online Payment';
+        document.getElementById('confirmation-payment').textContent = this.getPaymentMethodDisplayText();
 
-        // Calculate estimated delivery time
-        const estimatedTime = this.calculateDeliveryTime();
+        // Calculate estimated delivery/pickup time
+        const estimatedTime = this.calculateEstimatedTime();
         document.getElementById('confirmation-delivery').textContent = estimatedTime;
 
         // Show modal with animation
@@ -628,6 +815,16 @@ class CheckoutManager {
         document.body.style.overflow = 'hidden';
 
         console.log('Order confirmation displayed');
+    }
+
+    /**
+     * Get payment method display text
+     */
+    getPaymentMethodDisplayText() {
+        if (this.paymentMethod === 'cash') {
+            return this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter';
+        }
+        return 'Online Payment';
     }
 
     /**
@@ -647,18 +844,22 @@ class CheckoutManager {
     }
 
     /**
-     * Calculate estimated delivery time
+     * Calculate estimated delivery/pickup time
      */
-    calculateDeliveryTime() {
+    calculateEstimatedTime() {
         const now = new Date();
-        const deliveryTime = new Date(now.getTime() + (35 * 60 * 1000)); // Add 35 minutes
+        const estimatedMinutes = this.isDeliveryOrder ? 35 : 15; // Pickup is faster
+        const estimatedTime = new Date(now.getTime() + (estimatedMinutes * 60 * 1000));
 
-        const timeString = deliveryTime.toLocaleTimeString([], {
+        const timeString = estimatedTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit'
         });
 
-        return `${timeString} (35-45 minutes)`;
+        const timeRange = this.isDeliveryOrder ? '35-45 minutes' : '15-20 minutes';
+        const action = this.isDeliveryOrder ? 'delivery' : 'pickup';
+
+        return `${timeString} (${timeRange} for ${action})`;
     }
 
     /**
@@ -680,7 +881,11 @@ class CheckoutManager {
         this.hideOrderConfirmation();
 
         // Show track order functionality
-        this.showNotification('Order tracking will be available soon! We will notify you via SMS.', 'success');
+        const trackMessage = this.isDeliveryOrder 
+            ? 'Order tracking will be available soon! We will notify you via SMS.'
+            : 'Your order is being prepared! We will notify you when it\'s ready for pickup.';
+            
+        this.showNotification(trackMessage, 'success');
 
         setTimeout(() => {
             window.location.href = '/';
@@ -742,6 +947,14 @@ class CheckoutManager {
         return this.orderData;
     }
 
+    getOrderType() {
+        return this.orderType;
+    }
+
+    isDelivery() {
+        return this.isDeliveryOrder;
+    }
+
     resetForm() {
         const form = document.getElementById('checkout-form');
         if (form) {
@@ -758,8 +971,6 @@ class CheckoutManager {
             field.classList.remove('success', 'error');
         });
     }
-
-
 }
 
 // Initialize checkout manager when DOM is ready
