@@ -61,8 +61,8 @@
                     src="/website_customizations/static/src/js/components/navbar/menu_popup.js"></script>
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/navbar/navbar_mobile.js"></script>
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/product_cards/dynamic_product_loader.js"></script>
+<!--            <script type="text/javascript"-->
+<!--                    src="/website_customizations/static/src/js/components/product_cards/dynamic_product_loader.js"></script>-->
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/product_popup/cravely_product_popup.js"></script>
             <script type="text/javascript"

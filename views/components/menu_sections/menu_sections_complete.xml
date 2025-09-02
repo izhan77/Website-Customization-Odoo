@@ -18,24 +18,24 @@
                 <!-- Product Grid Container -->
                 <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8">
                     <!-- Static products (will be hidden during loading) -->
-<!--                    <t t-call="website_customizations.single_product_card">-->
-<!--                        <t t-set="product_id" t-value="'rice-box-1'"/>-->
-<!--                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>-->
-<!--                        <t t-set="product_title" t-value="'Chicken Biryani Box'"/>-->
-<!--                        <t t-set="product_description" t-value="'Aromatic basmati rice with tender chicken pieces and traditional spices'"/>-->
-<!--                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>-->
-<!--                        <t t-set="product_discounted_price" t-value="'Rs. 950'"/>-->
-<!--                        <t t-set="product_category" t-value="'rice-box'"/>-->
-<!--                    </t>-->
-<!--                    <t t-call="website_customizations.single_product_card">-->
-<!--                        <t t-set="product_id" t-value="'rice-box-2'"/>-->
-<!--                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>-->
-<!--                        <t t-set="product_title" t-value="'Mutton Pulao Box'"/>-->
-<!--                        <t t-set="product_description" t-value="'Fragrant rice with succulent mutton pieces and aromatic spices'"/>-->
-<!--                        <t t-set="product_original_price" t-value="'Rs. 1500'"/>-->
-<!--                        <t t-set="product_discounted_price" t-value="'Rs. 1250'"/>-->
-<!--                        <t t-set="product_category" t-value="'rice-box'"/>-->
-<!--                    </t>-->
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'rice-box-1'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Chicken Biryani Box'"/>
+                        <t t-set="product_description" t-value="'Aromatic basmati rice with tender chicken pieces and traditional spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 950'"/>
+                        <t t-set="product_category" t-value="'rice-box'"/>
+                    </t>
+                    <t t-call="website_customizations.single_product_card">
+                        <t t-set="product_id" t-value="'rice-box-2'"/>
+                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                        <t t-set="product_title" t-value="'Mutton Pulao Box'"/>
+                        <t t-set="product_description" t-value="'Fragrant rice with succulent mutton pieces and aromatic spices'"/>
+                        <t t-set="product_original_price" t-value="'Rs. 1500'"/>
+                        <t t-set="product_discounted_price" t-value="'Rs. 1250'"/>
+                        <t t-set="product_category" t-value="'rice-box'"/>
+                    </t>
 
                     <!-- Skeleton loading will be inserted here by JavaScript -->
                 </div>
