@@ -112,6 +112,7 @@ hideCartElementsOnCheckout() {
     console.log('🛒 Cart elements hidden on checkout page');
 }
 
+
 /**
  * Setup province dropdown options
  */
@@ -1628,106 +1629,137 @@ validateForm() {
      * Enhanced error handling for place order
      */
     async handlePlaceOrder(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        console.log('📝 Processing order with Odoo integration...');
+    console.log('📝 Processing order with Odoo integration...');
 
-        // Test connection first
-        try {
-            await this.testConnection();
-        } catch (error) {
-            console.log('❌ Connection test failed, but continuing...');
-        }
-
-        // Validate form
-        if (!this.validateForm()) {
-            this.showNotification('Please fill in all required fields correctly', 'error');
-            return;
-        }
-
-        // Show loading state
-        this.setPlaceOrderLoading(true);
-
-        try {
-            // Collect form data
-            this.collectOrderData();
-
-            // Validate collected data
-            if (!this.orderData.items || this.orderData.items.length === 0) {
-                throw new Error('No items in cart. Please add items before checkout.');
-            }
-
-            // Send order to Odoo backend
-            console.log('🚀 Submitting order to Odoo...');
-            const result = await this.submitOrderToOdoo(this.orderData);
-
-            if (result && result.success) {
-                // Update order data with response
-                this.orderData.salesOrderId = result.sales_order_id;
-                this.orderData.orderId = result.order_id;
-
-                // Show success
-                this.showOrderConfirmation();
-
-                // Clear cart from session storage
-                sessionStorage.removeItem('checkoutCart');
-
-                console.log('🎉 Order created successfully in Odoo!');
-                console.log('📋 Order Details:', {
-                    orderId: result.order_id,
-                    salesOrderId: result.sales_order_id,
-                    customerId: result.customer_id,
-                    total: result.order_total,
-                    orderType: this.orderType
-                });
-
-                this.showNotification('Order placed successfully!', 'success');
-                return; // Exit successfully
-            } else {
-                throw new Error(result?.error || 'Failed to create order');
-            }
-
-        } catch (error) {
-            console.error('❌ Order processing error:', error);
-
-            // SPECIAL CASE: If error contains 'Unknown server error' but we see order data,
-            // the order might have been created successfully despite JavaScript parsing issues
-            if (error.message.includes('Unknown server error') ||
-                error.message.includes('Invalid server response')) {
-
-                console.log('⚠️ Possible parsing error, but order may have been created');
-                console.log('🔍 Check Sales → Quotations in Odoo to verify order creation');
-
-                // Show a different message
-                this.showNotification('Order may have been placed successfully. Please check Sales → Quotations to verify.', 'warning');
-
-            } else {
-                // Handle other errors normally
-                let errorMessage = 'Failed to process order.';
-
-                if (error.message.includes('HTTP 500')) {
-                    errorMessage = 'Server error. Please check server logs for details.';
-                } else if (error.message.includes('HTTP 404')) {
-                    errorMessage = 'Checkout endpoint not found. Please check your routes.';
-                } else if (error.message.includes('Connection')) {
-                    errorMessage = 'Connection error. Please check your internet connection.';
-                } else {
-                    errorMessage = error.message || 'Unknown error occurred.';
-                }
-
-                this.showNotification(errorMessage, 'error');
-            }
-
-            // Also show in console for debugging
-            console.log('📊 Debug Info:');
-            console.log('- Order Data:', this.orderData);
-            console.log('- Error:', error);
-            console.log('- Error Stack:', error.stack);
-
-        } finally {
-            this.setPlaceOrderLoading(false);
-        }
+    // Test connection first
+    try {
+        await this.testConnection();
+    } catch (error) {
+        console.log('❌ Connection test failed, but continuing...');
     }
+
+    // Validate form
+    if (!this.validateForm()) {
+        this.showNotification('Please fill in all required fields correctly', 'error');
+        return;
+    }
+
+    // Show loading state
+    this.setPlaceOrderLoading(true);
+
+    try {
+        // FIRST: Get the next Odoo order ID BEFORE creating the order
+console.log('Getting ACTUAL next Odoo order ID that will be used...');
+const nextOrderIdResult = await this.getNextOdooOrderId();
+
+if (!nextOrderIdResult || !nextOrderIdResult.success) {
+    throw new Error('Failed to get next order ID from Odoo');
+}
+
+const nextOrderId = nextOrderIdResult.next_order_id;
+console.log('ACTUAL Odoo order ID obtained:', nextOrderId);
+
+// Update our internal order data immediately
+this.orderId = nextOrderId;
+
+        // Collect form data
+        this.collectOrderData();
+
+        // Validate collected data
+        if (!this.orderData.items || this.orderData.items.length === 0) {
+            throw new Error('No items in cart. Please add items before checkout.');
+        }
+
+        // Update order data with the Odoo order ID we just got
+        this.orderData.orderId = nextOrderId;
+
+        // Also update sessionStorage with the Odoo order ID
+        try {
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                const orderData = JSON.parse(storedOrder);
+                orderData.orderId = nextOrderId;
+                orderData.odooOrderId = nextOrderId;
+                sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
+                console.log('💾 Updated sessionStorage with Odoo order ID:', nextOrderId);
+            }
+        } catch (e) {
+            console.error('Failed to update sessionStorage:', e);
+        }
+
+        // Send order to Odoo backend
+        console.log('🚀 Submitting order to Odoo with ID:', nextOrderId);
+        const result = await this.submitOrderToOdoo(this.orderData);
+
+        if (result && result.success) {
+            // Update order data with response
+            this.orderData.salesOrderId = result.sales_order_id;
+            this.orderData.orderId = result.order_id;
+
+            // Show success
+            this.showOrderConfirmation();
+
+            // Clear cart from session storage
+            sessionStorage.removeItem('checkoutCart');
+
+            console.log('🎉 Order created successfully in Odoo!');
+            console.log('📋 Order Details:', {
+                orderId: result.order_id,
+                salesOrderId: result.sales_order_id,
+                customerId: result.customer_id,
+                total: result.order_total,
+                orderType: this.orderType
+            });
+
+            this.showNotification('Order placed successfully!', 'success');
+            return; // Exit successfully
+        } else {
+            throw new Error(result?.error || 'Failed to create order');
+        }
+
+    } catch (error) {
+        console.error('❌ Order processing error:', error);
+
+        // SPECIAL CASE: If error contains 'Unknown server error' but we see order data,
+        // the order might have been created successfully despite JavaScript parsing issues
+        if (error.message.includes('Unknown server error') ||
+            error.message.includes('Invalid server response')) {
+
+            console.log('⚠️ Possible parsing error, but order may have been created');
+            console.log('🔍 Check Sales → Quotations in Odoo to verify order creation');
+
+            // Show a different message
+            this.showNotification('Order may have been placed successfully. Please check Sales → Quotations to verify.', 'warning');
+
+        } else {
+            // Handle other errors normally
+            let errorMessage = 'Failed to process order.';
+
+            if (error.message.includes('HTTP 500')) {
+                errorMessage = 'Server error. Please check server logs for details.';
+            } else if (error.message.includes('HTTP 404')) {
+                errorMessage = 'Checkout endpoint not found. Please check your routes.';
+            } else if (error.message.includes('Connection')) {
+                errorMessage = 'Connection error. Please check your internet connection.';
+            } else {
+                errorMessage = error.message || 'Unknown error occurred.';
+            }
+
+            this.showNotification(errorMessage, 'error');
+        }
+
+        // Also show in console for debugging
+        console.log('📊 Debug Info:');
+        console.log('- Order Data:', this.orderData);
+        console.log('- Error:', error);
+        console.log('- Error Stack:', error.stack);
+
+    } finally {
+        this.setPlaceOrderLoading(false);
+    }
+}
 
     /**
  * Submit order to Odoo backend - FIXED FOR ODOO JSON-RPC
@@ -1787,9 +1819,34 @@ async submitOrderToOdoo(orderData) {
 
         // Check for success - this should catch your case
         if (actualResult && actualResult.success === true) {
-            console.log('🎉 Server confirmed success!', actualResult);
-            return actualResult;
+    console.log('🎉 Server confirmed success!', actualResult);
+
+    // Save Odoo-generated order ID to sessionStorage
+    if (actualResult.order_id) {
+        console.log('💾 Saving Odoo order ID to sessionStorage:', actualResult.order_id);
+
+        // Update our order data with Odoo's ID
+        this.orderData.orderId = actualResult.order_id;
+
+        // Update sessionStorage with Odoo's order ID
+        try {
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                const orderData = JSON.parse(storedOrder);
+                orderData.orderId = actualResult.order_id; // Replace with Odoo's ID
+                orderData.odooOrderId = actualResult.order_id; // Also store as separate field
+                orderData.salesOrderId = actualResult.sales_order_id; // Store sales order ID too
+                sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
+
+                console.log('✅ Updated sessionStorage with Odoo order ID:', actualResult.order_id);
+            }
+        } catch (e) {
+            console.error('❌ Failed to update sessionStorage with Odoo order ID:', e);
         }
+    }
+
+    return actualResult;
+}
 
         // If actualResult exists but success is not explicitly true, still return it
         if (actualResult) {
@@ -1912,25 +1969,94 @@ getPaymentMethodDisplayText() {
     /**
      * Hide order confirmation modal
      */
-    hideOrderConfirmation(redirectToHome = false) {
+async hideOrderConfirmation(redirectToHome = false) {
     const modal = document.getElementById('order-confirmation-modal');
     if (!modal) return;
 
     modal.classList.remove('show');
-    setTimeout(() => {
+    setTimeout(async () => {
         modal.classList.add('hidden');
 
-        // NEW: Redirect to homepage if requested
         if (redirectToHome) {
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 300);
+            // Clear cart
+            if (window.cravelyCartManager) {
+                window.cravelyCartManager.clearCartCompletely();
+            }
+
+            try {
+                // Get next REAL Odoo order ID
+                if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+                    const newOrderId = await window.orderMethodSelector.generateNewOrderId();
+                    console.log('Close button - New session will use Odoo order ID:', newOrderId);
+                }
+
+                sessionStorage.removeItem('checkoutCart');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 300);
+            } catch (error) {
+                console.error('Failed to get next order ID:', error);
+                sessionStorage.removeItem('checkoutCart');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 300);
+            }
         }
     }, 400);
 
-    // Restore body scroll
     document.body.style.overflow = '';
 }
+
+    /**
+ * Get the next order ID from Odoo's sequence
+ */
+
+async getNextOdooOrderId() {
+    try {
+        console.log('Getting ACTUAL next order ID from Odoo sequence...');
+
+        const response = await fetch('/checkout/get-next-order-id', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({})  // Empty JSON body for JSON-RPC
+});
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success && result.next_order_id) {
+            console.log('Got ACTUAL Odoo order ID:', result.next_order_id);
+
+            // IMPORTANT: Store this real Odoo ID in sessionStorage immediately
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                try {
+                    const orderData = JSON.parse(storedOrder);
+                    orderData.orderId = result.next_order_id;
+                    orderData.odooOrderId = result.next_order_id;
+                    sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
+                    console.log('Updated sessionStorage with REAL Odoo order ID:', result.next_order_id);
+                } catch (e) {
+                    console.error('Failed to update sessionStorage:', e);
+                }
+            }
+
+            return result;
+        } else {
+            throw new Error(result.error || 'Failed to get next order ID');
+        }
+    } catch (error) {
+        console.error('Error getting next order ID:', error);
+        throw error;
+    }
+}
+
+
     /**
      * Calculate estimated delivery time
      */
@@ -1946,7 +2072,7 @@ getPaymentMethodDisplayText() {
         return `${timeString} (35-45 minutes)`;
     }
 
-    redirectToMenu() {
+    async redirectToMenu() {
     this.hideOrderConfirmation();
 
     // Clear cart completely
@@ -1954,17 +2080,31 @@ getPaymentMethodDisplayText() {
         window.cravelyCartManager.clearCartCompletely();
     }
 
-    // Generate new order ID
-    if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
-        window.orderMethodSelector.generateNewOrderId();
+    try {
+        // Get next REAL Odoo order ID for new session
+        console.log('Getting next REAL Odoo order ID for new session...');
+
+        if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+            const newOrderId = await window.orderMethodSelector.generateNewOrderId();
+            console.log('New session will use Odoo order ID:', newOrderId);
+        }
+
+        // Clear checkout storage
+        sessionStorage.removeItem('checkoutCart');
+
+        // Redirect to homepage
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 500);
+
+    } catch (error) {
+        console.error('Failed to get next order ID:', error);
+        // Still redirect even if we can't get the next ID
+        sessionStorage.removeItem('checkoutCart');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 500);
     }
-
-    // Clear checkout storage
-    sessionStorage.removeItem('checkoutCart');
-
-    setTimeout(() => {
-        window.location.href = '/';
-    }, 500);
 }
 
     /**

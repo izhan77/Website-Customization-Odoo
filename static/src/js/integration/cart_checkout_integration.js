@@ -149,20 +149,22 @@ class CartCheckoutIntegration {
      * Get stored user ID and order ID from sessionStorage
      */
     getStoredOrderIds() {
-        try {
-            const storedOrder = sessionStorage.getItem('orderMethodSelected');
-            if (storedOrder) {
-                const orderData = JSON.parse(storedOrder);
-                return {
-                    userId: orderData.userId || null,
-                    orderId: orderData.orderId || null
-                };
-            }
-        } catch (e) {
-            console.warn('Failed to parse stored order IDs:', e);
+    try {
+        const storedOrder = sessionStorage.getItem('orderMethodSelected');
+        if (storedOrder) {
+            const orderData = JSON.parse(storedOrder);
+            return {
+                userId: orderData.userId || null,
+                orderId: orderData.orderId || null,
+                odooOrderId: orderData.odooOrderId || null,
+                salesOrderId: orderData.salesOrderId || null
+            };
         }
-        return { userId: null, orderId: null };
+    } catch (e) {
+        console.warn('Failed to parse stored order IDs:', e);
     }
+    return { userId: null, orderId: null, odooOrderId: null, salesOrderId: null };
+}
 
     connectCartToCheckout() {
         // Override the checkout handler in cart manager

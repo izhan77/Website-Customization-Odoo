@@ -517,3 +517,42 @@ class CheckoutController(http.Controller):
                 'success': False,
                 'error': str(e)
             }
+
+    @http.route('/checkout/get-next-order-id', type='http', auth='public', methods=['POST'], csrf=False)
+    def get_next_order_id(self, **kwargs):
+        """Get the ACTUAL next order ID that will be used - SIMPLE VERSION"""
+        try:
+            _logger.info("🔢 Getting ACTUAL next order ID from Odoo sequence...")
+
+            # Get the sequence
+            sequence = request.env['ir.sequence'].sudo().search([
+                ('code', '=', 'sale.order'),
+                ('active', '=', True)
+            ], limit=1)
+
+            if not sequence:
+                _logger.error("❌ Sales order sequence not found")
+                return request.make_json_response({
+                    'success': False,
+                    'error': 'Sales order sequence not found'
+                })
+
+            # SIMPLE: Just format the next number without incrementing
+            next_number = sequence.number_next_actual
+            next_order_id = f"S{str(next_number).zfill(5)}"
+
+            _logger.info(f"✅ Next order ID will be: {next_order_id}")
+
+            return request.make_json_response({
+                'success': True,
+                'next_order_id': next_order_id
+            })
+
+        except Exception as e:
+            _logger.error(f"❌ Error getting next order ID: {str(e)}")
+            return request.make_json_response({
+                'success': False,
+                'error': str(e)
+            })
+
+

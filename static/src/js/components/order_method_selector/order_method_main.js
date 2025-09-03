@@ -37,7 +37,7 @@
             this.selectedLocation = null;
             this.isInitialized = false;
             this.userId = this.getOrCreateUserId();
-            this.orderId = this.getOrCreateOrderId();
+            this.orderId = null;
             this.cleanupOldStorage();
 
             // DOM Elements
@@ -84,11 +84,46 @@ getOrCreateUserId() {
         /**
  * Get or create Order ID from sessionStorage (per session)
  */
-getOrCreateOrderId() {
+async getOrCreateOrderId() {
     let orderId = sessionStorage.getItem('orderMethodOrderId');
     if (!orderId) {
-        orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-        sessionStorage.setItem('orderMethodOrderId', orderId);
+        try {
+            console.log('🔢 Getting REAL Odoo order ID for new session...');
+
+            // Get next Odoo order ID immediately - no fallback
+            const response = await fetch('/checkout/get-next-order-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.next_order_id) {
+                    orderId = result.next_order_id;
+                    sessionStorage.setItem('orderMethodOrderId', orderId);
+                    console.log('✅ Got REAL Odoo order ID for new session:', orderId);
+                } else {
+                    throw new Error('Failed to get Odoo order ID: ' + (result.error || 'Unknown error'));
+                }
+            } else {
+                throw new Error(`Server error: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('❌ CRITICAL: Failed to get Odoo order ID on first visit:', error);
+            console.error('❌ This means new visitors will get random IDs instead of Odoo IDs');
+
+            // Show user-friendly error (optional)
+            console.warn('⚠️ Using temporary order ID - please refresh page if you experience issues');
+
+            // Still create a fallback, but make it clear it's temporary
+            orderId = 'TEMP_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            sessionStorage.setItem('orderMethodOrderId', orderId);
+
+            // You could also show a user notification here if needed
+        }
     }
     return orderId;
 }
@@ -96,20 +131,46 @@ getOrCreateOrderId() {
 /**
  * Generate new Order ID for new orders
  */
-generateNewOrderId() {
-    this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-    sessionStorage.setItem('orderMethodOrderId', this.orderId);
-    return this.orderId;
+async generateNewOrderId() {
+    try {
+        console.log('Getting next Odoo order ID...');
+
+        const response = await fetch('/checkout/get-next-order-id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.next_order_id) {
+                this.orderId = result.next_order_id;
+                sessionStorage.setItem('orderMethodOrderId', this.orderId);
+                console.log('Generated new Odoo order ID:', this.orderId);
+                return this.orderId;
+            }
+        }
+
+        throw new Error('Failed to get new order ID from Odoo');
+    } catch (error) {
+        console.error('Error generating new order ID:', error);
+        // Fallback
+        this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        sessionStorage.setItem('orderMethodOrderId', this.orderId);
+        return this.orderId;
+    }
 }
 
         /**
          * Reset order ID for new orders
          */
-        resetOrderId() {
-            this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-            sessionStorage.setItem('orderMethodOrderId', this.orderId);
-            return this.orderId;
-        }
+        async resetOrderId() {
+    console.log('Resetting order ID and getting new one from Odoo...');
+    sessionStorage.removeItem('orderMethodOrderId');
+    return await this.generateNewOrderId();
+}
 
         /**
  * Check if popup should show
@@ -157,44 +218,49 @@ cleanupOldStorage() {
         /**
          * Initialize the order method selector
          */
-        init() {
-            if (this.isInitialized) {
-                console.log('⚠️ OrderMethodSelector: Already initialized');
-                return;
-            }
+        async init() {
+    if (this.isInitialized) {
+        console.log('⚠️ OrderMethodSelector: Already initialized');
+        return;
+    }
 
-            // Double-check we're not on backend
-            if (isBackendPage()) {
-                console.log('🚫 OrderMethodSelector: Backend detected in init, aborting');
-                return;
-            }
+    // Double-check we're not on backend
+    if (isBackendPage()) {
+        console.log('🚫 OrderMethodSelector: Backend detected in init, aborting');
+        return;
+    }
 
-            console.log('🔧 OrderMethodSelector: Initializing...');
+    console.log('🔧 OrderMethodSelector: Initializing...');
 
-            // Cache DOM elements
-            this.cacheElements();
+    // Get order ID first from Odoo
+    if (!this.orderId) {
+        this.orderId = await this.getOrCreateOrderId();
+    }
 
-            // Check if required elements exist
-            if (!this.validateElements()) {
-                console.error('❌ OrderMethodSelector: Required elements not found');
-                return;
-            }
+    // Cache DOM elements
+    this.cacheElements();
 
-            // Initialize URL handling
-            this.initializeUrlHandling();
+    // Check if required elements exist
+    if (!this.validateElements()) {
+        console.error('❌ OrderMethodSelector: Required elements not found');
+        return;
+    }
 
-            // Initialize components
-            this.initializeToggleButtons();
-            this.initializeLocationSelector();
-            this.initializeSubmitButton();
-            this.initializePopupControls();
+    // Initialize URL handling
+    this.initializeUrlHandling();
 
-            // Set initial state (this will also check URL)
-            this.setInitialState();
+    // Initialize components
+    this.initializeToggleButtons();
+    this.initializeLocationSelector();
+    this.initializeSubmitButton();
+    this.initializePopupControls();
 
-            this.isInitialized = true;
-            console.log('✅ OrderMethodSelector: Initialization complete');
-        }
+    // Set initial state (this will also check URL)
+    this.setInitialState();
+
+    this.isInitialized = true;
+    console.log('✅ OrderMethodSelector: Initialization complete');
+}
 
         /**
          * Initialize URL handling
@@ -739,11 +805,12 @@ if (this.config.autoShow && this.shouldShowPopup()) {
     this.highlightDropdown(false);
 
     // Store selection in session with user ID and order ID
+    // NOTE: orderId will be updated later with Odoo's actual ID
     const orderData = {
         type: this.currentOrderType,
         location: this.selectedLocation,
         userId: this.userId,
-        orderId: this.orderId,
+        orderId: this.orderId, // This will be updated with Odoo's ID later
         timestamp: new Date().toISOString()
     };
 
@@ -910,22 +977,22 @@ if (this.config.autoShow && this.shouldShowPopup()) {
     /**
      * Initialize the order method selector - Frontend only
      */
-    function initializeOrderMethodSelector() {
-        // Triple check we're not on backend
-        if (isBackendPage()) {
-            console.log('🚫 OrderMethodSelector: Backend page, skipping initialization');
-            return;
-        }
-
-        console.log('🎬 OrderMethodSelector: Starting frontend initialization...');
-
-        if (window.orderMethodSelector) {
-            console.log('⚠️ OrderMethodSelector: Already exists, reinitializing...');
-        }
-
-        window.orderMethodSelector = new OrderMethodSelector();
-        window.orderMethodSelector.init();
+    async function initializeOrderMethodSelector() {
+    // Triple check we're not on backend
+    if (isBackendPage()) {
+        console.log('🚫 OrderMethodSelector: Backend page, skipping initialization');
+        return;
     }
+
+    console.log('🎬 OrderMethodSelector: Starting frontend initialization...');
+
+    if (window.orderMethodSelector) {
+        console.log('⚠️ OrderMethodSelector: Already exists, reinitializing...');
+    }
+
+    window.orderMethodSelector = new OrderMethodSelector();
+    await window.orderMethodSelector.init();
+}
 
     // Only initialize on frontend pages
     if (document.readyState === 'loading') {
@@ -935,11 +1002,11 @@ if (this.config.autoShow && this.shouldShowPopup()) {
     }
 
     // Fallback initialization (but check again)
-    setTimeout(() => {
-        if (!isBackendPage() && !window.orderMethodSelector?.isInitialized) {
-            initializeOrderMethodSelector();
-        }
-    }, 1000);
+    setTimeout(async () => {
+    if (!isBackendPage() && !window.orderMethodSelector?.isInitialized) {
+        await initializeOrderMethodSelector();
+    }
+}, 1000);
 
     console.log('📜 OrderMethodSelector: Main script loaded (frontend only)');
 

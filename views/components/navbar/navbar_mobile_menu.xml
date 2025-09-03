@@ -24,18 +24,12 @@
                             <span>Menu</span>
                         </a>
 
-                        <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/about">
-                            <span>About Us</span>
+                        <a  class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
+                           onclick="if (window.orderMethodSelector) { window.orderMethodSelector.triggerPopup(); } return false;">
+                            <span>Order Mode</span>
                         </a>
 
-                        <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/services">
-                            <span>Services</span>
-                        </a>
-
-                        <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
-                           href="/contactus">
+                        <a  class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2">
                             <span>Contact Us</span>
                         </a>
                     </div>
