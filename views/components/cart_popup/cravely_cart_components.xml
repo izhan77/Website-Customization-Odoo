@@ -114,13 +114,9 @@
                             <span class="cravely-summary-label">Tax (15%)</span>
                             <span class="cravely-summary-value" id="cravely-tax-amount">Rs. 0</span>
                         </div>
-                        <div class="cravely-summary-row">
-                            <span class="cravely-summary-label">Delivery Fee</span>
-                            <span class="cravely-summary-value">Rs. 200</span>
-                        </div>
                         <div class="cravely-summary-row cravely-total-row">
                             <span class="cravely-summary-label">Grand Total</span>
-                            <span class="cravely-summary-value" id="cravely-grand-total-amount">Rs. 200</span>
+                            <span class="cravely-summary-value" id="cravely-grand-total-amount">Rs. 0</span>
                         </div>
                     </div>
 
@@ -136,10 +132,10 @@
                     </div>
 
                     <!-- Delivery Info Section -->
-                    <div class="cravely-delivery-info" id="cravely-delivery-info">
-                        <p class="cravely-delivery-text">Sorry, we are closed right now but pre-orders can be placed.</p>
-                        <p class="cravely-delivery-text">Your order will be delivered approximately on <span class="cravely-delivery-date">August 31, 2025</span> at <span class="cravely-delivery-time">1:30 PM</span></p>
-                    </div>
+<!--                    <div class="cravely-delivery-info" id="cravely-delivery-info">-->
+<!--                        <p class="cravely-delivery-text">Sorry, we are closed right now but pre-orders can be placed.</p>-->
+<!--                        <p class="cravely-delivery-text">Your order will be delivered approximately on <span class="cravely-delivery-date">August 31, 2025</span> at <span class="cravely-delivery-time">1:30 PM</span></p>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>

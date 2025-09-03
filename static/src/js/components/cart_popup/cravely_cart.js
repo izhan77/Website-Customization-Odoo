@@ -8,6 +8,7 @@ class CravelyCartManager {
     constructor() {
         // Cart state management
         this.cart = [];
+        this.lastOrderType = this.getCurrentOrderType();
         this.cartTotal = 0;
         this.cartCount = 0;
         this.isCartOpen = false;
@@ -62,7 +63,50 @@ class CravelyCartManager {
     // Clear any lingering timers from previous page loads
     this.clearAllTimers();
 
+    this.setupOrderTypeChangeListener();
+
     console.log('✅ Cravely Cart Manager initialized successfully');
+}
+
+/**
+ * Monitor order type changes and update cart accordingly
+ */
+setupOrderTypeChangeListener() {
+    // Check for order type changes every second
+    setInterval(() => {
+        const currentOrderType = this.getCurrentOrderType();
+
+        if (currentOrderType !== this.lastOrderType) {
+            console.log(`🔄 Order type changed from ${this.lastOrderType} to ${currentOrderType}`);
+            this.lastOrderType = currentOrderType;
+
+            // Update all cart displays
+            this.updateCartPopupDisplay();
+            this.updateCartSummary();
+            this.updateDeliveryInfoMessage(currentOrderType);
+        }
+    }, 1000); // Check every second
+}
+
+/**
+ * Get current order type from various sources
+ */
+getCurrentOrderType() {
+    // Check URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlOrderType = urlParams.get('order_type');
+    if (urlOrderType) return urlOrderType;
+
+    // Check sessionStorage
+    try {
+        const storedOrder = sessionStorage.getItem('orderMethodSelected');
+        if (storedOrder) {
+            const orderData = JSON.parse(storedOrder);
+            if (orderData.type) return orderData.type;
+        }
+    } catch (e) {}
+
+    return 'delivery'; // Default
 }
 
     /**
@@ -258,10 +302,6 @@ clearAllTimers() {
                                 <span class="cravely-summary-label">Tax (15%)</span>
                                 <span class="cravely-summary-value" id="cravely-tax-amount">Rs. 0</span>
                             </div>
-                            <div class="cravely-summary-row">
-                                <span class="cravely-summary-label">Delivery Fee</span>
-                                <span class="cravely-summary-value">Rs. ${this.deliveryFee}</span>
-                            </div>
                             <div class="cravely-summary-row cravely-total-row">
                                 <span class="cravely-summary-label">Grand Total</span>
                                 <span class="cravely-summary-value" id="cravely-grand-total-amount">Rs. ${this.deliveryFee}</span>
@@ -451,68 +491,93 @@ clearAllTimers() {
     }
 
     /**
-     * Generate popular items from menu products
-     */
-    generatePopularItems() {
-        if (this.menuProducts.length === 0) {
-            return [];
+ * Generate popular items from backend products
+ */
+generatePopularItems() {
+    // Try to get backend products from all loaded sections
+    const backendProducts = [];
+
+    // Collect all backend products from the DOM
+    document.querySelectorAll('.product-card.backend-product').forEach(card => {
+        const productData = {
+            id: card.getAttribute('data-product-id'),
+            name: card.getAttribute('data-name') || card.querySelector('.product-title')?.textContent?.trim(),
+            price: parseInt(card.getAttribute('data-price') || '0'),
+            image: card.getAttribute('data-image') || card.querySelector('img')?.src,
+            category: card.getAttribute('data-category')
+        };
+
+        if (productData.id && productData.name) {
+            backendProducts.push(productData);
         }
+    });
 
-        // Get products not in cart
-        const availableProducts = this.menuProducts.filter(product =>
-            !this.cart.some(cartItem => cartItem.id === product.id)
-        );
+    console.log(`Found ${backendProducts.length} backend products for popular items`);
 
-        // If we have fewer available products than needed, include some cart items
-        let popularProducts = [...availableProducts];
+    // Filter out items already in cart
+    const availableProducts = backendProducts.filter(product =>
+        !this.cart.some(cartItem => cartItem.id === product.id)
+    );
 
-        if (popularProducts.length < 6) {
-            const cartProductIds = this.cart.map(item => item.id);
-            const cartProducts = this.menuProducts.filter(product =>
-                cartProductIds.includes(product.id)
-            );
-            popularProducts = [...availableProducts, ...cartProducts];
-        }
-
-        // Shuffle and take random 6-8 items
-        const shuffled = popularProducts.sort(() => 0.5 - Math.random());
+    // If we have backend products, use them
+    if (availableProducts.length > 0) {
+        // Shuffle and return random selection
+        const shuffled = [...availableProducts].sort(() => 0.5 - Math.random());
         return shuffled.slice(0, Math.min(8, shuffled.length));
     }
 
-    /**
-     * Update popular items section
-     */
-    updatePopularItems() {
-        const popularItemsGrid = document.getElementById('cravely-popular-items-grid');
-        const popularItemsSection = document.getElementById('cravely-popular-items-section');
-
-        if (!popularItemsGrid || !popularItemsSection) {
-            return;
-        }
-
-        this.popularItems = this.generatePopularItems();
-
-        if (this.popularItems.length === 0) {
-            popularItemsSection.style.display = 'none';
-            return;
-        }
-
-        popularItemsSection.style.display = 'block';
-
-        const popularItemsHTML = this.popularItems.map((item, index) => `
-            <div class="cravely-popular-item" data-product-id="${item.id}" style="animation-delay: ${index * 0.1}s">
-                <img src="${item.image}" alt="${item.name}" class="cravely-popular-item-image" loading="lazy"/>
-                <div class="cravely-popular-item-content">
-                    <h4 class="cravely-popular-item-name">${item.name}</h4>
-                    <span class="cravely-popular-item-price">Rs. ${item.price}</span>
-                    <button class="cravely-popular-item-add-btn" title="Add to cart">+</button>
-                </div>
-            </div>
-        `).join('');
-
-        popularItemsGrid.innerHTML = popularItemsHTML;
-        this.scrollPosition = 0;
+    // Fallback to static products if no backend products
+    if (this.menuProducts.length > 0) {
+        const staticAvailable = this.menuProducts.filter(product =>
+            !this.cart.some(cartItem => cartItem.id === product.id)
+        );
+        const shuffled = staticAvailable.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, Math.min(8, shuffled.length));
     }
+
+    return [];
+}
+
+    /**
+ * Update popular items section - ENHANCED
+ */
+updatePopularItems() {
+    const popularItemsGrid = document.getElementById('cravely-popular-items-grid');
+    const popularItemsSection = document.getElementById('cravely-popular-items-section');
+
+    if (!popularItemsGrid || !popularItemsSection) {
+        return;
+    }
+
+    // Wait a bit for backend products to load if they haven't yet
+    if (document.querySelectorAll('.backend-product').length === 0) {
+        // Try again in 2 seconds if no backend products loaded yet
+        setTimeout(() => this.updatePopularItems(), 2000);
+    }
+
+    this.popularItems = this.generatePopularItems();
+
+    if (this.popularItems.length === 0) {
+        popularItemsSection.style.display = 'none';
+        return;
+    }
+
+    popularItemsSection.style.display = 'block';
+
+    const popularItemsHTML = this.popularItems.map((item, index) => `
+        <div class="cravely-popular-item" data-product-id="${item.id}" style="animation-delay: ${index * 0.1}s">
+            <img src="${item.image}" alt="${item.name}" class="cravely-popular-item-image" loading="lazy"/>
+            <div class="cravely-popular-item-content">
+                <h4 class="cravely-popular-item-name">${item.name}</h4>
+                <span class="cravely-popular-item-price">Rs. ${item.price}</span>
+                <button class="cravely-popular-item-add-btn" title="Add to cart">+</button>
+            </div>
+        </div>
+    `).join('');
+
+    popularItemsGrid.innerHTML = popularItemsHTML;
+    this.scrollPosition = 0;
+}
 
     /**
      * Scroll popular items horizontally
@@ -537,45 +602,47 @@ clearAllTimers() {
     }
 
     /**
-     * Handle popular item add to cart
-     */
-    handlePopularItemAdd(event) {
-        const popularItem = event.target.closest('.cravely-popular-item');
-        if (!popularItem) return;
+ * Handle popular item add to cart - FIXED
+ */
+handlePopularItemAdd(event) {
+    const popularItem = event.target.closest('.cravely-popular-item');
+    if (!popularItem) return;
 
-        const productId = popularItem.getAttribute('data-product-id');
-        const product = this.menuProducts.find(p => p.id === productId);
+    const productId = popularItem.getAttribute('data-product-id');
 
-        if (product) {
-            // Add visual feedback
-            const addBtn = popularItem.querySelector('.cravely-popular-item-add-btn');
-            const originalContent = addBtn.innerHTML;
+    // FIX: Find the product in popularItems array instead of menuProducts
+    const product = this.popularItems.find(p => p.id === productId);
 
-            addBtn.innerHTML = '✓';
-            addBtn.style.background = '#10b981';
+    if (product) {
+        // Add visual feedback
+        const addBtn = popularItem.querySelector('.cravely-popular-item-add-btn');
+        const originalContent = addBtn.innerHTML;
 
-            setTimeout(() => {
-                addBtn.innerHTML = originalContent;
-                addBtn.style.background = '';
-            }, 1000);
+        addBtn.innerHTML = '✓';
+        addBtn.style.background = '#10b981';
 
-            // Add to cart
-            this.addToCart({...product, quantity: 1});
+        setTimeout(() => {
+            addBtn.innerHTML = originalContent;
+            addBtn.style.background = '';
+        }, 1000);
 
-            // Update popular items to remove this item
-            setTimeout(() => {
-                this.updatePopularItems();
-            }, 500);
+        // Add to cart - ensure quantity is set
+        this.addToCart({...product, quantity: 1});
 
-            // Update cart displays
-            this.updateCartPopupDisplay();
-            this.updateCartSidebarContent();
-            this.updateCartSummary();
+        // Update popular items to remove this item
+        setTimeout(() => {
+            this.updatePopularItems();
+        }, 500);
 
-            // FIXED: Show success notification with proper timing
-            this.showSuccessNotificationWithTimer();
-        }
+        // Update cart displays
+        this.updateCartPopupDisplay();
+        this.updateCartSidebarContent();
+        this.updateCartSummary();
+
+        // Show success notification with proper timing
+        this.showSuccessNotificationWithTimer();
     }
+}
 
     /**
      * FIXED: Handle add to cart button click with proper success notification timing
@@ -706,36 +773,156 @@ clearAllTimers() {
      * Update cart summary section
      */
     updateCartSummary() {
-        const subtotalEl = document.getElementById('cravely-subtotal-amount');
-        const taxEl = document.getElementById('cravely-tax-amount');
-        const grandTotalEl = document.getElementById('cravely-grand-total-amount');
-        const checkoutBtn = document.getElementById('cravely-checkout-btn');
+    const subtotalEl = document.getElementById('cravely-subtotal-amount');
+    const taxEl = document.getElementById('cravely-tax-amount');
+    const grandTotalEl = document.getElementById('cravely-grand-total-amount');
+    const checkoutBtn = document.getElementById('cravely-checkout-btn');
 
-        if (subtotalEl) {
-            subtotalEl.textContent = `Rs. ${this.cartTotal}`;
-        }
+    if (subtotalEl) {
+        subtotalEl.textContent = `Rs. ${this.cartTotal}`;
+    }
 
-        const tax = Math.round(this.cartTotal * this.taxRate);
-        if (taxEl) {
-            taxEl.textContent = `Rs. ${tax}`;
-        }
+    const tax = Math.round(this.cartTotal * this.taxRate);
+    if (taxEl) {
+        taxEl.textContent = `Rs. ${tax}`;
+    }
 
-        const grandTotal = this.cartTotal + tax + this.deliveryFee;
-        if (grandTotalEl) {
-            grandTotalEl.textContent = `Rs. ${grandTotal}`;
-        }
+    // Get current order type
+    const orderType = this.getCurrentOrderType();
 
-        // Enable/disable checkout button
-        if (checkoutBtn) {
-            if (this.cart.length === 0) {
-                checkoutBtn.disabled = true;
-                checkoutBtn.style.opacity = '0.5';
-            } else {
-                checkoutBtn.disabled = false;
-                checkoutBtn.style.opacity = '1';
-            }
+    // Create or update the dynamic fee/discount row
+    this.createOrUpdateDynamicRow(orderType);
+
+    // Calculate grand total based on order type
+    let grandTotal;
+    if (orderType === 'pickup') {
+        const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
+        grandTotal = this.cartTotal + tax - pickupDiscount;
+    } else {
+        grandTotal = this.cartTotal + tax + this.deliveryFee;
+    }
+
+    if (grandTotalEl) {
+        grandTotalEl.textContent = `Rs. ${grandTotal}`;
+    }
+
+    // Enable/disable checkout button
+    if (checkoutBtn) {
+        if (this.cart.length === 0) {
+            checkoutBtn.disabled = true;
+            checkoutBtn.style.opacity = '0.5';
+        } else {
+            checkoutBtn.disabled = false;
+            checkoutBtn.style.opacity = '1';
         }
     }
+
+    // Update delivery info message
+    this.updateDeliveryInfoMessage(orderType);
+}
+
+    /**
+ * Create or update the dynamic row (delivery fee or pickup discount)
+ */
+createOrUpdateDynamicRow(orderType) {
+    const summarySection = document.querySelector('.cravely-cart-summary-section');
+    if (!summarySection) return;
+
+    // Find the tax row and total row
+    const taxRow = summarySection.querySelector('.cravely-summary-row:nth-child(2)');
+    const totalRow = summarySection.querySelector('.cravely-total-row');
+
+    // Check if dynamic row already exists
+    let dynamicRow = summarySection.querySelector('.cravely-dynamic-row');
+
+    if (!dynamicRow) {
+        // Create new dynamic row
+        dynamicRow = document.createElement('div');
+        dynamicRow.className = 'cravely-summary-row cravely-dynamic-row';
+
+        // Insert between tax row and total row
+        if (taxRow && totalRow) {
+            taxRow.insertAdjacentElement('afterend', dynamicRow);
+        }
+    }
+
+    // Update the dynamic row content based on order type
+    if (orderType === 'pickup') {
+        const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
+        dynamicRow.innerHTML = `
+            <span class="cravely-summary-label">Pickup Discount (5%)</span>
+            <span class="cravely-summary-value" style="color: #10b981; font-weight: 600;">-Rs. ${pickupDiscount}</span>
+        `;
+        dynamicRow.style.display = 'flex';
+        dynamicRow.style.opacity = '0';
+        setTimeout(() => {
+            dynamicRow.style.transition = 'opacity 0.3s ease';
+            dynamicRow.style.opacity = '1';
+        }, 50);
+    } else {
+        dynamicRow.innerHTML = `
+            <span class="cravely-summary-label">Delivery Fee</span>
+            <span class="cravely-summary-value">Rs. ${this.deliveryFee}</span>
+        `;
+        dynamicRow.style.display = 'flex';
+        dynamicRow.style.opacity = '0';
+        setTimeout(() => {
+            dynamicRow.style.transition = 'opacity 0.3s ease';
+            dynamicRow.style.opacity = '1';
+        }, 50);
+    }
+}
+
+    /**
+ * Update delivery info message based on time and order type
+ */
+    updateDeliveryInfoMessage(orderType) {
+    const deliveryInfo = document.getElementById('cravely-delivery-info');
+    if (!deliveryInfo) return;
+
+    const hour = new Date().getHours();
+    let message = '';
+    let bgColor = '#fef3cd'; // Default yellow for closed
+    let isOpen = true; // Assume open for now - you can add your business hours logic
+
+    if (orderType === 'pickup') {
+        // Pickup messages
+        if (hour >= 0 && hour < 6) {
+            message = '🌙 Night owl? Place your pickup order now. It\'ll be hot, ready, and waiting for you—no delays.';
+        } else if (hour >= 6 && hour < 11) {
+            message = '☀️ Grab & Go! Order now for a lightning-fast pickup. Your perfect breakfast is waiting, no wait-time guaranteed.';
+        } else if (hour >= 11 && hour < 16) {
+            message = '⏱️ Your lunch break is precious! Skip the queue. Order online and your food will be ready the moment you arrive.';
+        } else {
+            message = '🚀 Dinner on your terms! Order ahead and walk straight out with your food. Perfect for a hassle-free night in.';
+        }
+    } else {
+        // Delivery messages
+        if (hour >= 0 && hour < 6) {
+            message = '🌙 Midnight cravings? We\'ve got you. Your favorite dishes are just a few clicks away. Proceed to checkout for a cozy delivery.';
+        } else if (hour >= 6 && hour < 11) {
+            message = '☀️ Good Morning! Start your day right. A delicious breakfast will be at your door before you finish your first coffee. Place your order!';
+        } else if (hour >= 11 && hour < 16) {
+            message = '🍳 Lunchtime escape! Skip the line and avoid the crowd. Get your fresh, hot lunch delivered to your desk or doorstep.';
+        } else {
+            message = '🌟 Dinner is served! (Well, almost). Let our chefs handle tonight\'s meal while you relax. Finalize your order for a swift delivery.';
+        }
+    }
+
+    // Check if restaurant is open (example: 9 AM to 11 PM)
+    if (hour < 9 || hour >= 23) {
+        isOpen = false;
+        bgColor = '#fef3cd'; // Yellow for closed
+        message = 'Sorry, we are closed right now but pre-orders can be placed. ' + message;
+    } else {
+        bgColor = '#d1fae5'; // Light green for open
+    }
+
+    deliveryInfo.style.backgroundColor = bgColor;
+    deliveryInfo.style.borderRadius = '8px';
+    deliveryInfo.style.padding = '16px 20px';
+    deliveryInfo.innerHTML = `<p class="cravely-delivery-text" style="color: #374151; font-size: 13px; line-height: 1.5;">${message}</p>`;
+}
 
     /**
      * FIXED: Show cart popup only (without success notification)
@@ -900,22 +1087,32 @@ clearAllTimers() {
     }
 
     /**
-     * Update cart popup display
-     */
-    updateCartPopupDisplay() {
-        const cartCountBadge = document.querySelector('.cravely-cart-count-badge');
-        const cartTotalPrice = document.querySelector('.cravely-cart-total-price');
+ * Update cart popup display - FIXED pricing calculation
+ */
+updateCartPopupDisplay() {
+    const cartCountBadge = document.querySelector('.cravely-cart-count-badge');
+    const cartTotalPrice = document.querySelector('.cravely-cart-total-price');
 
-        if (cartCountBadge) {
-            cartCountBadge.textContent = this.cartCount;
-        }
-
-        if (cartTotalPrice) {
-            const tax = Math.round(this.cartTotal * this.taxRate);
-            const grandTotal = this.cartTotal + tax + this.deliveryFee;
-            cartTotalPrice.textContent = `Rs. ${grandTotal}`;
-        }
+    if (cartCountBadge) {
+        cartCountBadge.textContent = this.cartCount;
     }
+
+    if (cartTotalPrice) {
+        // FIX: Use the same calculation as the sidebar
+        const tax = Math.round(this.cartTotal * this.taxRate);
+        const orderType = this.getCurrentOrderType();
+
+        let grandTotal;
+        if (orderType === 'pickup') {
+            const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
+            grandTotal = this.cartTotal + tax - pickupDiscount;
+        } else {
+            grandTotal = this.cartTotal + tax + this.deliveryFee;
+        }
+
+        cartTotalPrice.textContent = `Rs. ${grandTotal}`;
+    }
+}
 
     /**
      * Update cart sidebar content

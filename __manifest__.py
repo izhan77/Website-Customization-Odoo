@@ -65,7 +65,8 @@
     'assets': {
         'web.assets_frontend': [
             # CRITICAL: Load scroll utilities FIRST
-            'website_customizations/static/src/js/utils/scroll_utils.js',
+            # 'website_customizations/static/src/js/utils/scroll_utils.js',
+            'website_customizations/static/src/js/utils/scroll_controller.js',
 
             # Core CSS and config
             'website_customizations/static/src/css/tailwind_input.css',
@@ -96,7 +97,7 @@
             'website_customizations/static/src/js/components/navbar/navbar_mobile.js',
 
             # IMPORTANT: Category strip loads LAST (depends on scroll utils)
-            'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
+            # 'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
         ],
     },
     'installable': True,

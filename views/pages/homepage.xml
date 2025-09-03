@@ -19,7 +19,7 @@
 
                     <t t-call="website_customizations.cravely_product_popup_modal"/>
 
-                    <script type="text/javascript" src="/website_customizations/static/src/js/utils/homepage_scroll_handler.js"></script>
+<!--                    <script type="text/javascript" src="/website_customizations/static/src/js/utils/homepage_scroll_handler.js"></script>-->
                 </main>
             </div>
         </xpath>

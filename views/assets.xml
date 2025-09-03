@@ -45,10 +45,8 @@
 
         <!-- Load JavaScript files in correct order at bottom -->
         <xpath expr="//body" position="inside">
-            <!-- STEP 1: Core scroll utilities FIRST -->
-            <script type="text/javascript" src="/website_customizations/static/src/js/utils/scroll_utils.js"></script>
             <script type="text/javascript"
-                    src="/website_customizations/static/src/js/utils/homepage_scroll_handler.js"></script>
+                    src="/website_customizations/static/src/js/utils/scroll_controller.js"></script>
 
             <!-- STEP 2: Component scripts in dependency order -->
             <script type="text/javascript"
@@ -75,9 +73,6 @@
             <script type="text/javascript"
                     src="/website_customizations/static/src/js/components/checkout/checkout.js"></script>
 
-            <!-- STEP 3: Category strip LAST -->
-            <script type="text/javascript"
-                    src="/website_customizations/static/src/js/components/category_strip/category_strip_main.js"></script>
         </xpath>
     </template>
 </odoo>
