@@ -120,6 +120,16 @@
             hideTimeout = setTimeout(hidePopup, 200);
         });
 
+        // ADD THIS: Prevent menu link navigation on checkout page
+    menuTrigger.addEventListener('click', function (e) {
+        // If on checkout page, prevent default navigation
+        if (window.location.pathname.includes('/checkout')) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Menu click prevented on checkout page');
+        }
+    });
+
         // Global close handlers
         document.addEventListener('click', function (e) {
             if (!menuTrigger.contains(e.target) && !menuPopup.contains(e.target)) {
@@ -149,6 +159,7 @@
                 isMouseOverTrigger = false;
             }
         });
+
 
         // Update position on resize
         window.addEventListener('resize', updatePopupPosition);

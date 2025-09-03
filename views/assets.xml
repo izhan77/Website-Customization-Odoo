@@ -47,6 +47,8 @@
         <xpath expr="//body" position="inside">
             <!-- STEP 1: Core scroll utilities FIRST -->
             <script type="text/javascript" src="/website_customizations/static/src/js/utils/scroll_utils.js"></script>
+            <script type="text/javascript"
+                    src="/website_customizations/static/src/js/utils/homepage_scroll_handler.js"></script>
 
             <!-- STEP 2: Component scripts in dependency order -->
             <script type="text/javascript"

@@ -181,36 +181,66 @@ function handleCategoryClick(event) {
     if (!href || !href.startsWith('#')) return;
 
     const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
 
-    if (!targetElement) {
-        console.error('ScrollUtils - Section not found:', targetId);
-        return;
+    // Check if we're on checkout page
+    const isCheckoutPage = window.location.pathname.includes('/checkout');
+
+    if (isCheckoutPage) {
+        console.log('ScrollUtils - On checkout page, redirecting to homepage for:', targetId);
+
+        // Close any open menus/popups
+        if (typeof hideCategoriesPopup === 'function') {
+            hideCategoriesPopup();
+        }
+        if (typeof closeMainMenu === 'function') {
+            closeMainMenu();
+        }
+
+        // Close desktop menu popup
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (menuPopup && menuPopup.classList.contains('show')) {
+            menuPopup.classList.remove('show');
+        }
+
+        // Store the target section for homepage to scroll to
+        sessionStorage.setItem('scrollToSection', targetId);
+
+        // Redirect to homepage
+        window.location.href = '/';
+
+    } else {
+        // Standard behavior for non-checkout pages
+        const targetElement = document.getElementById(targetId);
+
+        if (!targetElement) {
+            console.error('ScrollUtils - Section not found:', targetId);
+            return;
+        }
+
+        console.log('ScrollUtils - Category click handler triggered for:', targetId);
+
+        // Close any open menus/popups
+        if (typeof hideCategoriesPopup === 'function') {
+            hideCategoriesPopup();
+        }
+        if (typeof closeMainMenu === 'function') {
+            closeMainMenu();
+        }
+
+        // Close desktop menu popup
+        const menuPopup = document.getElementById('menu-categories-popup');
+        if (menuPopup && menuPopup.classList.contains('show')) {
+            menuPopup.classList.remove('show');
+        }
+
+        // Wait for menus to close, then scroll
+        setTimeout(() => {
+            scrollToSectionWithPrecision(targetElement).then(() => {
+                // Update URL after successful scroll
+                history.replaceState(null, null, href);
+            });
+        }, 100);
     }
-
-    console.log('ScrollUtils - Category click handler triggered for:', targetId);
-
-    // Close any open menus/popups
-    if (typeof hideCategoriesPopup === 'function') {
-        hideCategoriesPopup();
-    }
-    if (typeof closeMainMenu === 'function') {
-        closeMainMenu();
-    }
-
-    // Close desktop menu popup
-    const menuPopup = document.getElementById('menu-categories-popup');
-    if (menuPopup && menuPopup.classList.contains('show')) {
-        menuPopup.classList.remove('show');
-    }
-
-    // Wait for menus to close, then scroll
-    setTimeout(() => {
-        scrollToSectionWithPrecision(targetElement).then(() => {
-            // Update URL after successful scroll
-            history.replaceState(null, null, href);
-        });
-    }, 100); // Reduced delay
 }
 
 /**
