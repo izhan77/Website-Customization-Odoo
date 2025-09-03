@@ -1,24 +1,26 @@
 /**
- * Order Method Location Component with Google Maps Integration
- * File: static/src/js/components/order_method_selector/order_method_location.js
- * Purpose: Handles location selection, current location detection with Google Maps popup
+ * Order Method Location Component with FREE OpenStreetMap
+ * File: static/src/js/components/order_method_selector/order_method_location_free.js
+ * Purpose: Handles location selection with OpenStreetMap (completely free!)
  */
 
 (function() {
     'use strict';
 
-    console.log('📍 OrderMethodLocation: Loading location component...');
+    console.log('📍 OrderMethodLocation (FREE): Loading location component...');
 
-    /**
-     * Order Method Location Class
-     * Manages location selection and geolocation functionality
-     */
     class OrderMethodLocation {
         constructor(config = {}) {
             this.config = {
                 primaryColor: config.primaryColor || '#7abfba',
                 geolocationTimeout: config.geolocationTimeout || 10000,
-                animationDuration: config.animationDuration || 300
+                animationDuration: config.animationDuration || 300,
+                // FREE OpenStreetMap configuration
+                mapTileUrl: config.mapTileUrl || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                mapAttribution: config.mapAttribution || '© OpenStreetMap contributors',
+                // Alternative free tile servers:
+                // mapTileUrl: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', // Topographic
+                // mapTileUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', // ESRI
             };
 
             this.currentLocation = null;
@@ -28,8 +30,12 @@
             this.map = null;
             this.marker = null;
             this.userPosition = null;
+            this.errorShown = false;
+            this.leafletLoaded = false;
+            this.isInitialized = false; // NEW: track initialization state
+            this.leafletInitializing = false;
 
-            // Location data
+            // Location data - same as before
             this.locationData = {
                 delivery: [
                     { value: '', text: 'Select your delivery area', disabled: true },
@@ -59,29 +65,45 @@
                 ]
             };
 
-            console.log('📍 OrderMethodLocation: Instance created');
+            console.log('📍 OrderMethodLocation (FREE): Instance created');
         }
 
         /**
          * Initialize the location component
-         * @param {Object} elements - DOM elements for location functionality
+         * elements: { dropdown: HTMLElement, locationBtn?: HTMLElement }
          */
-        init(elements) {
-            console.log('🔧 OrderMethodLocation: Initializing...');
+        init(elements = {}) {
+            console.log('🔧 OrderMethodLocation (FREE): Initializing...');
 
-            this.elements = elements;
-
-            if (!this.validateElements()) {
-                console.error('❌ OrderMethodLocation: Invalid elements provided');
+            // Ensure elements object exists
+            if (!elements || typeof elements !== 'object') {
+                console.error('❌ OrderMethodLocation: init requires an elements object with at least { dropdown }');
                 return false;
             }
 
-            this.bindEvents();
-            this.setupDropdownStyling();
-            this.setupMapsPopup();
+            this.elements = Object.assign({}, elements);
 
-            console.log('✅ OrderMethodLocation: Initialization complete');
-            return true;
+            if (!this.validateElements()) {
+                console.error('❌ OrderMethodLocation: Invalid elements provided - initialization aborted');
+                this.isInitialized = false;
+                return false;
+            }
+
+            try {
+                this.bindEvents();
+                this.setupDropdownStyling();
+                this.setupMapsPopup();
+                // Check geolocation support but don't abort initialization; only show warnings
+                this.checkGeolocationSupport();
+
+                this.isInitialized = true;
+                console.log('✅ OrderMethodLocation (FREE): Initialization complete');
+                return true;
+            } catch (err) {
+                console.error('❌ OrderMethodLocation: Initialization exception', err);
+                this.isInitialized = false;
+                return false;
+            }
         }
 
         /**
@@ -93,6 +115,15 @@
 
             if (missing.length > 0) {
                 console.error('❌ OrderMethodLocation: Missing elements:', missing);
+                this.showFriendlyError(`Developer error: missing UI elements: ${missing.join(', ')}`);
+                return false;
+            }
+
+            // Ensure dropdown is actually a select/input element
+            const dd = this.elements.dropdown;
+            if (!(dd instanceof HTMLElement)) {
+                console.error('❌ OrderMethodLocation: dropdown is not a valid HTMLElement');
+                this.showFriendlyError('Developer error: dropdown element is invalid.');
                 return false;
             }
 
@@ -100,19 +131,51 @@
         }
 
         /**
-         * Setup Google Maps popup functionality
+         * Check if geolocation is supported
+         * NOTE: this no longer aborts initialization — it only warns and shows friendly messages.
+         */
+        checkGeolocationSupport() {
+            if (!navigator.geolocation) {
+                console.warn('❌ Geolocation not supported by this browser');
+                this.showFriendlyError('Your browser does not support geolocation. You can select location manually.');
+                return;
+            }
+
+            const isLocalhost = window.location.hostname === 'localhost' ||
+                                window.location.hostname === '127.0.0.1' ||
+                                window.location.hostname === '::1';
+
+            const isHTTPS = window.location.protocol === 'https:';
+
+            if (!isLocalhost && !isHTTPS) {
+                console.warn('⚠️ Geolocation requires HTTPS except on localhost');
+                // show a non-blocking message
+                this.showFriendlyError('Location detection works better with HTTPS. Some features may be limited.');
+                // do not return false — allow UI features to work (map can still load)
+            } else {
+                console.log('✅ Geolocation support check passed or allowed (localhost/HTTPS).');
+            }
+        }
+
+        /**
+         * Setup maps popup
          */
         setupMapsPopup() {
-            // Create elements if they don't exist
+            // Avoid duplicate insertion
             if (!document.getElementById('maps-popup-overlay')) {
                 const mapsPopupHTML = `
-                    <div id="maps-popup-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[10000] hidden">
+                    <div id="maps-popup-overlay" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[10000] hidden" aria-hidden="true" role="dialog" aria-modal="true">
                         <div id="maps-popup-container" class="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-xl transform transition-all duration-300 scale-95">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Location Access</h3>
-                            <p class="text-sm text-gray-600 mb-6">We need your location to find the nearest restaurant outlet.</p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">📍 Select Your Location</h3>
+                            <p class="text-sm text-gray-600 mb-6">Click on the map to select your location, or drag the marker to adjust.</p>
 
-                            <div id="maps-container" class="w-full h-48 bg-gray-200 rounded-lg mb-6 flex items-center justify-center">
-                                <span class="text-gray-500">Loading map...</span>
+                            <div id="maps-container" class="w-full h-48 bg-gray-100 rounded-lg mb-6 relative overflow-hidden border-2 border-gray-200">
+                                <div id="maps-loading" class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+                                        <span class="text-gray-500 text-sm">Loading FREE map...</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="flex gap-3 justify-center">
@@ -122,6 +185,9 @@
                                 <button id="maps-confirm-btn" class="px-4 py-2 rounded-lg text-white font-medium bg-[#7abfba] hover:opacity-90 transition-colors">
                                     Confirm Location
                                 </button>
+                                <button id="detect-location-btn" class="px-4 py-2 rounded-lg text-white font-medium bg-green-500 hover:bg-green-600 transition-colors">
+                                    📍 Auto-Detect
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -129,27 +195,27 @@
                 document.body.insertAdjacentHTML('beforeend', mapsPopupHTML);
             }
 
-            // Cache maps elements
+            // Cache elements (if they exist now)
             this.elements.mapsOverlay = document.getElementById('maps-popup-overlay');
             this.elements.mapsContainer = document.getElementById('maps-popup-container');
             this.elements.mapsCancelBtn = document.getElementById('maps-cancel-btn');
             this.elements.mapsConfirmBtn = document.getElementById('maps-confirm-btn');
+            this.elements.detectLocationBtn = document.getElementById('detect-location-btn');
             this.elements.mapsElement = document.getElementById('maps-container');
+            this.elements.mapsLoading = document.getElementById('maps-loading');
 
-            // Bind maps events
+            // Bind events safely
             if (this.elements.mapsCancelBtn) {
-                this.elements.mapsCancelBtn.addEventListener('click', () => {
-                    this.hideMapsPopup();
-                });
+                this.elements.mapsCancelBtn.addEventListener('click', () => this.hideMapsPopup());
             }
-
             if (this.elements.mapsConfirmBtn) {
-                this.elements.mapsConfirmBtn.addEventListener('click', () => {
-                    this.confirmLocationSelection();
-                });
+                this.elements.mapsConfirmBtn.addEventListener('click', () => this.confirmLocationSelection());
+            }
+            if (this.elements.detectLocationBtn) {
+                this.elements.detectLocationBtn.addEventListener('click', () => this.detectCurrentLocationInMap());
             }
 
-            // Close on overlay click
+            // Close on overlay click (only if overlay exists)
             if (this.elements.mapsOverlay) {
                 this.elements.mapsOverlay.addEventListener('click', (e) => {
                     if (e.target === this.elements.mapsOverlay) {
@@ -160,378 +226,420 @@
         }
 
         /**
-         * Show Google Maps popup
+         * Show maps popup
          */
         showMapsPopup() {
-    if (!this.elements.mapsOverlay) return;
-
-    this.elements.mapsOverlay.classList.remove('hidden');
-    setTimeout(() => {
-        this.elements.mapsOverlay.style.opacity = '1';
-        this.elements.mapsContainer.style.transform = 'scale(1)';
-
-        // Wait for the popup to show before loading the map
-        setTimeout(() => {
-            // Load Google Maps if not already loaded
-            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-                this.loadGoogleMaps();
-            } else {
-                this.initMap();
+            if (!this.elements.mapsOverlay || !this.elements.mapsElement) {
+                console.error('❌ OrderMethodLocation: maps popup elements not available');
+                this.showFriendlyError('Map UI is not available. Make sure the component is initialized properly.');
+                return;
             }
-        }, 100);
-    }, 10);
-}
+
+            // Show overlay
+            this.elements.mapsOverlay.classList.remove('hidden');
+            // small delay to allow CSS transitions
+            setTimeout(() => {
+                try {
+                    this.elements.mapsOverlay.style.opacity = '1';
+                    if (this.elements.mapsContainer) {
+                        this.elements.mapsContainer.style.transform = 'scale(1)';
+                    }
+                } catch (e) { /* ignore style set errors */ }
+
+                // Load Leaflet and initialize map (if necessary)
+                if (this.leafletLoaded && window.L) {
+                    // if map was removed earlier, re-init
+                    if (!this.map) {
+                        this.initLeafletMap();
+                    }
+                } else {
+                    // show loading message and start loading leaflet
+                    if (this.elements.mapsLoading) {
+                        this.elements.mapsLoading.style.display = 'flex';
+                    }
+                    this.loadLeafletMap();
+                }
+            }, 10);
+        }
 
         /**
-         * Hide Google Maps popup
+         * Hide maps popup
          */
         hideMapsPopup() {
             if (!this.elements.mapsOverlay) return;
 
-            this.elements.mapsOverlay.style.opacity = '0';
-            this.elements.mapsContainer.style.transform = 'scale(0.95)';
+            try {
+                this.elements.mapsOverlay.style.opacity = '0';
+                if (this.elements.mapsContainer) {
+                    this.elements.mapsContainer.style.transform = 'scale(0.95)';
+                }
+            } catch (e) { /* ignore style set errors */ }
 
             setTimeout(() => {
-                this.elements.mapsOverlay.classList.add('hidden');
+                if (this.elements.mapsOverlay) {
+                    this.elements.mapsOverlay.classList.add('hidden');
+                }
+                // hide loading indicator if any
+                if (this.elements.mapsLoading) {
+                    this.elements.mapsLoading.style.display = '';
+                }
             }, 300);
         }
 
         /**
-         * Load Google Maps API
+         * Load Leaflet map library and initialize
          */
-        loadGoogleMaps() {
-    if (window.googleMapsLoading) return;
+        loadLeafletMap() {
+            if (this.leafletLoaded && window.L) {
+                this.initLeafletMap();
+                return;
+            }
 
-    window.googleMapsLoading = true;
+            // If another load is in progress, just wait
+            if (window.leafletLoading || this.leafletInitializing) {
+                // nothing to do; init will be called by the onload handler already attached
+                return;
+            }
 
-    const script = document.createElement('script');
-    // Using a free demo key - replace with your own key for production
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places';
-    script.async = true;
-    script.defer = true;
+            window.leafletLoading = true;
+            this.leafletInitializing = true;
 
-    // Wait for the map to load completely
-    script.onload = () => {
-        // Give it a little extra time to make sure everything is ready
-        setTimeout(() => {
-            this.initMap();
-        }, 300);
-    };
+            // Load Leaflet CSS
+            if (!document.getElementById('leaflet-css')) {
+                const link = document.createElement('link');
+                link.id = 'leaflet-css';
+                link.rel = 'stylesheet';
+                link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+                link.crossOrigin = '';
+                document.head.appendChild(link);
+            }
 
-    script.onerror = () => {
-        console.error('Failed to load Google Maps');
-        this.handleLocationError('Could not load maps. Please check your connection.');
-        window.googleMapsLoading = false;
-    };
+            // Load Leaflet JS
+            if (!window.L) {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                script.defer = true;
+                script.onload = () => {
+                    console.log('✅ Leaflet loaded successfully');
+                    this.leafletLoaded = true;
+                    window.leafletLoading = false;
+                    this.leafletInitializing = false;
 
-    document.head.appendChild(script);
-}
-
-        /**
-         * Initialize Google Map
-         */
-        initMap() {
-            // Safety check - make sure Google Maps is really loaded
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-        console.error('Google Maps not loaded yet');
-        this.handleLocationError('Maps are still loading. Please try again in a moment.');
-        return;
-    }
-
-            if (!this.elements.mapsElement || typeof google === 'undefined') return;
-
-            // Clear loading message
-            this.elements.mapsElement.innerHTML = '';
-
-            // Create map
-            this.map = new google.maps.Map(this.elements.mapsElement, {
-                center: { lat: 24.8607, lng: 67.0011 }, // Default to Karachi
-                zoom: 12,
-                styles: [
-                    {
-                        "featureType": "all",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#f5f5f5" }]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "gamma": 0.01 }, { "lightness": 20 }]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.text.stroke",
-                        "stylers": [{ "saturation": -31 }, { "lightness": -33 }, { "weight": 2 }, { "gamma": 0.8 }]
-                    },
-                    {
-                        "featureType": "all",
-                        "elementType": "labels.icon",
-                        "stylers": [{ "visibility": "off" }]
-                    },
-                    {
-                        "featureType": "administrative",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{ "color": "#c9b2a6" }]
-                    },
-                    {
-                        "featureType": "administrative.land_parcel",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{ "color": "#dcd2be" }]
-                    },
-                    {
-                        "featureType": "administrative.land_parcel",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "color": "#ae9e90" }]
-                    },
-                    {
-                        "featureType": "landscape.natural",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#dfd2ae" }]
-                    },
-                    {
-                        "featureType": "poi",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#dfd2ae" }]
-                    },
-                    {
-                        "featureType": "poi",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "color": "#93817c" }]
-                    },
-                    {
-                        "featureType": 'poi.attraction',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.business',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.government',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.medical',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.park',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.place_of_worship',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.school',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": 'poi.sports_complex',
-                        "elementType": 'labels',
-                        "stylers": [{ "visibility": 'off' }]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#f5f1e6" }]
-                    },
-                    {
-                        "featureType": "road.arterial",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#fdfcf8" }]
-                    },
-                    {
-                        "featureType": "road.highway",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#f8c967" }]
-                    },
-                    {
-                        "featureType": "road.highway",
-                        "elementType": "geometry.stroke",
-                        "stylers": [{ "color": "#e9bc62" }]
-                    },
-                    {
-                        "featureType": "road.local",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "color": "#806b63" }]
-                    },
-                    {
-                        "featureType": "transit.line",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#dfd2ae" }]
-                    },
-                    {
-                        "featureType": "transit.line",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "color": "#8f7d77" }]
-                    },
-                    {
-                        "featureType": "transit.line",
-                        "elementType": "labels.text.stroke",
-                        "stylers": [{ "color": "#ebe3cd" }]
-                    },
-                    {
-                        "featureType": "transit.station",
-                        "elementType": "geometry",
-                        "stylers": [{ "color": "#dfd2ae" }]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "geometry.fill",
-                        "stylers": [{ "color": "#b9d3c2" }]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "labels.text.fill",
-                        "stylers": [{ "color": "#92998d" }]
-                    }
-                ]
-            });
-
-            // Add marker
-            this.marker = new google.maps.Marker({
-                map: this.map,
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-                title: 'Your location',
-                icon: {
-                    url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMCIgcj0iMyIgc3Ryb2tlPSIjN2FiZmJhIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEyIDIuNUMxNi4xMzQzIDIuNSAxOS41IDYuNjk1NDUgMTkuNSAxMS41NzE0QzE5LjUgMTMuODA1NyAxOC40NDY0IDE2LjQyODYgMTYuNTM1NyAxOS4zMzMzQzE1LjE4MDQgMjEuMzYzNiAxMy43NTI0IDIyLjk3NjIgMTIuNzYzOSAyMy43Njk0QzEyLjMzODggMjQuMDc2OSAxMS42NjExIDI0LjA3NjkgMTEuMjM2MSAyMy43Njk0QzEwLjI0NzYgMjIuOTc2MiA4LjgxOTY0IDIxLjM2MzYgNy40NjQzMiAxOS4zMzMzQzUuNTUzNiAxNi40Mjg2IDQuNSA0LjUgNC41IDExLjU3MTRDNC41IDYuNjk1NDUgNy44NjU3NCAyLjUgMTIgMi41WiIgc3Ryb2tlPSIjN2FiZmJhIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+',
-                    scaledSize: new google.maps.Size(32, 32),
-                    anchor: new google.maps.Point(16, 32)
-                }
-            });
-
-            // Try to get current location
-            this.getBrowserLocation();
-        }
-
-        /**
-         * Get browser location and center map
-         */
-        getBrowserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        this.userPosition = position;
-                        const pos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-
-                        // Center map on user's location
-                        this.map.setCenter(pos);
-                        this.marker.setPosition(pos);
-
-                        // Add info window
-                        const infoWindow = new google.maps.InfoWindow({
-                            content: '<div class="text-sm font-medium">Your current location</div>'
-                        });
-
-                        infoWindow.open(this.map, this.marker);
-
-                        // Add click listener to marker
-                        this.marker.addListener('click', () => {
-                            infoWindow.open(this.map, this.marker);
-                        });
-                    },
-                    (error) => {
-                        console.error('Error getting location:', error);
-                        this.handleLocationError(this.getLocationErrorMessage(error));
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 300000
-                    }
-                );
+                    // init map after a brief pause to ensure CSS loaded
+                    setTimeout(() => {
+                        this.initLeafletMap();
+                    }, 100);
+                };
+                script.onerror = () => {
+                    console.error('❌ Failed to load Leaflet');
+                    window.leafletLoading = false;
+                    this.leafletInitializing = false;
+                    this.handleLocationError('Could not load map. Please check your internet connection or try again later.');
+                };
+                document.head.appendChild(script);
             } else {
-                this.handleLocationError('Geolocation is not supported by this browser.');
+                // already loaded in global scope
+                this.leafletLoaded = true;
+                window.leafletLoading = false;
+                this.leafletInitializing = false;
+                setTimeout(() => this.initLeafletMap(), 100);
             }
         }
 
         /**
-         * Confirm location selection from map
+         * Initialize Leaflet map
+         */
+        initLeafletMap() {
+            if (!window.L) {
+                console.error('❌ Leaflet not loaded');
+                this.handleLocationError('Map library not loaded.');
+                return;
+            }
+
+            // Guard: if mapsElement missing, abort
+            if (!this.elements.mapsElement) {
+                console.error('❌ maps container element not found');
+                this.handleLocationError('Map container not found.');
+                return;
+            }
+
+            // Clear loading message or previous content
+            try {
+                this.elements.mapsElement.innerHTML = '';
+                if (this.elements.mapsLoading) {
+                    this.elements.mapsLoading.style.display = 'none';
+                }
+            } catch (e) { /* ignore */ }
+
+            try {
+                // If a previous map exists, remove it cleanly
+                if (this.map) {
+                    try {
+                        this.map.off();
+                        this.map.remove();
+                    } catch (e) { /* ignore remove errors */ }
+                    this.map = null;
+                    this.marker = null;
+                }
+
+                // Create map
+                this.map = L.map(this.elements.mapsElement, {
+                    center: [24.8607, 67.0011], // Karachi default center
+                    zoom: 12,
+                    zoomControl: true,
+                    attributionControl: true
+                });
+
+                // Add tile layer (FREE OpenStreetMap)
+                L.tileLayer(this.config.mapTileUrl, {
+                    attribution: this.config.mapAttribution,
+                    maxZoom: 18,
+                    subdomains: ['a', 'b', 'c']
+                }).addTo(this.map);
+
+                // Create custom marker icon
+                const customIcon = L.divIcon({
+                    className: 'custom-location-marker',
+                    html: `
+                        <div style="
+                            width: 30px; 
+                            height: 30px; 
+                            background: ${this.config.primaryColor}; 
+                            border: 3px solid white; 
+                            border-radius: 50%; 
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                position: absolute;
+                                bottom: -8px;
+                                left: 50%;
+                                transform: translateX(-50%);
+                                width: 0;
+                                height: 0;
+                                border-left: 6px solid transparent;
+                                border-right: 6px solid transparent;
+                                border-top: 8px solid ${this.config.primaryColor};
+                            "></div>
+                        </div>
+                    `,
+                    iconSize: [30, 38],
+                    iconAnchor: [15, 38]
+                });
+
+                // Add draggable marker
+                this.marker = L.marker([24.8607, 67.0011], {
+                    icon: customIcon,
+                    draggable: true
+                }).addTo(this.map);
+
+                // Add click event to map
+                this.map.on('click', (e) => {
+                    if (this.marker) {
+                        this.marker.setLatLng(e.latlng);
+                        this.showLocationSuccess('Location updated! Click "Confirm Location" when ready.');
+                    }
+                });
+
+                // Add marker drag event
+                if (this.marker) {
+                    this.marker.on('dragend', () => {
+                        this.showLocationSuccess('Location updated! Click "Confirm Location" when ready.');
+                    });
+
+                    // Add popup to marker
+                    this.marker.bindPopup(`
+                        <div style="text-align: center; padding: 5px;">
+                            <strong>📍 Your Location</strong><br>
+                            <small>Drag marker or click map to adjust</small>
+                        </div>
+                    `).openPopup();
+                }
+
+                // Try to detect user location (non-blocking)
+                this.detectCurrentLocationInMap();
+
+                console.log('✅ Leaflet map initialized successfully');
+
+            } catch (error) {
+                console.error('❌ Error initializing Leaflet map:', error);
+                this.handleLocationError('Failed to initialize map. Please try again.');
+            }
+        }
+
+        /**
+         * Detect current location and update map
+         */
+        detectCurrentLocationInMap() {
+            if (!navigator.geolocation) {
+                this.showFriendlyError('Your browser does not support location detection.');
+                return;
+            }
+
+            // Ensure map is ready; if not, try to initialize
+            if (!this.map) {
+                // If leaflet not loaded, trigger loading and retry after load
+                if (!this.leafletLoaded) {
+                    this.loadLeafletMap();
+                    // Give user a hint
+                    this.showFriendlyMessage('Loading map — will try auto-detect when ready.', 'info');
+                    return;
+                } else {
+                    // Leaflet loaded but map missing — initialize
+                    this.initLeafletMap();
+                }
+            }
+
+            // Update button state safely
+            const btn = this.elements.detectLocationBtn;
+            const originalText = (btn && btn.innerHTML) ? btn.innerHTML : '📍 Auto-Detect';
+            if (btn) {
+                btn.innerHTML = '🔍 Detecting...';
+                btn.disabled = true;
+            }
+
+            // Mark that detection is in progress
+            this.isDetectingLocation = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    this.isDetectingLocation = false;
+
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    console.log('✅ Location detected:', { lat, lng });
+
+                    // Update map and marker only if map exists
+                    if (this.map) {
+                        try {
+                            this.map.setView([lat, lng], 15);
+                        } catch (e) { /* ignore map setView errors */ }
+                    }
+
+                    if (this.marker) {
+                        try {
+                            this.marker.setLatLng([lat, lng]);
+                            this.marker.bindPopup(`
+                                <div style="text-align: center; padding: 5px;">
+                                    <strong>📍 Your Current Location</strong><br>
+                                    <small>Accuracy: ~${Math.round(position.coords.accuracy)}m</small>
+                                </div>
+                            `).openPopup();
+                        } catch (e) { /* ignore marker errors */ }
+                    }
+
+                    this.showLocationSuccess('Current location detected successfully!');
+
+                    // Restore button state
+                    if (btn) {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                },
+                (error) => {
+                    this.isDetectingLocation = false;
+                    console.error('❌ Geolocation error:', error);
+                    this.handleLocationError(this.getLocationErrorMessage(error));
+
+                    // Restore button state
+                    if (btn) {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: this.config.geolocationTimeout,
+                    maximumAge: 300000
+                }
+            );
+        }
+
+        /**
+         * Confirm location selection
          */
         confirmLocationSelection() {
-            if (!this.marker || !this.map) return;
+            if (!this.marker) {
+                this.handleLocationError('Marker is not available. Please select your location on the map.');
+                return;
+            }
 
-            const position = this.marker.getPosition();
-            if (!position) return;
+            const latlng = this.marker.getLatLng();
+            console.log('📍 Confirming location:', latlng);
 
             // Find nearest location
             const nearestLocation = this.findNearestLocation({
-                latitude: position.lat(),
-                longitude: position.lng()
+                latitude: latlng.lat,
+                longitude: latlng.lng
             });
 
             if (nearestLocation) {
-                // Update dropdown selection
-                this.elements.dropdown.value = nearestLocation.value;
-                this.handleLocationChange(nearestLocation.value);
+                // set dropdown value safely
+                try {
+                    this.elements.dropdown.value = nearestLocation.value;
+                } catch (e) { /* ignore set value errors */ }
 
-                this.showLocationSuccess(`Nearest outlet selected: ${nearestLocation.name}`);
+                this.handleLocationChange(nearestLocation.value);
+                this.showLocationSuccess(`📍 Nearest outlet selected: ${nearestLocation.name}`);
             } else {
-                this.handleLocationError('No nearby outlets found');
+                this.handleLocationError('No nearby outlets found for your location.');
             }
 
             this.hideMapsPopup();
         }
 
         /**
-         * Bind events to location elements
+         * Bind events
          */
         bindEvents() {
             console.log('🔗 OrderMethodLocation: Binding events...');
 
-            // Dropdown change event
-            this.elements.dropdown.addEventListener('change', (e) => {
-                this.handleLocationChange(e.target.value);
-            });
+            // Dropdown change
+            if (this.elements.dropdown) {
+                this.elements.dropdown.addEventListener('change', (e) => {
+                    this.handleLocationChange(e.target.value);
+                });
+            }
 
-            // Current location button (if exists)
+            // Optional location button to open map
             if (this.elements.locationBtn) {
                 this.elements.locationBtn.addEventListener('click', () => {
+                    // show map popup (this will load leaflet if needed)
                     this.showMapsPopup();
                 });
             }
         }
 
         /**
-         * Setup dropdown styling and behavior
+         * Setup dropdown styling
          */
         setupDropdownStyling() {
             if (!this.elements.dropdown) return;
 
-            // Add focus styles
             this.elements.dropdown.addEventListener('focus', () => {
-                this.elements.dropdown.style.borderColor = this.config.primaryColor;
-                this.elements.dropdown.style.boxShadow = `0 0 0 3px ${this.config.primaryColor}20`;
+                try {
+                    this.elements.dropdown.style.borderColor = this.config.primaryColor;
+                    this.elements.dropdown.style.boxShadow = `0 0 0 3px ${this.config.primaryColor}20`;
+                } catch (e) { /* ignore style errors */ }
             });
 
             this.elements.dropdown.addEventListener('blur', () => {
-                this.elements.dropdown.style.borderColor = '#d1d5db';
-                this.elements.dropdown.style.boxShadow = 'none';
+                try {
+                    this.elements.dropdown.style.borderColor = '#d1d5db';
+                    this.elements.dropdown.style.boxShadow = 'none';
+                } catch (e) { /* ignore style errors */ }
             });
         }
 
         /**
-         * Update dropdown options based on order type
-         * @param {string} orderType - 'delivery' or 'pickup'
+         * Update dropdown options
          */
         updateOptions(orderType) {
             console.log(`📋 OrderMethodLocation: Updating options for ${orderType}`);
 
             if (!this.elements.dropdown) return;
 
-            // Clear existing options
             this.elements.dropdown.innerHTML = '';
 
             const options = this.locationData[orderType] || [];
@@ -549,111 +657,44 @@
                 this.elements.dropdown.appendChild(optionElement);
             });
 
-            // Reset current location
             this.currentLocation = null;
 
-            // For pickup, auto-select first valid option
             if (orderType === 'pickup' && options.length > 0) {
                 const firstValid = options.find(opt => !opt.disabled);
                 if (firstValid) {
                     setTimeout(() => {
-                        this.elements.dropdown.value = firstValid.value;
-                        this.handleLocationChange(firstValid.value);
+                        try {
+                            this.elements.dropdown.value = firstValid.value;
+                            this.handleLocationChange(firstValid.value);
+                        } catch (e) { /* ignore set value errors */ }
                     }, 100);
                 }
             }
         }
 
         /**
-         * Handle location selection change
-         * @param {string} locationValue - Selected location value
+         * Handle location change
          */
         handleLocationChange(locationValue) {
             console.log('📍 OrderMethodLocation: Location changed to:', locationValue);
 
             this.currentLocation = locationValue;
-
-            // Find location data
             const allLocations = [...this.locationData.delivery, ...this.locationData.pickup];
             const selectedLocation = allLocations.find(loc => loc.value === locationValue);
 
-            // Trigger callback
             if (this.callbacks.onChange) {
-                this.callbacks.onChange(locationValue, selectedLocation);
+                try {
+                    this.callbacks.onChange(locationValue, selectedLocation);
+                } catch (e) {
+                    console.error('Callback onChange error:', e);
+                }
             }
 
-            // Dispatch custom event
             this.dispatchLocationEvent(locationValue, selectedLocation);
         }
 
         /**
-         * Detect current location using geolocation
-         */
-        async detectCurrentLocation() {
-            if (this.isDetectingLocation) {
-                console.log('⏳ OrderMethodLocation: Location detection already in progress');
-                return;
-            }
-
-            console.log('🔍 OrderMethodLocation: Starting location detection...');
-
-            if (!navigator.geolocation) {
-                this.handleLocationError('Geolocation is not supported by this browser');
-                return;
-            }
-
-            this.isDetectingLocation = true;
-            this.setLocationButtonLoading(true);
-
-            try {
-                const position = await this.getCurrentPosition();
-                console.log('✅ OrderMethodLocation: Location detected:', position.coords);
-
-                // Find nearest location
-                const nearestLocation = this.findNearestLocation(position.coords);
-
-                if (nearestLocation) {
-                    // Update dropdown selection
-                    this.elements.dropdown.value = nearestLocation.value;
-                    this.handleLocationChange(nearestLocation.value);
-
-                    this.showLocationSuccess(`Nearest outlet selected: ${nearestLocation.name}`);
-                } else {
-                    this.handleLocationError('No nearby outlets found');
-                }
-
-            } catch (error) {
-                console.error('❌ OrderMethodLocation: Location detection failed:', error);
-                this.handleLocationError(this.getLocationErrorMessage(error));
-            } finally {
-                this.isDetectingLocation = false;
-                this.setLocationButtonLoading(false);
-            }
-        }
-
-        this.errorShown = false;
-
-        /**
-         * Get current position as Promise
-         */
-        getCurrentPosition() {
-            return new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    resolve,
-                    reject,
-                    {
-                        enableHighAccuracy: true,
-                        timeout: this.config.geolocationTimeout,
-                        maximumAge: 300000 // 5 minutes
-                    }
-                );
-            });
-        }
-
-        /**
-         * Find nearest pickup location based on coordinates
-         * @param {Object} userCoords - User's coordinates {latitude, longitude}
-         * @returns {Object|null} Nearest location data
+         * Find nearest location
          */
         findNearestLocation(userCoords) {
             const pickupLocations = this.locationData.pickup.filter(loc => loc.coordinates);
@@ -677,17 +718,16 @@
                 }
             });
 
-            console.log(`📍 OrderMethodLocation: Nearest location is ${nearest?.name} (${minDistance.toFixed(2)}km away)`);
+            if (nearest) {
+                console.log(`📍 Nearest location: ${nearest.name} (${minDistance.toFixed(2)}km away)`);
+            } else {
+                console.log('📍 No nearest pickup found');
+            }
             return nearest;
         }
 
         /**
-         * Calculate distance between two coordinates using Haversine formula
-         * @param {number} lat1 - Latitude 1
-         * @param {number} lon1 - Longitude 1
-         * @param {number} lat2 - Latitude 2
-         * @param {number} lon2 - Longitude 2
-         * @returns {number} Distance in kilometers
+         * Calculate distance using Haversine formula
          */
         calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371; // Earth's radius in km
@@ -703,236 +743,257 @@
             return R * c;
         }
 
-        /**
-         * Convert degrees to radians
-         */
         degToRad(deg) {
             return deg * (Math.PI/180);
         }
 
         /**
-         * Set loading state for location button
-         * @param {boolean} isLoading - Whether button is loading
+         * Error handling and messaging
          */
-        setLocationButtonLoading(isLoading) {
-            if (!this.elements.locationBtn) return;
-
-            const button = this.elements.locationBtn;
-
-            if (isLoading) {
-                button.disabled = true;
-                button.innerHTML = `
-                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    Detecting...
-                `;
-            } else {
-                button.disabled = false;
-                button.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    Use Current Location
-                `;
+        getLocationErrorMessage(error) {
+            // Defensive access in case non-standard object was passed
+            const code = error && error.code;
+            switch(code) {
+                case error.PERMISSION_DENIED:
+                    return 'Please allow location access. Click the location icon in your browser address bar and select "Allow".';
+                case error.POSITION_UNAVAILABLE:
+                    return 'Unable to determine your location. Please select your area manually or try again.';
+                case error.TIMEOUT:
+                    return 'Location detection timed out. Please select your area manually.';
+                default:
+                    // If error has message, include it
+                    const msg = (error && error.message) ? ` (${error.message})` : '';
+                    return 'Location detection failed. Please select your area manually.' + msg;
             }
         }
 
-        /**
-         * Handle location detection success
-         * @param {string} message - Success message
-         */
         showLocationSuccess(message) {
             if (this.callbacks.onSuccess) {
-                this.callbacks.onSuccess(message);
+                try {
+                    this.callbacks.onSuccess(message);
+                } catch (e) {
+                    console.error('onSuccess callback error:', e);
+                }
             }
-
+            this.showFriendlyMessage(message, 'success');
             console.log('✅ OrderMethodLocation:', message);
         }
 
-        /**
-         * Handle location detection error
-         * @param {string} message - Error message
-         */
         handleLocationError(message) {
-    // Don't show too many error popups
-    if (!this.errorShown) {
-        this.errorShown = true;
+            // Debounce repeated error displays
+            if (!this.errorShown) {
+                this.errorShown = true;
+                this.showFriendlyError(message);
+                setTimeout(() => {
+                    this.errorShown = false;
+                }, 5000);
+            }
 
-        // Show a friendly message that doesn't use alert()
-        this.showFriendlyError(message);
+            if (this.callbacks.onError) {
+                try {
+                    this.callbacks.onError(message);
+                } catch (e) {
+                    console.error('onError callback error:', e);
+                }
+            }
+            console.error('❌ OrderMethodLocation:', message);
+        }
 
-        setTimeout(() => {
-            this.errorShown = false;
-        }, 3000);
-    }
+        showFriendlyError(message) {
+            this.removeExistingMessages();
 
-    if (this.callbacks.onError) {
-        this.callbacks.onError(message);
-    }
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'location-message location-error';
+            errorDiv.setAttribute('role', 'alert');
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.top = '20px';
+            errorDiv.style.right = '20px';
+            errorDiv.style.zIndex = '10001';
+            errorDiv.style.maxWidth = '350px';
+            errorDiv.style.animation = 'slideInRight 0.3s ease-out';
+            errorDiv.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+                    color: #c62828; padding: 16px 20px; border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    display: flex; align-items: flex-start; gap: 12px;
+                    border-left: 4px solid #f44336; backdrop-filter: blur(10px);
+                ">
+                    <span style="font-size: 18px; line-height: 1;">⚠️</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">Location Error</div>
+                        <div style="font-size: 14px; line-height: 1.4;">${message}</div>
+                    </div>
+                    <button class="location-close-btn" aria-label="Close" style="
+                        background: none; border: none; color: #c62828; cursor: pointer; font-size: 18px; padding: 0;
+                    ">×</button>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
 
-    console.error('❌ OrderMethodLocation:', message);
-}
+            // attach close behaviour
+            const closeBtn = errorDiv.querySelector('.location-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    if (errorDiv.parentNode) errorDiv.remove();
+                });
+            }
+
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        if (errorDiv.parentNode) errorDiv.remove();
+                    }, 300);
+                }
+            }, 8000);
+        }
+
+        showFriendlyMessage(message, type = 'success') {
+            this.removeExistingMessages();
+
+            const colors = {
+                success: { bg: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)', color: '#2e7d32', border: '#4caf50', icon: '✅' },
+                info: { bg: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)', color: '#1565c0', border: '#2196f3', icon: 'ℹ️' }
+            };
+
+            const style = colors[type] || colors.success;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'location-message';
+            messageDiv.setAttribute('role', 'status');
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.right = '20px';
+            messageDiv.style.zIndex = '10001';
+            messageDiv.style.maxWidth = '350px';
+            messageDiv.style.animation = 'slideInRight 0.3s ease-out';
+            messageDiv.innerHTML = `
+                <div style="
+                    background: ${style.bg}; color: ${style.color};
+                    padding: 16px 20px; border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    display: flex; align-items: center; gap: 12px;
+                    border-left: 4px solid ${style.border}; backdrop-filter: blur(10px);
+                ">
+                    <span style="font-size: 18px; line-height: 1;">${style.icon}</span>
+                    <div style="font-weight: 500;">${message}</div>
+                    <button class="location-close-btn" aria-label="Close" style="
+                        margin-left: auto; background: none; border: none; 
+                        color: ${style.color}; cursor: pointer; font-size: 18px; padding: 0;
+                    ">×</button>
+                </div>
+            `;
+            document.body.appendChild(messageDiv);
+
+            const closeBtn = messageDiv.querySelector('.location-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    if (messageDiv.parentNode) messageDiv.remove();
+                });
+            }
+
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        if (messageDiv.parentNode) messageDiv.remove();
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        removeExistingMessages() {
+            document.querySelectorAll('.location-message').forEach(msg => msg.remove());
+        }
 
         /**
-         * Get user-friendly error message from geolocation error
-         * @param {GeolocationPositionError} error - Geolocation error
-         * @returns {string} User-friendly error message
-         */
-        getLocationErrorMessage(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            return 'Please allow location access in your browser settings or select your area manually.';
-        case error.POSITION_UNAVAILABLE:
-            return 'We can\'t detect your location. Please select your area manually.';
-        case error.TIMEOUT:
-            return 'Finding your location took too long. Please select your area manually.';
-        default:
-            return 'We can\'t access your location right now. Please select your area manually.';
-    }
-}
-
-        /**
-         * Dispatch custom location event
+         * Event dispatching and callbacks
          */
         dispatchLocationEvent(locationValue, locationData) {
             const event = new CustomEvent('orderLocationChange', {
-                detail: {
-                    value: locationValue,
-                    data: locationData,
-                    timestamp: Date.now()
-                },
-                bubbles: true,
-                cancelable: true
+                detail: { value: locationValue, data: locationData, timestamp: Date.now() },
+                bubbles: true, cancelable: true
             });
-
             document.dispatchEvent(event);
             console.log('📡 OrderMethodLocation: Event dispatched:', event.detail);
         }
 
-        /**
-         * Register callback for location changes
-         * @param {Function} callback - Function to call on location change
-         */
         onChange(callback) {
             if (typeof callback === 'function') {
                 this.callbacks.onChange = callback;
-                console.log('📞 OrderMethodLocation: Change callback registered');
             }
         }
 
-        /**
-         * Register callback for location success
-         * @param {Function} callback - Function to call on location success
-         */
         onSuccess(callback) {
             if (typeof callback === 'function') {
                 this.callbacks.onSuccess = callback;
-                console.log('📞 OrderMethodLocation: Success callback registered');
             }
         }
 
-        /**
-         * Register callback for location error
-         * @param {Function} callback - Function to call on location error
-         */
         onError(callback) {
             if (typeof callback === 'function') {
                 this.callbacks.onError = callback;
-                console.log('📞 OrderMethodLocation: Error callback registered');
             }
         }
 
-        /**
-         * Get current selected location
-         * @returns {string|null} Current location value
-         */
         getCurrentLocation() {
             return this.currentLocation;
         }
 
-        /**
-         * Get location data by value
-         * @param {string} locationValue - Location value to find
-         * @returns {Object|null} Location data
-         */
         getLocationData(locationValue) {
             const allLocations = [...this.locationData.delivery, ...this.locationData.pickup];
             return allLocations.find(loc => loc.value === locationValue) || null;
         }
 
-        /**
-         * Show/hide current location button
-         * @param {boolean} show - Whether to show the button
-         */
-        toggleLocationButton(show) {
-            if (!this.elements.locationBtn) return;
-
-            if (show) {
-                this.elements.locationBtn.classList.remove('hidden');
-            } else {
-                this.elements.locationBtn.classList.add('hidden');
-            }
-        }
-
-        /**
-         * Reset location selection
-         */
         reset() {
             this.currentLocation = null;
-
             if (this.elements.dropdown) {
-                this.elements.dropdown.selectedIndex = 0;
+                try {
+                    this.elements.dropdown.selectedIndex = 0;
+                } catch (e) { /* ignore */ }
             }
-
-            console.log('🔄 OrderMethodLocation: Reset');
         }
 
-        /**
-         * Destroy the location component
-         */
         destroy() {
-            console.log('🗑️ OrderMethodLocation: Destroying...');
-
             this.callbacks = {};
+            // remove event listeners where possible
+            try {
+                if (this.elements.dropdown) {
+                    this.elements.dropdown.removeEventListener('change', this.handleLocationChange);
+                }
+            } catch (e) { /* ignore */ }
+
             this.elements = {};
             this.currentLocation = null;
-
-            console.log('✅ OrderMethodLocation: Destroyed');
+            if (this.map) {
+                try {
+                    this.map.off();
+                    this.map.remove();
+                } catch (e) { /* ignore */ }
+                this.map = null;
+            }
+            this.marker = null;
+            this.isInitialized = false;
+            console.log('🗑️ OrderMethodLocation: destroyed');
         }
+    }
 
-        showFriendlyError(message) {
-    // Remove any existing error message
-    this.removeExistingErrors();
-
-    // Create a friendly error message
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'location-error-message';
-    errorDiv.innerHTML = `
-        <div style="position: fixed; top: 20px; right: 20px; background: #ffebee; color: #c62828;
-                    padding: 12px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                    z-index: 10001; display: flex; align-items: center; max-width: 300px;">
-            <span style="margin-right: 8px;">⚠️</span>
-            <span>${message}</span>
-        </div>
-    `;
-
-    document.body.appendChild(errorDiv);
-
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (errorDiv.parentNode) {
-            errorDiv.parentNode.removeChild(errorDiv);
-        }
-    }, 5000);
-}
-
-        removeExistingErrors() {
-    const existingErrors = document.querySelectorAll('.location-error-message');
-    existingErrors.forEach(error => error.remove());
-}
-
+    // Add CSS animations
+    if (!document.getElementById('location-animations')) {
+        const style = document.createElement('style');
+        style.id = 'location-animations';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(100%); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            .custom-location-marker {
+                background: none !important;
+                border: none !important;
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     // Export to global scope
@@ -940,6 +1001,6 @@
         window.OrderMethodLocation = OrderMethodLocation;
     }
 
-    console.log('✅ OrderMethodLocation: Component loaded');
+    console.log('✅ OrderMethodLocation (FREE): Component loaded with OpenStreetMap');
 
 })();

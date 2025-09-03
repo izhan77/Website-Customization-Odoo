@@ -1,17 +1,15 @@
 /**
- * Order Method Selector Main Controller - Frontend Only
+ * Enhanced Order Method Main Controller - Updated for Location Integration
  * File: static/src/js/components/order_method_selector/order_method_main.js
- * Purpose: Main controller that coordinates all order method selector components
- * UPDATED: Added URL updating functionality when toggling order types
+ * Purpose: Main controller with proper location component integration
  */
 
 (function() {
     'use strict';
 
-    // Debug logging
-    console.log('🚀 Order Method Selector: Loading main controller...');
+    console.log('🚀 Order Method Selector: Loading enhanced main controller...');
 
-    // CRITICAL: Check if we're on backend/admin pages and exit early
+    // Check if we're on backend/admin pages and exit early
     function isBackendPage() {
         const path = window.location.pathname;
         const isBackend = path.includes('/web') ||
@@ -27,17 +25,19 @@
         return false;
     }
 
-    // Exit early if we're on a backend page
     if (isBackendPage()) {
         return;
     }
 
-    // Main Order Method Selector Class
+    // Enhanced Order Method Selector Class
     class OrderMethodSelector {
         constructor() {
             this.currentOrderType = 'delivery';
             this.selectedLocation = null;
             this.isInitialized = false;
+
+            // Component instances
+            this.locationComponent = null;
 
             // DOM Elements
             this.elements = {};
@@ -53,23 +53,20 @@
                 animations: {
                     duration: 300
                 },
-                // Only show popup on homepage by default
                 autoShow: window.location.pathname === '/' || window.location.pathname === '/home',
-                
-                // URL Configuration
                 url: {
                     updateEnabled: true,
-                    paramName: 'order_type', // URL parameter name
+                    paramName: 'order_type',
                     deliveryValue: 'delivery',
                     pickupValue: 'pickup'
                 }
             };
 
-            console.log('📱 OrderMethodSelector: Instance created');
+            console.log('📱 OrderMethodSelector: Enhanced instance created');
         }
 
         /**
-         * Initialize the order method selector
+         * Initialize the order method selector with location integration
          */
         init() {
             if (this.isInitialized) {
@@ -77,18 +74,16 @@
                 return;
             }
 
-            // Double-check we're not on backend
             if (isBackendPage()) {
                 console.log('🚫 OrderMethodSelector: Backend detected in init, aborting');
                 return;
             }
 
-            console.log('🔧 OrderMethodSelector: Initializing...');
+            console.log('🔧 OrderMethodSelector: Initializing enhanced version...');
 
             // Cache DOM elements
             this.cacheElements();
 
-            // Check if required elements exist
             if (!this.validateElements()) {
                 console.error('❌ OrderMethodSelector: Required elements not found');
                 return;
@@ -99,75 +94,87 @@
 
             // Initialize components
             this.initializeToggleButtons();
-            this.initializeLocationSelector();
+            this.initializeLocationComponent(); // NEW: Initialize location component
             this.initializeSubmitButton();
             this.initializePopupControls();
 
-            // Set initial state (this will also check URL)
+            // Set initial state
             this.setInitialState();
 
             this.isInitialized = true;
-            console.log('✅ OrderMethodSelector: Initialization complete');
+            console.log('✅ OrderMethodSelector: Enhanced initialization complete');
         }
 
         /**
-         * Initialize URL handling
+         * Initialize the location component
          */
-        initializeUrlHandling() {
-            console.log('🔗 OrderMethodSelector: Initializing URL handling...');
+        initializeLocationComponent() {
+            console.log('📍 OrderMethodSelector: Initializing location component...');
 
-            // Listen for browser back/forward buttons
-            window.addEventListener('popstate', (event) => {
-                console.log('🔙 OrderMethodSelector: Popstate event detected');
-                this.handleUrlChange();
-            });
-
-            // Check initial URL state
-            this.handleUrlChange();
-        }
-
-        /**
-         * Handle URL changes (back/forward buttons)
-         */
-        handleUrlChange() {
-            if (!this.config.url.updateEnabled) return;
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlOrderType = urlParams.get(this.config.url.paramName);
-
-            console.log('🔍 OrderMethodSelector: URL order type:', urlOrderType);
-
-            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
-                // Update current order type without triggering URL update again
-                this.switchOrderType(urlOrderType, false);
-            }
-        }
-
-        /**
-         * Update URL with current order type
-         * @param {string} orderType - The order type to set in URL
-         */
-        updateUrl(orderType) {
-            if (!this.config.url.updateEnabled) {
-                console.log('🚫 OrderMethodSelector: URL updates disabled');
+            // Check if OrderMethodLocation is available
+            if (typeof window.OrderMethodLocation === 'undefined') {
+                console.error('❌ OrderMethodLocation component not found');
                 return;
             }
 
-            try {
-                const url = new URL(window.location);
-                url.searchParams.set(this.config.url.paramName, orderType);
-                
-                // Update URL without page reload
-                window.history.pushState(
-                    { orderType: orderType }, 
-                    '', 
-                    url.toString()
-                );
+            // Create location component instance
+            this.locationComponent = new window.OrderMethodLocation({
+                primaryColor: this.config.colors.primary,
+                geolocationTimeout: 10000,
+                animationDuration: this.config.animations.duration
+            });
 
-                console.log('🔗 OrderMethodSelector: URL updated to:', url.toString());
-            } catch (error) {
-                console.error('❌ OrderMethodSelector: Failed to update URL:', error);
+            // Initialize with elements
+            const locationElements = {
+                dropdown: this.elements.dropdown,
+                locationBtn: this.elements.locationBtn
+            };
+
+            if (!this.locationComponent.init(locationElements)) {
+                console.error('❌ Failed to initialize location component');
+                return;
             }
+
+            // Register callbacks
+            this.setupLocationCallbacks();
+
+            console.log('✅ Location component initialized successfully');
+        }
+
+        /**
+         * Setup location component callbacks
+         */
+        setupLocationCallbacks() {
+            if (!this.locationComponent) return;
+
+            // Handle location changes
+            this.locationComponent.onChange((locationValue, locationData) => {
+                console.log('📍 Location changed via component:', locationValue, locationData);
+                this.handleLocationChange(locationValue, locationData);
+            });
+
+            // Handle location success
+            this.locationComponent.onSuccess((message) => {
+                console.log('✅ Location success:', message);
+                this.showMessage(message, 'success');
+            });
+
+            // Handle location errors
+            this.locationComponent.onError((error) => {
+                console.log('❌ Location error:', error);
+                this.showMessage(error, 'error');
+            });
+
+            // Listen for custom location events
+            document.addEventListener('orderLocationChange', (e) => {
+                console.log('📡 Received location change event:', e.detail);
+                this.selectedLocation = e.detail.value;
+                
+                // Update location details if it's pickup mode
+                if (this.currentOrderType === 'pickup' && e.detail.data) {
+                    this.updateLocationDetailsFromData(e.detail.data);
+                }
+            });
         }
 
         /**
@@ -198,11 +205,66 @@
             const missing = required.filter(key => !this.elements[key]);
 
             if (missing.length > 0) {
-                console.log('❌ Missing required elements (may be backend page):', missing);
+                console.log('❌ Missing required elements:', missing);
                 return false;
             }
 
             return true;
+        }
+
+        /**
+         * Initialize URL handling
+         */
+        initializeUrlHandling() {
+            console.log('🔗 OrderMethodSelector: Initializing URL handling...');
+
+            window.addEventListener('popstate', (event) => {
+                console.log('🔙 OrderMethodSelector: Popstate event detected');
+                this.handleUrlChange();
+            });
+
+            this.handleUrlChange();
+        }
+
+        /**
+         * Handle URL changes
+         */
+        handleUrlChange() {
+            if (!this.config.url.updateEnabled) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+
+            console.log('🔍 OrderMethodSelector: URL order type:', urlOrderType);
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                this.switchOrderType(urlOrderType, false);
+            }
+        }
+
+        /**
+         * Update URL with current order type
+         */
+        updateUrl(orderType) {
+            if (!this.config.url.updateEnabled) {
+                console.log('🚫 OrderMethodSelector: URL updates disabled');
+                return;
+            }
+
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set(this.config.url.paramName, orderType);
+                
+                window.history.pushState(
+                    { orderType: orderType }, 
+                    '', 
+                    url.toString()
+                );
+
+                console.log('🔗 OrderMethodSelector: URL updated to:', url.toString());
+            } catch (error) {
+                console.error('❌ OrderMethodSelector: Failed to update URL:', error);
+            }
         }
 
         /**
@@ -211,35 +273,16 @@
         initializeToggleButtons() {
             console.log('🔘 OrderMethodSelector: Initializing toggle buttons...');
 
-            // Delivery button event
             this.elements.deliveryBtn?.addEventListener('click', (e) => {
                 e.preventDefault();
                 console.log('🚚 Delivery button clicked');
                 this.switchOrderType('delivery');
             });
 
-            // Pickup button event
             this.elements.pickupBtn?.addEventListener('click', (e) => {
                 e.preventDefault();
                 console.log('🏪 Pickup button clicked');
                 this.switchOrderType('pickup');
-            });
-        }
-
-        /**
-         * Initialize location selector functionality
-         */
-        initializeLocationSelector() {
-            console.log('📍 OrderMethodSelector: Initializing location selector...');
-
-            // Current location button
-            this.elements.locationBtn?.addEventListener('click', () => {
-                this.handleCurrentLocation();
-            });
-
-            // Dropdown change event
-            this.elements.dropdown?.addEventListener('change', (e) => {
-                this.handleLocationChange(e.target.value);
             });
         }
 
@@ -253,17 +296,15 @@
         }
 
         /**
-         * Initialize popup controls (close functionality)
+         * Initialize popup controls
          */
         initializePopupControls() {
-            // Close on overlay click
             this.elements.overlay?.addEventListener('click', (e) => {
                 if (e.target === this.elements.overlay) {
                     this.closePopup();
                 }
             });
 
-            // Close on escape key
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     this.closePopup();
@@ -277,7 +318,6 @@
         setInitialState() {
             console.log('🎯 OrderMethodSelector: Setting initial state...');
 
-            // Check URL first, then default to delivery
             const urlParams = new URLSearchParams(window.location.search);
             const urlOrderType = urlParams.get(this.config.url.paramName);
             
@@ -286,19 +326,15 @@
 
             if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
                 initialType = urlOrderType;
-                shouldUpdateUrl = false; // Don't update URL if we're reading from it
+                shouldUpdateUrl = false;
                 console.log('🔗 OrderMethodSelector: Using order type from URL:', initialType);
             } else {
-                // No URL parameter exists, so we should set it for the default delivery
                 console.log('🔗 OrderMethodSelector: No URL parameter found, will set default delivery in URL');
             }
 
-            // Start with the determined type and update URL if needed
             this.switchOrderType(initialType, shouldUpdateUrl);
 
-            // Only auto-show popup if configured and not already shown
             if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
-                // Show popup with slight delay to ensure page is loaded
                 setTimeout(() => {
                     this.showPopup();
                 }, 1000);
@@ -307,36 +343,29 @@
 
         /**
          * Switch between delivery and pickup modes
-         * @param {string} type - 'delivery' or 'pickup'
-         * @param {boolean} updateUrl - Whether to update the URL (default: true)
          */
         switchOrderType(type, updateUrl = true) {
             console.log(`🔄 OrderMethodSelector: Switching to ${type}${updateUrl ? ' (with URL update)' : ' (without URL update)'}`);
 
             this.currentOrderType = type;
 
-            // Update URL if requested
             if (updateUrl) {
                 this.updateUrl(type);
             }
 
-            // Update button states
             this.updateToggleButtons(type);
 
-            // Update content based on type
             if (type === 'delivery') {
                 this.setupDeliveryMode();
             } else {
                 this.setupPickupMode();
             }
 
-            // Dispatch custom event for other components
             this.dispatchOrderTypeChangeEvent(type);
         }
 
         /**
          * Dispatch custom event when order type changes
-         * @param {string} orderType - The new order type
          */
         dispatchOrderTypeChangeEvent(orderType) {
             const event = new CustomEvent('orderTypeChanged', {
@@ -382,23 +411,22 @@
         setupDeliveryMode() {
             console.log('🚚 OrderMethodSelector: Setting up delivery mode');
 
-            // Update subtitle
             if (this.elements.subtitle) {
                 this.elements.subtitle.textContent = 'Please select your delivery location';
             }
 
-            // Show current location button
             if (this.elements.locationBtn) {
                 this.elements.locationBtn.style.display = 'inline-flex';
             }
 
-            // Hide location details
             if (this.elements.locationDetails) {
                 this.elements.locationDetails.classList.add('hidden');
             }
 
-            // Update dropdown options for delivery
-            this.updateDropdownOptions('delivery');
+            // Update location component options
+            if (this.locationComponent) {
+                this.locationComponent.updateOptions('delivery');
+            }
         }
 
         /**
@@ -407,149 +435,60 @@
         setupPickupMode() {
             console.log('🏪 OrderMethodSelector: Setting up pickup mode');
 
-            // Update subtitle
             if (this.elements.subtitle) {
                 this.elements.subtitle.textContent = 'Which outlet would you like to pick-up from?';
             }
 
-            // Hide current location button
             if (this.elements.locationBtn) {
-                this.elements.locationBtn.style.display = 'none';
+                this.elements.locationBtn.style.display = 'inline-flex'; // Keep visible for auto-selection
             }
 
-            // Show location details
             if (this.elements.locationDetails) {
                 this.elements.locationDetails.classList.remove('hidden');
             }
 
-            // Update dropdown options for pickup
-            this.updateDropdownOptions('pickup');
-        }
-
-        /**
-         * Update dropdown options based on order type
-         */
-        updateDropdownOptions(type) {
-            if (!this.elements.dropdown) return;
-
-            console.log(`📋 OrderMethodSelector: Updating dropdown for ${type}`);
-
-            // Clear existing options
-            this.elements.dropdown.innerHTML = '';
-
-            if (type === 'delivery') {
-                const deliveryOptions = [
-                    { value: '', text: 'Select your delivery area', disabled: true, selected: true },
-                    { value: 'dha', text: 'DHA Phase 2' },
-                    { value: 'gulshan', text: 'Gulshan-e-Iqbal' },
-                    { value: 'bahadurabad', text: 'Bahadurabad' },
-                    { value: 'clifton', text: 'Clifton' },
-                    { value: 'saddar', text: 'Saddar' }
-                ];
-
-                this.populateDropdown(deliveryOptions);
-
-            } else {
-                const pickupOptions = [
-                    { value: 'tipu-sultan', text: 'Alarahi Tipu Sultan', selected: true },
-                    { value: 'dha-outlet', text: 'Alarahi DHA Phase 2' }
-                ];
-
-                this.populateDropdown(pickupOptions);
-
-                // Auto-select first pickup location and show details
-                setTimeout(() => {
-                    this.handleLocationChange('tipu-sultan');
-                }, 100);
+            // Update location component options
+            if (this.locationComponent) {
+                this.locationComponent.updateOptions('pickup');
             }
         }
 
         /**
-         * Populate dropdown with options
+         * Enhanced location change handler that works with location component
          */
-        populateDropdown(options) {
-            options.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.text;
-
-                if (option.disabled) optionElement.disabled = true;
-                if (option.selected) optionElement.selected = true;
-
-                this.elements.dropdown.appendChild(optionElement);
-            });
-        }
-
-        /**
-         * Handle current location button click
-         */
-        handleCurrentLocation() {
-            console.log('📍 OrderMethodSelector: Getting current location...');
-
-            if (navigator.geolocation) {
-                // Show loading state
-                const originalText = this.elements.locationBtn.innerHTML;
-                this.elements.locationBtn.innerHTML = `
-                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    Detecting...
-                `;
-
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        console.log('✅ Location detected:', position.coords);
-                        // Restore button
-                        this.elements.locationBtn.innerHTML = originalText;
-                        // Simulate finding nearest outlet
-                        this.showLocationSuccess();
-                    },
-                    (error) => {
-                        console.error('❌ Location error:', error);
-                        // Restore button
-                        this.elements.locationBtn.innerHTML = originalText;
-                        this.showLocationError();
-                    }
-                );
-            } else {
-                this.showLocationError('Geolocation not supported');
-            }
-        }
-
-        /**
-         * Show location detection success
-         */
-        showLocationSuccess() {
-            // Auto-select nearest location (DHA for demo)
-            this.elements.dropdown.value = 'dha';
-            this.selectedLocation = 'dha';
-
-            // Show success message
-            this.showMessage('Location detected! Nearest outlet selected.', 'success');
-        }
-
-        /**
-         * Show location detection error
-         */
-        showLocationError(message = 'Unable to detect location. Please select manually.') {
-            this.showMessage(message, 'error');
-        }
-
-        /**
-         * Handle dropdown location change
-         */
-        handleLocationChange(value) {
-            console.log('📍 OrderMethodSelector: Location changed to:', value);
+        handleLocationChange(value, locationData = null) {
+            console.log('📍 OrderMethodSelector: Location changed to:', value, locationData);
 
             this.selectedLocation = value;
 
-            if (this.currentOrderType === 'pickup' && value) {
+            // If we have location data (from pickup mode), update details
+            if (this.currentOrderType === 'pickup' && locationData) {
+                this.updateLocationDetailsFromData(locationData);
+            } else if (this.currentOrderType === 'pickup' && value) {
+                // Fallback to old method if no location data provided
                 this.updateLocationDetails(value);
             }
         }
 
         /**
-         * Update location details for pickup
+         * Update location details using location component data
+         */
+        updateLocationDetailsFromData(locationData) {
+            if (!locationData || !this.elements.locationInfo) return;
+
+            console.log('🏢 OrderMethodSelector: Updating location details with data:', locationData);
+
+            this.elements.locationInfo.innerHTML = `
+                <h4 class="font-medium text-gray-800 mb-2">${locationData.name}</h4>
+                <p class="text-sm text-gray-600 mb-3">${locationData.address}</p>
+                <button class="directions-btn bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors" onclick="orderMethodSelector.getDirections('${locationData.address}')">
+                    Get Directions
+                </button>
+            `;
+        }
+
+        /**
+         * Fallback method for updating location details (legacy support)
          */
         updateLocationDetails(locationId) {
             const locations = {
@@ -596,13 +535,11 @@
             console.log('Order Type:', this.currentOrderType);
             console.log('Selected Location:', this.selectedLocation);
 
-            // Validate selection
             if (!this.selectedLocation) {
                 this.showMessage('Please select a location first.', 'error');
                 return;
             }
 
-            // Store selection in session
             const orderData = {
                 type: this.currentOrderType,
                 location: this.selectedLocation,
@@ -610,8 +547,6 @@
             };
 
             sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
-
-            // Close popup with success message
             this.showMessage('Order type selected successfully!', 'success');
 
             setTimeout(() => {
@@ -627,7 +562,6 @@
 
             this.elements.overlay.style.display = 'flex';
 
-            // Animate in
             setTimeout(() => {
                 this.elements.overlay.style.opacity = '1';
                 if (this.elements.container) {
@@ -644,7 +578,6 @@
 
             console.log('🚪 OrderMethodSelector: Closing popup');
 
-            // Animate out
             this.elements.overlay.style.opacity = '0';
             if (this.elements.container) {
                 this.elements.container.style.transform = 'scale(0.95)';
@@ -659,7 +592,6 @@
          * Show success/error messages
          */
         showMessage(text, type = 'info') {
-            // Simple toast-like message
             const existingMessage = document.querySelector('.order-message');
             if (existingMessage) {
                 existingMessage.remove();
@@ -681,7 +613,7 @@
         }
 
         /**
-         * Manual trigger for popup (for testing)
+         * Manual trigger for popup
          */
         triggerPopup() {
             this.showPopup();
@@ -707,16 +639,15 @@
     window.orderMethodSelector = null;
 
     /**
-     * Initialize the order method selector - Frontend only
+     * Initialize the enhanced order method selector
      */
     function initializeOrderMethodSelector() {
-        // Triple check we're not on backend
         if (isBackendPage()) {
             console.log('🚫 OrderMethodSelector: Backend page, skipping initialization');
             return;
         }
 
-        console.log('🎬 OrderMethodSelector: Starting frontend initialization...');
+        console.log('🎬 OrderMethodSelector: Starting enhanced initialization...');
 
         if (window.orderMethodSelector) {
             console.log('⚠️ OrderMethodSelector: Already exists, reinitializing...');
@@ -726,20 +657,20 @@
         window.orderMethodSelector.init();
     }
 
-    // Only initialize on frontend pages
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeOrderMethodSelector);
     } else {
         initializeOrderMethodSelector();
     }
 
-    // Fallback initialization (but check again)
+    // Fallback initialization
     setTimeout(() => {
         if (!isBackendPage() && !window.orderMethodSelector?.isInitialized) {
             initializeOrderMethodSelector();
         }
     }, 1000);
 
-    console.log('📜 OrderMethodSelector: Main script loaded (frontend only)');
+    console.log('📜 OrderMethodSelector: Enhanced main script loaded');
 
 })();
