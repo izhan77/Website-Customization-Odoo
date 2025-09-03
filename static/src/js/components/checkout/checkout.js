@@ -4,6 +4,49 @@
  * File: /website_customizations/static/src/js/components/checkout/checkout.js
  */
 
+ // Pakistan States/Provinces and Cities Data
+// Add this data at the top of your checkout.js file
+
+const PAKISTAN_DATA = {
+    provinces: {
+        'Sindh': [
+            'Karachi', 'Hyderabad', 'Sukkur', 'Larkana', 'Nawabshah', 'Mirpurkhas',
+            'Jacobabad', 'Shikarpur', 'Khairpur', 'Dadu', 'Badin', 'Thatta',
+            'Tando Allahyar', 'Tando Muhammad Khan', 'Umerkot', 'Sanghar',
+            'Ghotki', 'Kashmor', 'Jamshoro', 'Matiari'
+        ],
+        'Punjab': [
+            'Lahore', 'Faisalabad', 'Rawalpindi', 'Multan', 'Gujranwala', 'Sialkot',
+            'Bahawalpur', 'Sargodha', 'Sheikhupura', 'Jhang', 'Gujrat', 'Kasur',
+            'Rahim Yar Khan', 'Sahiwal', 'Okara', 'Wah Cantonment', 'Dera Ghazi Khan',
+            'Mirpur', 'Kamoke', 'Mandi Bahauddin', 'Jhelum', 'Sadiqabad', 'Khanewal',
+            'Hafizabad', 'Kohat', 'Jacobabad', 'Muzaffargarh', 'Khanpur', 'Chiniot'
+        ],
+        'Khyber Pakhtunkhwa': [
+            'Peshawar', 'Mardan', 'Mingora', 'Kohat', 'Dera Ismail Khan', 'Bannu',
+            'Swabi', 'Charsadda', 'Nowshera', 'Mansehra', 'Abbottabad', 'Karak',
+            'Hangu', 'Parachinar', 'Lakki Marwat', 'Chitral', 'Wazirabad', 'Tank',
+            'Haripur', 'Timergara', 'Miramshah', 'Wana', 'Kurram', 'Orakzai'
+        ],
+        'Balochistan': [
+            'Quetta', 'Turbat', 'Khuzdar', 'Hub', 'Chaman', 'Zhob', 'Gwadar',
+            'Sibi', 'Loralai', 'Pishin', 'Mastung', 'Kalat', 'Lasbela', 'Nasirabad',
+            'Jaffarabad', 'Dera Bugti', 'Kohlu', 'Barkhan', 'Musakhel', 'Sherani'
+        ],
+        'Islamabad Capital Territory': [
+            'Islamabad'
+        ],
+        'Azad Kashmir': [
+            'Muzaffarabad', 'Mirpur', 'Kotli', 'Bhimber', 'Rawalakot', 'Palandri',
+            'Bagh', 'Sudhanoti', 'Neelum', 'Haveli'
+        ],
+        'Gilgit-Baltistan': [
+            'Gilgit', 'Skardu', 'Hunza', 'Ghanche', 'Shigar', 'Nagar', 'Astore',
+            'Diamer', 'Ghizer', 'Kharmang'
+        ]
+    }
+};
+
 class CheckoutManager {
     constructor() {
         // State management
@@ -27,6 +70,505 @@ class CheckoutManager {
     }
 
     /**
+ * Initialize custom dropdowns for location
+ */
+initializeCustomDropdowns() {
+    console.log('🎛️ Initializing custom dropdowns...');
+
+    this.selectedProvince = null;
+    this.selectedCity = null;
+    this.selectedPaymentMethod = null;
+
+    // Setup province dropdown
+    this.setupProvinceDropdown();
+
+    // Setup city dropdown (initially disabled)
+    this.setupCityDropdown();
+
+    // Setup dropdown event listeners
+    this.setupDropdownEvents();
+
+    console.log('✅ Custom dropdowns initialized');
+}
+
+/**
+ * Setup province dropdown options
+ */
+setupProvinceDropdown() {
+    const provinceOptions = document.getElementById('province-options');
+    if (!provinceOptions) return;
+
+    provinceOptions.innerHTML = '';
+
+    Object.keys(PAKISTAN_DATA.provinces).forEach(province => {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.textContent = province;
+        option.setAttribute('data-value', province);
+
+        option.addEventListener('click', () => {
+            this.selectProvince(province);
+        });
+
+        provinceOptions.appendChild(option);
+    });
+}
+
+/**
+ * Setup city dropdown based on selected province
+ */
+setupCityDropdown() {
+    const cityDropdown = document.getElementById('city-dropdown');
+    if (!cityDropdown) return;
+
+    // Initially disable city dropdown
+    cityDropdown.classList.add('disabled');
+
+    const citySelected = document.getElementById('city-selected');
+    const cityOptions = document.getElementById('city-options');
+
+    if (citySelected) {
+        citySelected.querySelector('span').textContent = 'Select City';
+        citySelected.querySelector('span').classList.add('placeholder');
+    }
+
+    if (cityOptions) {
+        cityOptions.innerHTML = '';
+    }
+}
+
+/**
+ * Select province and populate cities
+ */
+selectProvince(province) {
+    console.log('🏛️ Province selected:', province);
+
+    this.selectedProvince = province;
+
+    // Update province display
+    const provinceSelected = document.getElementById('province-selected');
+    const provinceHidden = document.getElementById('customer-state');
+
+    if (provinceSelected) {
+        const span = provinceSelected.querySelector('span');
+        span.textContent = province;
+        span.classList.remove('placeholder');
+        // Fix styling
+        span.style.backgroundColor = 'transparent';
+        span.style.border = 'none';
+        span.style.padding = '0';
+        span.style.margin = '0';
+    }
+
+    if (provinceHidden) {
+        provinceHidden.value = province;
+    }
+
+    // Close province dropdown
+    document.getElementById('province-dropdown').classList.remove('open');
+
+    // Enable and populate city dropdown
+    this.populateCityDropdown(province);
+
+    // Reset city selection
+    this.selectedCity = null;
+    const citySelected = document.getElementById('city-selected');
+    const cityHidden = document.getElementById('customer-city');
+
+    if (citySelected) {
+        const span = citySelected.querySelector('span');
+        span.textContent = 'Select City';
+        span.classList.add('placeholder');
+        // Fix styling
+        span.style.backgroundColor = 'transparent';
+        span.style.border = 'none';
+        span.style.padding = '0';
+        span.style.margin = '0';
+    }
+
+    if (cityHidden) {
+        cityHidden.value = '';
+    }
+
+    // Apply styling fix
+    this.fixPlaceholderStyling();
+}
+
+/**
+ * Fix placeholder styling for dropdowns
+ */
+fixPlaceholderStyling() {
+    // Fix province dropdown placeholder
+    const provinceSpan = document.querySelector('#province-selected span');
+    if (provinceSpan && provinceSpan.textContent === 'Select State/Province') {
+        provinceSpan.classList.add('placeholder');
+        provinceSpan.style.backgroundColor = 'transparent';
+        provinceSpan.style.border = 'none';
+        provinceSpan.style.padding = '0';
+        provinceSpan.style.margin = '0';
+    }
+
+    // Fix city dropdown placeholder
+    const citySpan = document.querySelector('#city-selected span');
+    if (citySpan && citySpan.textContent === 'Select City') {
+        citySpan.classList.add('placeholder');
+        citySpan.style.backgroundColor = 'transparent';
+        citySpan.style.border = 'none';
+        citySpan.style.padding = '0';
+        citySpan.style.margin = '0';
+    }
+
+    // Remove any inline styles that might cause gray backgrounds
+    document.querySelectorAll('.custom-dropdown-selected span').forEach(span => {
+        span.style.backgroundColor = 'transparent';
+        span.style.border = 'none';
+        span.style.padding = '0';
+        span.style.margin = '0';
+    });
+}
+
+/**
+ * Populate city dropdown based on province
+ */
+populateCityDropdown(province) {
+    const cityDropdown = document.getElementById('city-dropdown');
+    const cityOptions = document.getElementById('city-options');
+
+    if (!cityDropdown || !cityOptions) return;
+
+    // Enable city dropdown
+    cityDropdown.classList.remove('disabled');
+
+    // Clear existing options
+    cityOptions.innerHTML = '';
+
+    // Get cities for the selected province
+    const cities = PAKISTAN_DATA.provinces[province] || [];
+
+    cities.forEach(city => {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.textContent = city;
+        option.setAttribute('data-value', city);
+
+        option.addEventListener('click', () => {
+            this.selectCity(city);
+        });
+
+        cityOptions.appendChild(option);
+    });
+
+    console.log(`🏙️ ${cities.length} cities loaded for ${province}`);
+}
+
+/**
+ * Select city
+ */
+selectCity(city) {
+    console.log('🏙️ City selected:', city);
+
+    this.selectedCity = city;
+
+    // Update city display
+    const citySelected = document.getElementById('city-selected');
+    const cityHidden = document.getElementById('customer-city');
+
+    if (citySelected) {
+        const span = citySelected.querySelector('span');
+        span.textContent = city;
+        span.classList.remove('placeholder');
+        // Fix styling
+        span.style.backgroundColor = 'transparent';
+        span.style.border = 'none';
+        span.style.padding = '0';
+        span.style.margin = '0';
+    }
+
+    if (cityHidden) {
+        cityHidden.value = city;
+    }
+
+    // Close city dropdown
+    document.getElementById('city-dropdown').classList.remove('open');
+
+    // Apply styling fix
+    this.fixPlaceholderStyling();
+}
+
+/**
+ * Setup dropdown click events
+ */
+setupDropdownEvents() {
+    // Province dropdown events
+    const provinceDropdown = document.getElementById('province-dropdown');
+    const provinceSelected = document.getElementById('province-selected');
+
+    if (provinceSelected) {
+        provinceSelected.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleDropdown('province-dropdown');
+        });
+    }
+
+    // City dropdown events
+    const cityDropdown = document.getElementById('city-dropdown');
+    const citySelected = document.getElementById('city-selected');
+
+    if (citySelected) {
+        citySelected.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!cityDropdown.classList.contains('disabled')) {
+                this.toggleDropdown('city-dropdown');
+            }
+        });
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.custom-dropdown')) {
+            this.closeAllDropdowns();
+        }
+    });
+}
+
+/**
+ * Toggle dropdown open/close
+ */
+toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) return;
+
+    // Close other dropdowns first
+    const allDropdowns = document.querySelectorAll('.custom-dropdown');
+    allDropdowns.forEach(dd => {
+        if (dd.id !== dropdownId) {
+            dd.classList.remove('open');
+        }
+    });
+
+    // Toggle current dropdown
+    dropdown.classList.toggle('open');
+}
+
+/**
+ * Close all dropdowns
+ */
+closeAllDropdowns() {
+    document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('open');
+    });
+}
+
+/**
+ * Initialize payment method selection
+ */
+initializePaymentMethods() {
+    console.log('💳 Initializing payment methods...');
+
+    // Setup payment method cards
+    this.setupPaymentMethodCards();
+
+    // Setup payment back button
+    this.setupPaymentBackButton();
+
+    console.log('✅ Payment methods initialized');
+}
+
+/**
+ * Setup payment method card selection
+ */
+setupPaymentMethodCards() {
+    const paymentCards = document.querySelectorAll('.payment-method-card');
+
+    paymentCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const method = card.getAttribute('data-method');
+            this.selectPaymentSubMethod(method);
+        });
+    });
+}
+
+/**
+ * Select payment sub-method
+ */
+selectPaymentSubMethod(method) {
+    console.log('💳 Payment sub-method selected:', method);
+
+    this.selectedPaymentMethod = method;
+
+    // Update card selection states
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    const selectedCard = document.querySelector(`[data-method="${method}"]`);
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+
+    // Show payment details form
+    this.showPaymentDetailsForm(method);
+}
+
+/**
+ * Show payment details form based on method
+ */
+showPaymentDetailsForm(method) {
+    const paymentDetailsForm = document.querySelector('.payment-details-form');
+    const methodsSelection = document.querySelector('.payment-methods-selection');
+    const cardDetails = document.getElementById('card-details');
+    const walletDetails = document.getElementById('wallet-details');
+
+    if (!paymentDetailsForm) return;
+
+    // Hide method selection, show details form
+    if (methodsSelection) {
+        methodsSelection.style.display = 'none';
+    }
+
+    paymentDetailsForm.style.display = 'block';
+
+    // Show appropriate details section
+    if (method === 'card') {
+        if (cardDetails) cardDetails.style.display = 'block';
+        if (walletDetails) walletDetails.style.display = 'none';
+        this.makeCardFieldsRequired(true);
+    } else {
+        if (cardDetails) cardDetails.style.display = 'none';
+        if (walletDetails) {
+            walletDetails.style.display = 'block';
+            this.updateWalletDescription(method);
+        }
+        this.makeCardFieldsRequired(false);
+    }
+}
+
+/**
+ * Update wallet description based on selected method
+ */
+updateWalletDescription(method) {
+    const walletDescription = document.getElementById('wallet-description');
+    if (!walletDescription) return;
+
+    const descriptions = {
+        'easypaisa': 'Enter your EasyPaisa mobile number to proceed with payment',
+        'jazzcash': 'Enter your JazzCash mobile number to proceed with payment',
+        'sadapay': 'Enter your SadaPay mobile number to proceed with payment'
+    };
+
+    walletDescription.textContent = descriptions[method] || 'Enter your mobile number to proceed with payment';
+}
+
+/**
+ * Setup payment back button
+ */
+setupPaymentBackButton() {
+    const backBtn = document.getElementById('payment-back-btn');
+    if (!backBtn) return;
+
+    backBtn.addEventListener('click', () => {
+        this.showPaymentMethodSelection();
+    });
+}
+
+/**
+ * Show payment method selection (back from details)
+ */
+showPaymentMethodSelection() {
+    const paymentDetailsForm = document.querySelector('.payment-details-form');
+    const methodsSelection = document.querySelector('.payment-methods-selection');
+
+    if (methodsSelection) {
+        methodsSelection.style.display = 'block';
+    }
+
+    if (paymentDetailsForm) {
+        paymentDetailsForm.style.display = 'none';
+    }
+
+    // Clear selection
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    this.selectedPaymentMethod = null;
+    this.makeCardFieldsRequired(false);
+}
+
+/**
+ * UPDATED: Handle payment method change with dynamic text
+ */
+handlePaymentMethodChange(method) {
+    this.paymentMethod = method;
+    const onlineDetails = document.querySelector('.online-payment-details');
+
+    // Update payment option styling
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+
+    const selectedOption = document.querySelector(`[data-payment="${method}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('selected');
+    }
+
+    // Show/hide online payment details
+    if (method === 'online' && onlineDetails) {
+        onlineDetails.style.display = 'block';
+        onlineDetails.classList.add('fade-in');
+
+        // Reset to show method selection
+        this.showPaymentMethodSelection();
+    } else if (onlineDetails) {
+        onlineDetails.style.display = 'none';
+        onlineDetails.classList.remove('fade-in');
+        this.makeCardFieldsRequired(false);
+    }
+
+    console.log('💳 Payment method changed to:', method);
+}
+
+/**
+ * UPDATED: Make card fields required based on selected payment method
+ */
+makeCardFieldsRequired(required) {
+    const cardFields = [
+        'card-number',
+        'card-expiry',
+        'card-cvv',
+        'card-name'
+    ];
+
+    const walletFields = [
+        'wallet-phone'
+    ];
+
+    // Handle card fields
+    cardFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            if (required && this.selectedPaymentMethod === 'card') {
+                field.setAttribute('required', 'required');
+            } else {
+                field.removeAttribute('required');
+            }
+        }
+    });
+
+    // Handle wallet fields
+    walletFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            if (required && this.selectedPaymentMethod !== 'card') {
+                field.setAttribute('required', 'required');
+            } else {
+                field.removeAttribute('required');
+            }
+        }
+    });
+}
+
+    /**
      * Initialize the checkout system
      */
     init() {
@@ -45,17 +587,24 @@ class CheckoutManager {
      * Setup all checkout functionality
      */
     setup() {
-        this.detectOrderType();
-        this.loadStoredIds();
-        this.loadCartData();
-        this.populateOrderSummary();
-        this.setupOrderTypeUI();
-        this.bindEventListeners();
-        this.initializeFormValidation();
-        this.setupPaymentToggle();
-        this.setupCardFormatting();
-        console.log('✅ Checkout Manager initialized successfully');
-    }
+    this.detectOrderType();
+    this.preventInitialFlicker();
+    this.loadStoredIds();
+    this.loadCartData();
+    this.populateOrderSummary();
+    this.setupOrderTypeUI();
+
+    // NEW: Initialize custom dropdowns and payment methods
+    this.initializeCustomDropdowns();
+    this.initializePaymentMethods();
+    this.fixPlaceholderStyling();
+
+    this.bindEventListeners();
+    this.initializeFormValidation();
+    this.setupPaymentToggle();
+    this.setupCardFormatting();
+    console.log('✅ Checkout Manager initialized successfully with custom features');
+}
 
     /**
      * Detect order type from URL parameters and sessionStorage
@@ -107,20 +656,23 @@ class CheckoutManager {
      * Setup UI based on order type
      */
     setupOrderTypeUI() {
-        console.log('🎨 Setting up UI for order type:', this.orderType);
+    console.log('🎨 Setting up UI for order type:', this.orderType);
 
-        // Hide/show address fields based on order type
-        this.toggleAddressFields();
+    // Hide/show address fields based on order type
+    this.toggleAddressFields();
 
-        // Update payment method text
-        this.updatePaymentMethodText();
+    // Update payment method text
+    this.updatePaymentMethodText();
 
-        // Update delivery fee based on order type
-        this.updateDeliveryFee();
+    // Update delivery fee based on order type
+    this.updateDeliveryFee();
 
-        // Update order type indicator in UI if exists
-        this.updateOrderTypeIndicator();
-    }
+    // Update order type indicator in UI if exists
+    this.updateOrderTypeIndicator();
+
+    // Update section title
+    this.updateSectionTitle();
+}
 
     /**
      * Update order type indicator in UI
@@ -134,48 +686,95 @@ class CheckoutManager {
 
     toggleAddressFields() {
     const fieldsToToggle = [
-        'customer-country',
         'customer-state',
         'customer-zipcode',
         'customer-address'
     ];
 
-    fieldsToToggle.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        const formGroup = field?.closest('.form-group');
-        const formRow = field?.closest('.form-row');
+    // Handle province/state dropdown
+    const provinceDropdown = document.getElementById('province-dropdown');
+    const provinceFormGroup = provinceDropdown?.closest('.form-group');
 
-        if (!this.isDeliveryOrder) {
-            // Hide field and its container
+    // Handle city dropdown - ALWAYS HIDE FOR PICKUP
+    const cityDropdown = document.getElementById('city-dropdown');
+    const cityFormGroup = cityDropdown?.closest('.form-group');
+
+    if (!this.isDeliveryOrder) {
+        // PICKUP MODE: Hide state, city, zip, address
+        if (provinceFormGroup) {
+            provinceFormGroup.style.display = 'none';
+            const stateField = document.getElementById('customer-state');
+            if (stateField) {
+                stateField.removeAttribute('required');
+            }
+        }
+
+        // ALWAYS hide city for pickup
+        if (cityFormGroup) {
+            cityFormGroup.style.display = 'none';
+            const cityField = document.getElementById('customer-city');
+            if (cityField) {
+                cityField.removeAttribute('required');
+            }
+        }
+
+        // Hide other fields
+        fieldsToToggle.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const formGroup = field?.closest('.form-group');
+
             if (formGroup) {
                 formGroup.style.display = 'none';
-                // Remove required attribute for pickup orders
                 if (field) {
                     field.removeAttribute('required');
-                    field.removeAttribute('data-was-required'); // Clear any previous state
                 }
             }
-        } else {
-            // Show field for delivery orders
+        });
+
+    } else {
+        // DELIVERY MODE: Show all fields
+        if (provinceFormGroup) {
+            provinceFormGroup.style.display = '';
+            const stateField = document.getElementById('customer-state');
+            if (stateField) {
+                stateField.setAttribute('required', 'required');
+            }
+        }
+
+        // Show city for delivery
+        if (cityFormGroup) {
+            cityFormGroup.style.display = '';
+            const cityField = document.getElementById('customer-city');
+            if (cityField) {
+                cityField.setAttribute('required', 'required');
+            }
+        }
+
+        // Show other fields
+        fieldsToToggle.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const formGroup = field?.closest('.form-group');
+
             if (formGroup) {
                 formGroup.style.display = '';
-                // Add back required attribute for delivery orders
                 if (field) {
                     field.setAttribute('required', 'required');
                 }
             }
-        }
-    });
-
-    // Update section titles and descriptions
-    const customerInfoSection = document.querySelector('.customer-info-section .section-title');
-    if (customerInfoSection) {
-        customerInfoSection.textContent = this.isDeliveryOrder
-            ? 'Delivery Information'
-            : 'Pickup Information';
+        });
     }
 
-    console.log(`${this.isDeliveryOrder ? '🚚' : '🏪'} Address fields ${this.isDeliveryOrder ? 'shown' : 'hidden'}`);
+    console.log(`${this.isDeliveryOrder ? '🚚' : '🏪'} Address fields ${this.isDeliveryOrder ? 'shown' : 'hidden'}, city ${this.isDeliveryOrder ? 'shown' : 'always hidden for pickup'}`);
+}
+
+    /**
+ * NEW: Update section title based on order type
+ */
+updateSectionTitle() {
+    const sectionTitle = document.querySelector('.customer-info-section .section-title');
+    if (sectionTitle) {
+        sectionTitle.textContent = this.isDeliveryOrder ? 'Delivery Information' : 'Pickup Information';
+    }
 }
 
     /**
@@ -293,31 +892,31 @@ class CheckoutManager {
     /**
  * Collect all form data - ENHANCED FOR ODOO with order type
  */
-collectOrderData() {
+    collectOrderData() {
     this.orderData = {
         // Customer information
         customerName: document.getElementById('customer-name')?.value?.trim(),
-        customerPhone: document.getElementById('country-code')?.value + document.getElementById('customer-phone')?.value?.trim(),
+        customerPhone: '+92' + document.getElementById('customer-phone')?.value?.trim(),
         customerEmail: document.getElementById('customer-email')?.value?.trim(),
 
         // Order type information (CRITICAL for Odoo integration)
         orderType: this.orderType,
         isDeliveryOrder: this.isDeliveryOrder,
 
-        // Address fields - ALWAYS INCLUDE but set defaults for pickup
-        customerCountry: this.isDeliveryOrder ?
-            document.getElementById('customer-country')?.value : 'Pakistan',
-        customerState: this.isDeliveryOrder ?
-            document.getElementById('customer-state')?.value : 'N/A',
+        // Updated location fields
+        customerCountry: 'Pakistan', // Fixed for Pakistan
+        customerState: document.getElementById('customer-state')?.value || this.selectedProvince,
+        customerCity: document.getElementById('customer-city')?.value || this.selectedCity,
         customerZipcode: this.isDeliveryOrder ?
             document.getElementById('customer-zipcode')?.value?.trim() : '00000',
         customerAddress: this.isDeliveryOrder ?
             document.getElementById('customer-address')?.value?.trim() : 'Pickup Order - No Address Required',
 
-        // Payment information
+        // Payment information - Updated for new payment system
         paymentMethod: this.paymentMethod,
+        paymentSubMethod: this.selectedPaymentMethod, // New field for online payment sub-methods
 
-        // Order details - IMPORTANT: This is what Odoo needs
+        // Order details
         items: this.cartData.items.map(item => ({
             name: item.name,
             price: parseFloat(item.price),
@@ -335,19 +934,23 @@ collectOrderData() {
         orderId: this.orderId,
 
         // Metadata
-        orderDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-        orderTime: new Date().toTimeString().split(' ')[0], // HH:MM:SS format
+        orderDate: new Date().toISOString().split('T')[0],
+        orderTime: new Date().toTimeString().split(' ')[0],
 
-        // Card details (if online payment)
-        ...(this.paymentMethod === 'online' && {
+        // Payment details based on selected method
+        ...(this.paymentMethod === 'online' && this.selectedPaymentMethod === 'card' && {
             cardNumber: document.getElementById('card-number')?.value?.replace(/\s/g, ''),
             cardExpiry: document.getElementById('card-expiry')?.value,
-            cardName: document.getElementById('card-name')?.value?.trim(),
-            selectedBank: document.getElementById('bank-select')?.value
+            cardName: document.getElementById('card-name')?.value?.trim()
+        }),
+
+        ...(this.paymentMethod === 'online' && this.selectedPaymentMethod !== 'card' && {
+            walletPhone: '+92' + document.getElementById('wallet-phone')?.value?.trim(),
+            walletProvider: this.selectedPaymentMethod
         })
     };
 
-    console.log('📦 Order data prepared for Odoo:', this.orderData);
+    console.log('📦 Order data prepared for Odoo with custom features:', this.orderData);
 }
 
     /**
@@ -388,61 +991,256 @@ collectOrderData() {
     }
 
     /**
+ * NEW: Listen for order type changes from Order Mode popup
+ * Add this to your bindEventListeners method
+ */
+listenForOrderTypeChanges() {
+    let lastProcessedOrderType = this.orderType;
+    let isProcessingChange = false;
+    let changeTimeout = null;
+
+    // Function to process order type change
+    const processOrderTypeChange = (newOrderType) => {
+        if (isProcessingChange || newOrderType === lastProcessedOrderType) return;
+
+        console.log('🔄 Processing order type change:', newOrderType);
+
+        // Clear any pending changes
+        if (changeTimeout) {
+            clearTimeout(changeTimeout);
+        }
+
+        // Set processing flag and prevent UI flicker
+        isProcessingChange = true;
+        this.preventUIFlicker();
+
+        // Update internal state immediately
+        this.orderType = newOrderType;
+        this.isDeliveryOrder = newOrderType === 'delivery';
+        lastProcessedOrderType = newOrderType;
+
+        // Apply changes after a brief delay to prevent flicker
+        changeTimeout = setTimeout(() => {
+            this.applyOrderTypeChangeWithAnimation();
+
+            // Reset processing flag
+            setTimeout(() => {
+                isProcessingChange = false;
+                changeTimeout = null;
+            }, 100);
+        }, 50); // Very short delay to prevent flicker
+    };
+
+    // Listen for order type change events
+    document.addEventListener('orderTypeChanged', (event) => {
+        if (event.detail && event.detail.orderType) {
+            processOrderTypeChange(event.detail.orderType);
+        }
+    });
+
+    // Storage events
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'orderMethodSelected') {
+            try {
+                const orderData = JSON.parse(event.newValue);
+                if (orderData.type) {
+                    processOrderTypeChange(orderData.type);
+                }
+            } catch (e) {
+                console.warn('Error parsing order method data:', e);
+            }
+        }
+    });
+
+    // Periodic check (reduced frequency)
+    setInterval(() => {
+        if (!isProcessingChange) {
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                try {
+                    const parsedData = JSON.parse(storedOrderData);
+                    if (parsedData.type) {
+                        processOrderTypeChange(parsedData.type);
+                    }
+                } catch (e) {
+                    // Ignore errors
+                }
+            }
+        }
+    }, 3000); // Check every 3 seconds instead of 2
+}
+checkForOrderTypeChanges() {
+    const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+    if (storedOrderData) {
+        try {
+            const parsedData = JSON.parse(storedOrderData);
+            if (parsedData.type && parsedData.type !== this.orderType) {
+                console.log('🔄 Periodic order type change detected:', parsedData.type);
+                this.orderType = parsedData.type;
+                this.isDeliveryOrder = this.orderType === 'delivery';
+                this.applyOrderTypeChangeWithAnimation();
+            }
+        } catch (e) {
+            // Ignore parsing errors
+        }
+    }
+}
+applyOrderTypeChangeWithAnimation() {
+    console.log('🎬 Applying smooth order type change:', this.orderType);
+
+    // Get elements that need updating
+    const form = document.getElementById('checkout-form');
+    const sectionTitle = document.querySelector('.customer-info-section .section-title');
+
+    // Add smooth transition
+    if (form) {
+        form.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    // Update section title with animation
+    if (sectionTitle) {
+        sectionTitle.style.transition = 'opacity 0.15s ease';
+        sectionTitle.style.opacity = '0.5';
+
+        setTimeout(() => {
+            sectionTitle.textContent = this.isDeliveryOrder ? 'Delivery Information' : 'Pickup Information';
+            sectionTitle.style.opacity = '1';
+        }, 75);
+    }
+
+    // Update all UI elements
+    this.setupOrderTypeUI();
+    this.updateDeliveryFee();
+    this.recalculateTotals();
+    this.populateOrderSummary();
+
+    // Reset form fields for pickup mode
+    if (!this.isDeliveryOrder) {
+        const fieldsToReset = ['customer-state', 'customer-city', 'customer-zipcode', 'customer-address'];
+        fieldsToReset.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.value = '';
+                // Clear any validation states
+                this.clearFieldError(field);
+                field.classList.remove('error', 'success');
+            }
+        });
+
+        // Reset dropdown states
+        this.selectedProvince = null;
+        this.selectedCity = null;
+
+        // Reset dropdown displays
+        const provinceSpan = document.querySelector('#province-selected span');
+        const citySpan = document.querySelector('#city-selected span');
+
+        if (provinceSpan) {
+            provinceSpan.textContent = 'Select State/Province';
+            provinceSpan.classList.add('placeholder');
+        }
+
+        if (citySpan) {
+            citySpan.textContent = 'Select City';
+            citySpan.classList.add('placeholder');
+        }
+    }
+
+    console.log('✅ Smooth order type change completed');
+}
+preventUIFlicker() {
+    // Lock the current UI state to prevent flickering
+    const form = document.getElementById('checkout-form');
+    if (form) {
+        form.style.opacity = '0.7';
+        form.style.pointerEvents = 'none';
+        form.style.transition = 'opacity 0.2s ease';
+    }
+
+    // Re-enable after a short delay
+    setTimeout(() => {
+        if (form) {
+            form.style.opacity = '1';
+            form.style.pointerEvents = 'auto';
+        }
+    }, 300);
+}
+preventInitialFlicker() {
+    // Hide form briefly during initialization to prevent flicker
+    const form = document.getElementById('checkout-form');
+    if (form) {
+        form.style.opacity = '0';
+        form.style.transition = 'opacity 0.3s ease';
+
+        // Show form after initialization is complete
+        setTimeout(() => {
+            form.style.opacity = '1';
+        }, 100);
+    }
+}
+
+    /**
      * Bind all event listeners
      */
-    bindEventListeners() {
-        // Payment method change
-        document.addEventListener('change', (e) => {
-            if (e.target.name === 'payment-method') {
-                this.handlePaymentMethodChange(e.target.value);
-            }
-        });
-
-        // Form submission
-        const placeOrderBtn = document.getElementById('place-order-btn');
-        if (placeOrderBtn) {
-            placeOrderBtn.addEventListener('click', (e) => {
-                this.handlePlaceOrder(e);
-            });
+    /**
+ * REPLACE your existing bindEventListeners method with this updated version
+ */
+bindEventListeners() {
+    // Payment method change
+    document.addEventListener('change', (e) => {
+        if (e.target.name === 'payment-method') {
+            this.handlePaymentMethodChange(e.target.value);
         }
+    });
 
-        // Modal close events
-        const closeConfirmationBtn = document.getElementById('close-confirmation-btn');
-        const viewMenuBtn = document.getElementById('view-menu-btn');
-        const trackOrderBtn = document.getElementById('track-order-btn');
-
-        if (closeConfirmationBtn) {
-            closeConfirmationBtn.addEventListener('click', () => {
-                this.hideOrderConfirmation();
-            });
-        }
-
-        if (viewMenuBtn) {
-            viewMenuBtn.addEventListener('click', () => {
-                this.redirectToMenu();
-            });
-        }
-
-        if (trackOrderBtn) {
-            trackOrderBtn.addEventListener('click', () => {
-                this.handleTrackOrder();
-            });
-        }
-
-        // Close modal on overlay click
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('confirmation-modal-overlay')) {
-                this.hideOrderConfirmation();
-            }
-        });
-
-        // Keyboard events
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.hideOrderConfirmation();
-            }
+    // Form submission
+    const placeOrderBtn = document.getElementById('place-order-btn');
+    if (placeOrderBtn) {
+        placeOrderBtn.addEventListener('click', (e) => {
+            this.handlePlaceOrder(e);
         });
     }
+
+    // Modal close events
+    const closeConfirmationBtn = document.getElementById('close-confirmation-btn');
+    const viewMenuBtn = document.getElementById('view-menu-btn');
+    const trackOrderBtn = document.getElementById('track-order-btn');
+
+    if (closeConfirmationBtn) {
+        closeConfirmationBtn.addEventListener('click', () => {
+            this.hideOrderConfirmation();
+        });
+    }
+
+    if (viewMenuBtn) {
+        viewMenuBtn.addEventListener('click', () => {
+            this.redirectToMenu();
+        });
+    }
+
+    if (trackOrderBtn) {
+        trackOrderBtn.addEventListener('click', () => {
+            this.handleTrackOrder();
+        });
+    }
+
+    // Close modal on overlay click
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('confirmation-modal-overlay')) {
+            this.hideOrderConfirmation();
+        }
+    });
+
+    // Keyboard events
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            this.hideOrderConfirmation();
+        }
+    });
+
+    // NEW: Listen for order type changes
+    this.listenForOrderTypeChanges();
+}
 
     /**
      * Setup payment method toggle functionality - MISSING METHOD FIXED
@@ -601,97 +1399,141 @@ collectOrderData() {
      * Validate individual field
      */
     validateField(field) {
-        const value = field.value.trim();
-        const fieldType = field.type;
-        const fieldId = field.id;
-        let isValid = true;
-        let errorMessage = '';
+    const value = field.value.trim();
+    const fieldType = field.type;
+    const fieldId = field.id;
+    let isValid = true;
+    let errorMessage = '';
 
-        // Remove existing error
-        this.clearFieldError(field);
+    // Remove existing error
+    this.clearFieldError(field);
 
-        // Skip validation if field is not required
-        if (!field.hasAttribute('required') && !value) {
-            return true;
-        }
-
-        // Required field check
-        if (field.hasAttribute('required') && !value) {
-            isValid = false;
-            errorMessage = 'This field is required';
-        }
-
-        // Specific validation rules
-        switch (fieldType) {
-            case 'email':
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (value && !emailRegex.test(value)) {
-                    isValid = false;
-                    errorMessage = 'Please enter a valid email address';
-                }
-                break;
-
-            case 'tel':
-                const phoneRegex = /^\d{10,15}$/;
-                if (value && !phoneRegex.test(value.replace(/\D/g, ''))) {
-                    isValid = false;
-                    errorMessage = 'Please enter a valid phone number';
-                }
-                break;
-        }
-
-        // Field-specific validation
-        switch (fieldId) {
-            case 'card-number':
-                if (value && value.replace(/\s/g, '').length < 13) {
-                    isValid = false;
-                    errorMessage = 'Please enter a valid card number';
-                }
-                break;
-
-            case 'card-expiry':
-                if (value && !/^\d{2}\/\d{2}$/.test(value)) {
-                    isValid = false;
-                    errorMessage = 'Please enter MM/YY format';
-                }
-                break;
-
-            case 'card-cvv':
-                if (value && (value.length < 3 || value.length > 4)) {
-                    isValid = false;
-                    errorMessage = 'Please enter a valid CVV';
-                }
-                break;
-        }
-
-        if (!isValid) {
-            this.showFieldError(field, errorMessage);
-        } else {
-            this.showFieldSuccess(field);
-        }
-
-        return isValid;
+    // Skip validation if field is not required
+    if (!field.hasAttribute('required') && !value) {
+        return true;
     }
+
+    // Required field check
+    if (field.hasAttribute('required') && !value) {
+        isValid = false;
+        errorMessage = 'This field is required';
+    }
+
+    // Specific validation rules
+    switch (fieldType) {
+        case 'email':
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (value && !emailRegex.test(value)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid email address';
+            }
+            break;
+
+        case 'tel':
+            // MUCH MORE LENIENT: Accept any 10 or 11 digit number
+            const cleanPhone = value.replace(/\D/g, '');
+
+            if (value && (cleanPhone.length < 10 || cleanPhone.length > 11)) {
+                isValid = false;
+                errorMessage = 'Please enter 10 or 11 digits';
+            }
+            // Removed the "must start with 3" requirement - too restrictive
+            break;
+    }
+
+    // Field-specific validation
+    switch (fieldId) {
+        case 'card-number':
+            if (value && value.replace(/\s/g, '').length < 13) {
+                isValid = false;
+                errorMessage = 'Please enter a valid card number';
+            }
+            break;
+
+        case 'card-expiry':
+            if (value && !/^\d{2}\/\d{2}$/.test(value)) {
+                isValid = false;
+                errorMessage = 'Please enter MM/YY format';
+            }
+            break;
+
+        case 'card-cvv':
+            if (value && (value.length < 3 || value.length > 4)) {
+                isValid = false;
+                errorMessage = 'Please enter a valid CVV';
+            }
+            break;
+
+        case 'wallet-phone':
+            // Same lenient validation for wallet phone
+            const cleanWalletPhone = value.replace(/\D/g, '');
+            if (value && (cleanWalletPhone.length < 10 || cleanWalletPhone.length > 11)) {
+                isValid = false;
+                errorMessage = 'Please enter 10 or 11 digits';
+            }
+            break;
+    }
+
+    if (!isValid) {
+        this.showFieldError(field, errorMessage);
+    } else {
+        this.showFieldSuccess(field);
+    }
+
+    return isValid;
+}
 
     /**
      * Show field error
      */
     showFieldError(field, message) {
-        field.classList.add('error');
-        field.classList.remove('success');
+    field.classList.add('error');
+    field.classList.remove('success');
 
-        // Remove existing error message
-        const existingError = field.parentNode.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
+    // Handle special case for phone field in container
+    let errorContainer = field.parentNode;
 
-        // Add error message
-        const errorSpan = document.createElement('span');
-        errorSpan.className = 'error-message';
-        errorSpan.textContent = message;
-        field.parentNode.appendChild(errorSpan);
+    // If field is inside phone-input-container-fixed, use the container's parent
+    if (field.parentNode.classList.contains('phone-input-container-fixed')) {
+        errorContainer = field.parentNode.parentNode;
+        // Also add error styling to the container
+        field.parentNode.classList.add('error');
     }
+
+    // Remove existing error message
+    const existingError = errorContainer.querySelector('.error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    // Add error message
+    const errorSpan = document.createElement('span');
+    errorSpan.className = 'error-message';
+    errorSpan.textContent = message;
+    errorContainer.appendChild(errorSpan);
+}
+
+/**
+ * UPDATED: clearFieldError method to handle phone field container
+ * REPLACE your existing clearFieldError method with this:
+ */
+    clearFieldError(field) {
+    field.classList.remove('error');
+
+    // Handle special case for phone field container
+    let errorContainer = field.parentNode;
+
+    if (field.parentNode.classList.contains('phone-input-container-fixed')) {
+        errorContainer = field.parentNode.parentNode;
+        // Remove error styling from container
+        field.parentNode.classList.remove('error');
+    }
+
+    const errorMessage = errorContainer.querySelector('.error-message');
+    if (errorMessage) {
+        errorMessage.remove();
+    }
+}
 
     /**
      * Show field success
@@ -1118,49 +1960,57 @@ getPaymentMethodDisplayText() {
      * Show notification message
      */
     showNotification(message, type = 'info') {
-        // Remove existing notifications
-        document.querySelectorAll('.checkout-notification').forEach(n => n.remove());
+    // DISABLED: All checkout notifications are now disabled
+    // Uncomment the code below if you want to re-enable notifications later
 
-        const notification = document.createElement('div');
-        notification.className = `checkout-notification ${type}`;
+    /*
+    // Remove existing notifications
+    document.querySelectorAll('.checkout-notification').forEach(n => n.remove());
 
-        const colors = {
-            success: { bg: '#ecfdf5', border: '#10b981', text: '#065f46' },
-            error: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' },
-            warning: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e' },
-            info: { bg: '#f0f9ff', border: '#7abfba', text: '#0c4a6e' }
-        };
+    const notification = document.createElement('div');
+    notification.className = `checkout-notification ${type}`;
 
-        const color = colors[type] || colors.info;
+    const colors = {
+        success: { bg: '#ecfdf5', border: '#10b981', text: '#065f46' },
+        error: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' },
+        warning: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e' },
+        info: { bg: '#f0f9ff', border: '#7abfba', text: '#0c4a6e' }
+    };
 
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${color.bg};
-            color: ${color.text};
-            padding: 16px 20px;
-            border-radius: 12px;
-            border-left: 4px solid ${color.border};
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            z-index: 10001;
-            font-weight: 600;
-            max-width: 350px;
-            font-family: 'Montserrat', sans-serif;
-            animation: slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        `;
+    const color = colors[type] || colors.info;
 
-        notification.textContent = message;
-        document.body.appendChild(notification);
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${color.bg};
+        color: ${color.text};
+        padding: 16px 20px;
+        border-radius: 12px;
+        border-left: 4px solid ${color.border};
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        z-index: 10001;
+        font-weight: 600;
+        max-width: 350px;
+        font-family: 'Montserrat', sans-serif;
+        animation: slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
 
-        // Auto remove after 5 seconds
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1) reverse';
         setTimeout(() => {
-            notification.style.animation = 'slideInNotification 0.4s cubic-bezier(0.4, 0, 0.2, 1) reverse';
-            setTimeout(() => {
-                notification.remove();
-            }, 400);
-        }, 5000);
-    }
+            notification.remove();
+        }, 400);
+    }, 5000);
+    */
+
+    // Just log to console instead
+    console.log(`📢 ${type.toUpperCase()}: ${message}`);
+}
 
     /**
      * PUBLIC API: Test order creation (for debugging)

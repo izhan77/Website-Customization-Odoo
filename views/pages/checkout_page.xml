@@ -7,10 +7,6 @@
                 <div class="checkout-main-container">
                     <!-- Left Column - Customer Information and Payment -->
                     <div class="checkout-left-column">
-                        <!-- Header -->
-<!--                        <div class="checkout-header">-->
-<!--                            <h2 class="checkout-logo">Cravely</h2>-->
-<!--                        </div>-->
 
                         <!-- Customer Information Section -->
                         <div class="checkout-section customer-info-section">
@@ -29,17 +25,12 @@
                                 <!-- Contact Information Row -->
                                 <div class="form-row">
                                     <div class="form-group phone-group">
-                                        <div class="phone-input-container">
-                                            <select id="country-code" class="country-code-select">
-                                                <option value="+92">🇵🇰 +92</option>
-                                                <option value="+1">🇺🇸 +1</option>
-                                                <option value="+44">🇬🇧 +44</option>
-                                                <option value="+91">🇮🇳 +91</option>
-                                            </select>
+                                        <div class="phone-input-container-fixed">
+                                            <span class="country-code-fixed">🇵🇰 +92</span>
                                             <input type="tel"
                                                    id="customer-phone"
-                                                   class="form-input phone-input"
-                                                   placeholder="Phone Number"
+                                                   class="form-input phone-input-fixed"
+                                                   placeholder="300 1234567"
                                                    required="required"/>
                                         </div>
                                     </div>
@@ -55,22 +46,38 @@
                                 <!-- Location Information Row -->
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <select id="customer-country" class="form-select" required="required">
-                                            <option value="">Select Country</option>
-                                            <option value="Pakistan">🇵🇰 Pakistan</option>
-                                            <option value="United States">🇺🇸 United States</option>
-                                            <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                                            <option value="India">🇮🇳 India</option>
-                                        </select>
+                                        <!-- Custom Province Dropdown -->
+                                        <div class="custom-dropdown" id="province-dropdown">
+                                            <div class="custom-dropdown-selected" id="province-selected">
+                                                <span>Select State/Province</span>
+                                                <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                                </svg>
+                                            </div>
+                                            <div class="custom-dropdown-options" id="province-options">
+                                                <!-- Options will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="customer-state" name="customer-state"
+                                               required="required"/>
                                     </div>
                                     <div class="form-group">
-                                        <select id="customer-state" class="form-select" required="required">
-                                            <option value="">Select State/Province</option>
-                                            <option value="Sindh">Sindh</option>
-                                            <option value="Punjab">Punjab</option>
-                                            <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
-                                            <option value="Balochistan">Balochistan</option>
-                                        </select>
+                                        <!-- Custom City Dropdown -->
+                                        <div class="custom-dropdown disabled" id="city-dropdown">
+                                            <div class="custom-dropdown-selected" id="city-selected">
+                                                <span>Select City</span>
+                                                <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-width="2">
+                                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                                </svg>
+                                            </div>
+                                            <div class="custom-dropdown-options" id="city-options">
+                                                <!-- Options will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="customer-city" name="customer-city"
+                                               required="required"/>
                                     </div>
                                     <div class="form-group">
                                         <input type="text"
@@ -98,7 +105,7 @@
 
                             <!-- Payment Options -->
                             <div class="payment-options">
-                                <!-- Cash Payment -->
+                                <!-- Cash Payment (Dynamic based on order type) -->
                                 <div class="payment-option" data-payment="cash">
                                     <div class="payment-option-header">
                                         <div class="payment-radio">
@@ -112,7 +119,8 @@
                                                         <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                                                     </svg>
                                                 </div>
-                                                <span class="payment-text">Cash on Delivery</span>
+                                                <span class="payment-text" id="cash-payment-text">Cash on Delivery
+                                                </span>
                                             </label>
                                         </div>
                                     </div>
@@ -137,57 +145,121 @@
                                         </div>
                                     </div>
 
-                                    <!-- Online Payment Details (Hidden by default) -->
+                                    <!-- Online Payment Sub-options (Hidden by default) -->
                                     <div class="online-payment-details" style="display: none;">
-                                        <!-- Card Information -->
-                                        <div class="card-info-section">
-                                            <div class="form-group">
-                                                <input type="text"
-                                                       id="card-number"
-                                                       class="form-input card-input"
-                                                       placeholder="1234 5678 9012 3456"
-                                                       maxlength="19"/>
-                                                <div class="card-type-indicator"></div>
-                                            </div>
+                                        <!-- Payment Methods Selection -->
+                                        <div class="payment-methods-selection">
+                                            <h3 class="subsection-title">Choose Payment Method</h3>
 
-                                            <div class="form-row">
-                                                <div class="form-group">
-                                                    <input type="text"
-                                                           id="card-expiry"
-                                                           class="form-input"
-                                                           placeholder="MM/YY"
-                                                           maxlength="5"/>
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text"
-                                                           id="card-cvv"
-                                                           class="form-input"
-                                                           placeholder="CVV"
-                                                           maxlength="4"/>
-                                                </div>
-                                            </div>
+                                            <!-- REPLACE the Payment Methods Grid section in your XML with this updated version -->
 
-                                            <div class="form-group">
-                                                <input type="text"
-                                                       id="card-name"
-                                                       class="form-input"
-                                                       placeholder="Cardholder Name"/>
+                                            <div class="payment-methods-grid">
+                                                <!-- Credit/Debit Card -->
+                                                <div class="payment-method-card" data-method="card">
+                                                    <div class="payment-method-icon">
+                                                        <div class="card-types">
+                                                            <img src="/website_customizations/static/src/images/payment-cards-logo.png"
+                                                                 alt="Payment Cards"/>
+                                                        </div>
+                                                    </div>
+                                                    <span class="payment-method-name">Credit/Debit Card</span>
+                                                </div>
+
+                                                <!-- EasyPaisa -->
+                                                <div class="payment-method-card" data-method="easypaisa">
+                                                    <div class="payment-method-icon">
+                                                        <img src="/website_customizations/static/src/images/easypaisa-logo.png"
+                                                             alt="EasyPaisa" class="payment-logo"/>
+                                                    </div>
+                                                    <span class="payment-method-name">EasyPaisa</span>
+                                                </div>
+
+                                                <!-- JazzCash -->
+                                                <div class="payment-method-card" data-method="jazzcash">
+                                                    <div class="payment-method-icon">
+                                                        <img src="/website_customizations/static/src/images/jazzcash-logo.png"
+                                                             alt="JazzCash" class="payment-logo"/>
+                                                    </div>
+                                                    <span class="payment-method-name">JazzCash</span>
+                                                </div>
+
+                                                <!-- SadaPay -->
+                                                <div class="payment-method-card" data-method="sadapay">
+                                                    <div class="payment-method-icon">
+                                                        <img src="/website_customizations/static/src/images/sadapay-logo.png"
+                                                             alt="SadaPay" class="payment-logo"/>
+                                                    </div>
+                                                    <span class="payment-method-name">SadaPay</span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Bank Selection -->
-                                        <div class="bank-selection-section">
-                                            <h3 class="subsection-title">Select Bank</h3>
-                                            <div class="bank-dropdown-container">
-                                                <select id="bank-select" class="form-select bank-select">
-                                                    <option value="">Choose Bank</option>
-                                                    <option value="cibc">CIBC Bank</option>
-                                                    <option value="national">National Bank</option>
-                                                    <option value="atb">ATB Financial</option>
-                                                    <option value="hsbc">HSBC</option>
-                                                    <option value="rbc">RBC Royal Bank</option>
-                                                    <option value="td">TD Bank</option>
-                                                </select>
+                                        <!-- Payment Details Form (Hidden by default) -->
+                                        <div class="payment-details-form" style="display: none;">
+                                            <!-- Card Information (for card payments) -->
+                                            <div class="card-info-section" id="card-details" style="display: none;">
+                                                <div class="form-group">
+                                                    <input type="text"
+                                                           id="card-number"
+                                                           class="form-input card-input"
+                                                           placeholder="1234 5678 9012 3456"
+                                                           maxlength="19"/>
+                                                    <div class="card-type-indicator"></div>
+                                                </div>
+
+                                                <div class="form-row">
+                                                    <div class="form-group">
+                                                        <input type="text"
+                                                               id="card-expiry"
+                                                               class="form-input"
+                                                               placeholder="MM/YY"
+                                                               maxlength="5"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="text"
+                                                               id="card-cvv"
+                                                               class="form-input"
+                                                               placeholder="CVV"
+                                                               maxlength="4"/>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="text"
+                                                           id="card-name"
+                                                           class="form-input"
+                                                           placeholder="Cardholder Name"/>
+                                                </div>
+                                            </div>
+
+                                            <!-- Mobile Wallet Information (for digital wallets) -->
+                                            <div class="wallet-info-section" id="wallet-details" style="display: none;">
+                                                <div class="form-group">
+                                                    <div class="phone-input-container-fixed">
+                                                        <span class="country-code-fixed">🇵🇰 +92</span>
+                                                        <input type="tel"
+                                                               id="wallet-phone"
+                                                               class="form-input phone-input-fixed"
+                                                               placeholder="300 1234567"
+                                                               maxlength="10"/>
+                                                    </div>
+                                                </div>
+                                                <div class="wallet-info">
+                                                    <p class="wallet-description" id="wallet-description">
+                                                        Enter your mobile number to proceed with payment
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Back Button -->
+                                            <div class="payment-back-section">
+                                                <button type="button" class="payment-back-btn" id="payment-back-btn">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2">
+                                                        <polyline points="15,18 9,12 15,6"></polyline>
+                                                    </svg>
+                                                    <span>Back to Payment Methods</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -250,8 +322,7 @@
                                     </div>
                                     <div class="summary-row total-row">
                                         <span class="summary-label">Total</span>
-                                        <span class="summary-value total-value" id="checkout-final-total">Rs. 0
-                                        </span>
+                                        <span class="summary-value total-value" id="checkout-final-total">Rs. 0</span>
                                     </div>
                                 </div>
                             </div>
