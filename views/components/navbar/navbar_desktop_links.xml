@@ -20,11 +20,13 @@
             <t t-call="website_customizations.navbar_menu_popup"/>
         </div>
 
-        <a class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300" href="/about"
+        <!-- Order Mode link (replaces About Us) -->
+        <a id="order-mode-link" class="text-white no-underline text-lg font-medium px-6 py-2 rounded-full transition-all duration-300 cursor-pointer"
            style="color: white !important;"
            onmouseover="this.style.setProperty('background-color', '#66a39e', 'important'); this.style.setProperty('color', 'white', 'important');"
-           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');">
-            About Us
+           onmouseout="this.style.setProperty('background-color', 'transparent', 'important'); this.style.setProperty('color', 'white', 'important');"
+           onclick="if (window.orderMethodSelector) { window.orderMethodSelector.triggerPopup(); } return false;">
+            Order Mode
         </a>
     </template>
 </odoo>

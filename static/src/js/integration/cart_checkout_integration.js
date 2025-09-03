@@ -27,17 +27,18 @@ class CartCheckoutIntegration {
     }
 
     setupIntegration() {
-        // Wait for both managers to be available
-        this.waitForManagers().then(() => {
-            this.connectCartToCheckout();
-            this.setupNavigation();
-            this.setupEventListeners();
-            this.isInitialized = true;
-            console.log('✅ Cart-Checkout Integration initialized successfully');
-        }).catch(error => {
-            console.error('Failed to initialize integration:', error);
-        });
-    }
+    // Wait for both managers to be available
+    this.waitForManagers().then(() => {
+        this.connectCartToCheckout();
+        this.enhanceCheckoutButtons(); // Add this line
+        this.setupNavigation();
+        this.setupEventListeners();
+        this.isInitialized = true;
+        console.log('✅ Cart-Checkout Integration initialized successfully');
+    }).catch(error => {
+        console.error('Failed to initialize integration:', error);
+    });
+}
 
     waitForManagers() {
         return new Promise((resolve, reject) => {
@@ -68,16 +69,121 @@ class CartCheckoutIntegration {
         return document.querySelector('.checkout-page-wrapper') !== null;
     }
 
+    /**
+     * Get current order type from multiple sources with priority
+     */
+    getCurrentOrderType() {
+        // Priority 1: Check URL parameters (most immediate)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlOrderType = urlParams.get('order_type');
+        if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+            console.log('🔗 Order type from URL:', urlOrderType);
+            return urlOrderType;
+        }
+
+        // Priority 2: Check sessionStorage for stored order method
+        try {
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                const orderData = JSON.parse(storedOrder);
+                if (orderData.type) {
+                    console.log('💾 Order type from storage:', orderData.type);
+                    return orderData.type;
+                }
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored order data:', e);
+        }
+
+        // Priority 3: Check order method selector global instance
+        if (window.orderMethodSelector && typeof window.orderMethodSelector.getCurrentType === 'function') {
+            const selectorType = window.orderMethodSelector.getCurrentType();
+            if (selectorType) {
+                console.log('🎛️ Order type from selector:', selectorType);
+                return selectorType;
+            }
+        }
+
+        // Priority 4: Check active toggle button states
+        const activeDeliveryBtn = document.querySelector('#delivery-btn.active, .delivery-toggle.active, [data-type="delivery"].active');
+        const activePickupBtn = document.querySelector('#pickup-btn.active, .pickup-toggle.active, [data-type="pickup"].active');
+
+        if (activePickupBtn) {
+            console.log('🏪 Order type from active button: pickup');
+            return 'pickup';
+        } else if (activeDeliveryBtn) {
+            console.log('🚚 Order type from active button: delivery');
+            return 'delivery';
+        }
+
+        // Priority 5: Check for any order type indicators in the DOM
+        const orderTypeIndicators = document.querySelectorAll('[data-order-type]');
+        for (const indicator of orderTypeIndicators) {
+            const orderType = indicator.dataset.orderType;
+            if (orderType && (orderType === 'delivery' || orderType === 'pickup')) {
+                console.log('📋 Order type from DOM indicator:', orderType);
+                return orderType;
+            }
+        }
+
+        console.log('❓ No order type found, defaulting to delivery');
+        return 'delivery'; // Default fallback
+    }
+
+    /**
+     * Build checkout URL with order type parameter
+     */
+    buildCheckoutUrl(orderType) {
+        const baseUrl = '/checkout';
+        const url = new URL(baseUrl, window.location.origin);
+
+        if (orderType) {
+            url.searchParams.set('order_type', orderType);
+        }
+
+        console.log('🔗 Built checkout URL:', url.toString());
+        return url.toString();
+    }
+
+    /**
+     * Get stored user ID and order ID from sessionStorage
+     */
+    getStoredOrderIds() {
+        try {
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                const orderData = JSON.parse(storedOrder);
+                return {
+                    userId: orderData.userId || null,
+                    orderId: orderData.orderId || null
+                };
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored order IDs:', e);
+        }
+        return { userId: null, orderId: null };
+    }
+
     connectCartToCheckout() {
         // Override the checkout handler in cart manager
         if (this.cartManager) {
             const originalHandleCheckout = this.cartManager.handleCheckout.bind(this.cartManager);
 
             this.cartManager.handleCheckout = () => {
+                console.log('🛒 Enhanced checkout handler called');
+
                 if (this.cartManager.cart.length === 0) {
                     this.showNotice('Your cart is empty. Add items to proceed to checkout.');
                     return;
                 }
+
+                // Get current order type
+                const orderType = this.getCurrentOrderType();
+                console.log('📦 Proceeding to checkout with order type:', orderType);
+
+                // Get stored user ID and order ID
+                const { userId, orderId } = this.getStoredOrderIds();
+                console.log('👤 User ID:', userId, 'Order ID:', orderId);
 
                 // Prepare cart data for checkout
                 const cartData = this.prepareCartDataForCheckout();
@@ -85,12 +191,28 @@ class CartCheckoutIntegration {
                 // Store in sessionStorage for checkout page
                 sessionStorage.setItem('checkoutCart', JSON.stringify(cartData));
 
-                // Redirect to checkout page
-                window.location.href = '/checkout';
+                // Also ensure order method is stored with IDs
+                const orderMethodData = {
+                    type: orderType,
+                    userId: userId,
+                    orderId: orderId,
+                    timestamp: Date.now(),
+                    source: 'cart_checkout'
+                };
+                sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderMethodData));
+
+                // Build checkout URL with order type
+                const checkoutUrl = this.buildCheckoutUrl(orderType);
+
+                console.log('🚀 Redirecting to checkout:', checkoutUrl);
+                window.location.href = checkoutUrl;
             };
 
-            console.log('✅ Checkout handler integrated');
+            console.log('✅ Checkout handler integrated with order type support');
         }
+
+        // Also enhance any direct checkout buttons/links
+        this.enhanceCheckoutButtons();
 
         // Enhance checkout manager to use cart data
         if (this.checkoutManager && this.cartManager) {
@@ -123,6 +245,10 @@ class CartCheckoutIntegration {
         const tax = Math.round(this.cartManager.cartTotal * this.cartManager.taxRate);
         const grandTotal = this.cartManager.cartTotal + tax + this.cartManager.deliveryFee;
 
+        // Get order type information
+        const orderType = this.getCurrentOrderType();
+        const { userId, orderId } = this.getStoredOrderIds();
+
         return {
             items: this.cartManager.cart.map(item => ({
                 id: item.id,
@@ -135,7 +261,10 @@ class CartCheckoutIntegration {
             subtotal: this.cartManager.cartTotal,
             tax: tax,
             deliveryFee: this.cartManager.deliveryFee,
-            grandTotal: grandTotal
+            grandTotal: grandTotal,
+            orderType: orderType,
+            userId: userId,
+            orderId: orderId
         };
     }
 
@@ -230,6 +359,29 @@ class CartCheckoutIntegration {
                 }
             };
         }
+
+        // Listen for order completion from checkout
+        document.addEventListener('orderCompleted', (e) => {
+    if (this.cartManager) {
+        this.cartManager.clearCartCompletely();
+        console.log('Cart cleared after successful order');
+    }
+});
+
+        // Listen for browse menu button specifically
+        document.addEventListener('click', (e) => {
+    if (e.target.id === 'view-menu-btn' || e.target.closest('#view-menu-btn')) {
+        console.log('Browse menu button clicked - clearing cart');
+        if (this.cartManager) {
+            this.cartManager.clearCartCompletely();
+        }
+
+        // Generate new order ID
+        if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+            window.orderMethodSelector.generateNewOrderId();
+        }
+    }
+});
     }
 
     showNotice(message, duration = 3000) {
@@ -243,6 +395,66 @@ class CartCheckoutIntegration {
             notice.style.display = 'none';
         }, duration);
     }
+
+    /**
+ * Handle checkout directly from integration
+ */
+handleCheckout() {
+    if (!this.cartManager || this.cartManager.cart.length === 0) {
+        this.showNotice('Your cart is empty. Add items to proceed to checkout.');
+        return;
+    }
+
+    // Get current order type
+    const orderType = this.getCurrentOrderType();
+    console.log('📦 Proceeding to checkout with order type:', orderType);
+
+    // Get stored user ID and order ID
+    const { userId, orderId } = this.getStoredOrderIds();
+    console.log('👤 User ID:', userId, 'Order ID:', orderId);
+
+    // Prepare cart data for checkout
+    const cartData = this.prepareCartDataForCheckout();
+
+    // Store in sessionStorage for checkout page
+    sessionStorage.setItem('checkoutCart', JSON.stringify(cartData));
+
+    // Also ensure order method is stored with IDs
+    const orderMethodData = {
+        type: orderType,
+        userId: userId,
+        orderId: orderId,
+        timestamp: Date.now(),
+        source: 'cart_checkout'
+    };
+    sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderMethodData));
+
+    // Build checkout URL with order type
+    const checkoutUrl = this.buildCheckoutUrl(orderType);
+
+    console.log('🚀 Redirecting to checkout:', checkoutUrl);
+    window.location.href = checkoutUrl;
+}
+
+/**
+ * Enhance checkout buttons to use our integration
+ */
+enhanceCheckoutButtons() {
+    console.log('🔧 Enhancing checkout buttons...');
+
+    // Find checkout buttons
+    const checkoutButtons = document.querySelectorAll('#cravely-checkout-btn, .cravely-checkout-btn');
+
+    checkoutButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.handleCheckout();
+        });
+    });
+
+    console.log(`✅ Enhanced ${checkoutButtons.length} checkout buttons`);
+}
 }
 
 // Initialize the integration

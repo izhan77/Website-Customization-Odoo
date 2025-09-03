@@ -1,14 +1,12 @@
 /**
  * Order Method Selector Main Controller - Frontend Only
+ * UPDATED: Added sessionStorage for user ID, order ID, and order method persistence
  * File: static/src/js/components/order_method_selector/order_method_main.js
- * Purpose: Main controller that coordinates all order method selector components
- * FIXED: Only initializes on frontend pages, not backend
  */
 
 (function() {
     'use strict';
 
-    // Debug logging
     console.log('🚀 Order Method Selector: Loading main controller...');
 
     // CRITICAL: Check if we're on backend/admin pages and exit early
@@ -38,6 +36,9 @@
             this.currentOrderType = 'delivery';
             this.selectedLocation = null;
             this.isInitialized = false;
+            this.userId = this.getOrCreateUserId();
+            this.orderId = this.getOrCreateOrderId();
+            this.cleanupOldStorage();
 
             // DOM Elements
             this.elements = {};
@@ -54,11 +55,104 @@
                     duration: 300
                 },
                 // Only show popup on homepage by default
-                autoShow: window.location.pathname === '/' || window.location.pathname === '/home'
+                autoShow: true,
+
+                // URL Configuration
+                url: {
+                    updateEnabled: true,
+                    paramName: 'order_type',
+                    deliveryValue: 'delivery',
+                    pickupValue: 'pickup'
+                }
             };
 
             console.log('📱 OrderMethodSelector: Instance created');
         }
+
+        /**
+ * Get or create User ID from localStorage (persistent)
+ */
+getOrCreateUserId() {
+    let userId = localStorage.getItem('orderMethodUserId');
+    if (!userId) {
+        userId = 'USER_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        localStorage.setItem('orderMethodUserId', userId);
+    }
+    return userId;
+}
+
+        /**
+ * Get or create Order ID from sessionStorage (per session)
+ */
+getOrCreateOrderId() {
+    let orderId = sessionStorage.getItem('orderMethodOrderId');
+    if (!orderId) {
+        orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        sessionStorage.setItem('orderMethodOrderId', orderId);
+    }
+    return orderId;
+}
+
+/**
+ * Generate new Order ID for new orders
+ */
+generateNewOrderId() {
+    this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    sessionStorage.setItem('orderMethodOrderId', this.orderId);
+    return this.orderId;
+}
+
+        /**
+         * Reset order ID for new orders
+         */
+        resetOrderId() {
+            this.orderId = 'ORD_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            sessionStorage.setItem('orderMethodOrderId', this.orderId);
+            return this.orderId;
+        }
+
+        /**
+ * Check if popup should show
+ */
+shouldShowPopup() {
+    const isHomepage = window.location.pathname === '/' || window.location.pathname === '';
+    if (!isHomepage) return false;
+
+    const storedOrder = sessionStorage.getItem('orderMethodSelected');
+    if (storedOrder) {
+        try {
+            const orderData = JSON.parse(storedOrder);
+            if (orderData.orderId === this.orderId && orderData.type && orderData.location) {
+                return false;
+            }
+        } catch (e) {
+            console.warn('Failed to parse stored order data:', e);
+        }
+    }
+    return true;
+}
+
+        /**
+ * Clean up old storage items
+ */
+cleanupOldStorage() {
+    // Remove old storage keys that shouldn't exist
+    const oldKeys = [
+        'cravelyOrderId',
+        'cravelyUserId',
+        'lastOrder',
+        'current_action',
+        'menu_id'
+    ];
+
+    oldKeys.forEach(key => {
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
+    });
+
+    console.log('🧹 Cleaned up old storage items');
+}
+
 
         /**
          * Initialize the order method selector
@@ -86,17 +180,79 @@
                 return;
             }
 
+            // Initialize URL handling
+            this.initializeUrlHandling();
+
             // Initialize components
             this.initializeToggleButtons();
             this.initializeLocationSelector();
             this.initializeSubmitButton();
             this.initializePopupControls();
 
-            // Set initial state
+            // Set initial state (this will also check URL)
             this.setInitialState();
 
             this.isInitialized = true;
             console.log('✅ OrderMethodSelector: Initialization complete');
+        }
+
+        /**
+         * Initialize URL handling
+         */
+        initializeUrlHandling() {
+            console.log('🔗 OrderMethodSelector: Initializing URL handling...');
+
+            // Listen for browser back/forward buttons
+            window.addEventListener('popstate', (event) => {
+                console.log('🔙 OrderMethodSelector: Popstate event detected');
+                this.handleUrlChange();
+            });
+
+            // Check initial URL state
+            this.handleUrlChange();
+        }
+
+        /**
+         * Handle URL changes (back/forward buttons)
+         */
+        handleUrlChange() {
+            if (!this.config.url.updateEnabled) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
+
+            console.log('🔍 OrderMethodSelector: URL order type:', urlOrderType);
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                // Update current order type without triggering URL update again
+                this.switchOrderType(urlOrderType, false);
+            }
+        }
+
+        /**
+         * Update URL with current order type
+         */
+        updateUrl(orderType) {
+            if (!this.config.url.updateEnabled) {
+                console.log('🚫 OrderMethodSelector: URL updates disabled');
+                return;
+            }
+
+            try {
+                const url = new URL(window.location);
+                url.searchParams.set(this.config.url.paramName, orderType);
+
+                // Update URL without page reload
+                window.history.pushState(
+                    { orderType: orderType },
+                    '',
+                    url.toString()
+                );
+
+                console.log('🔗 OrderMethodSelector: URL updated to:', url.toString());
+            } catch (error) {
+                console.error('❌ OrderMethodSelector: Failed to update URL:', error);
+            }
         }
 
         /**
@@ -206,25 +362,63 @@
         setInitialState() {
             console.log('🎯 OrderMethodSelector: Setting initial state...');
 
-            // Start with delivery selected
-            this.switchOrderType('delivery');
+            // Check URL first, then default to delivery
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderType = urlParams.get(this.config.url.paramName);
 
-            // Only auto-show popup if configured and not already shown
-            if (this.config.autoShow && !sessionStorage.getItem('orderMethodSelected')) {
-                // Show popup with slight delay to ensure page is loaded
-                setTimeout(() => {
-                    this.showPopup();
-                }, 1000);
+            let initialType = 'delivery';
+            let shouldUpdateUrl = true;
+
+            if (urlOrderType && (urlOrderType === 'delivery' || urlOrderType === 'pickup')) {
+                initialType = urlOrderType;
+                shouldUpdateUrl = false;
+                console.log('🔗 OrderMethodSelector: Using order type from URL:', initialType);
+            } else {
+                console.log('🔗 OrderMethodSelector: No URL parameter found, will set default delivery in URL');
             }
+
+            // Start with the determined type and update URL if needed
+            this.switchOrderType(initialType, shouldUpdateUrl);
+
+            // Check if we have stored order method data
+            const storedOrder = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrder) {
+                try {
+                    const orderData = JSON.parse(storedOrder);
+                    if (orderData.location) {
+                        this.selectedLocation = orderData.location;
+                        this.elements.dropdown.value = orderData.location;
+
+                        // Update location details if pickup
+                        if (orderData.type === 'pickup' && orderData.location) {
+                            this.updateLocationDetails(orderData.location);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse stored order data:', e);
+                }
+            }
+
+            // Only auto-show popup if configured and should show
+if (this.config.autoShow && this.shouldShowPopup()) {
+    setTimeout(() => {
+        this.showPopup();
+    }, 1500);
+}
         }
 
         /**
          * Switch between delivery and pickup modes
          */
-        switchOrderType(type) {
-            console.log(`🔄 OrderMethodSelector: Switching to ${type}`);
+        switchOrderType(type, updateUrl = true) {
+            console.log(`🔄 OrderMethodSelector: Switching to ${type}${updateUrl ? ' (with URL update)' : ' (without URL update)'}`);
 
             this.currentOrderType = type;
+
+            // Update URL if requested
+            if (updateUrl) {
+                this.updateUrl(type);
+            }
 
             // Update button states
             this.updateToggleButtons(type);
@@ -235,6 +429,27 @@
             } else {
                 this.setupPickupMode();
             }
+
+            // Dispatch custom event for other components
+            this.dispatchOrderTypeChangeEvent(type);
+        }
+
+        /**
+         * Dispatch custom event when order type changes
+         */
+        dispatchOrderTypeChangeEvent(orderType) {
+            const event = new CustomEvent('orderTypeChanged', {
+                detail: {
+                    orderType: orderType,
+                    timestamp: Date.now(),
+                    source: 'orderMethodSelector'
+                },
+                bubbles: true,
+                cancelable: true
+            });
+
+            document.dispatchEvent(event);
+            console.log('📡 OrderMethodSelector: Order type change event dispatched:', event.detail);
         }
 
         /**
@@ -264,26 +479,29 @@
          * Setup delivery mode UI
          */
         setupDeliveryMode() {
-            console.log('🚚 OrderMethodSelector: Setting up delivery mode');
+    console.log('🚚 OrderMethodSelector: Setting up delivery mode');
 
-            // Update subtitle
-            if (this.elements.subtitle) {
-                this.elements.subtitle.textContent = 'Please select your delivery location';
-            }
+    // Update subtitle
+    if (this.elements.subtitle) {
+        this.elements.subtitle.textContent = 'Please select your delivery location';
+    }
 
-            // Show current location button
-            if (this.elements.locationBtn) {
-                this.elements.locationBtn.style.display = 'inline-flex';
-            }
+    // Show current location button
+    if (this.elements.locationBtn) {
+        this.elements.locationBtn.style.display = 'inline-flex';
+    }
 
-            // Hide location details
-            if (this.elements.locationDetails) {
-                this.elements.locationDetails.classList.add('hidden');
-            }
+    // Hide location details
+    if (this.elements.locationDetails) {
+        this.elements.locationDetails.classList.add('hidden');
+    }
 
-            // Update dropdown options for delivery
-            this.updateDropdownOptions('delivery');
-        }
+    // Reset selected location when switching to delivery
+    this.selectedLocation = null;
+
+    // Update dropdown options for delivery
+    this.updateDropdownOptions('delivery');
+}
 
         /**
          * Setup pickup mode UI
@@ -423,14 +641,25 @@
          * Handle dropdown location change
          */
         handleLocationChange(value) {
-            console.log('📍 OrderMethodSelector: Location changed to:', value);
+    console.log('📍 OrderMethodSelector: Location changed to:', value);
 
-            this.selectedLocation = value;
+    // Clear error highlighting when user makes a selection
+    this.highlightDropdown(false);
 
-            if (this.currentOrderType === 'pickup' && value) {
-                this.updateLocationDetails(value);
-            }
+    // Only update selectedLocation if it's a valid value (not empty)
+    if (value && value !== '') {
+        this.selectedLocation = value;
+
+        if (this.currentOrderType === 'pickup' && value) {
+            this.updateLocationDetails(value);
         }
+    } else {
+        // Reset selectedLocation if invalid value selected
+        this.selectedLocation = null;
+    }
+
+    console.log('📍 Updated selectedLocation:', this.selectedLocation);
+}
 
         /**
          * Update location details for pickup
@@ -476,32 +705,98 @@
          * Handle form submission
          */
         handleSubmit() {
-            console.log('✅ OrderMethodSelector: Submitting order method');
-            console.log('Order Type:', this.currentOrderType);
-            console.log('Selected Location:', this.selectedLocation);
+    console.log('✅ OrderMethodSelector: Submitting order method');
+    console.log('Order Type:', this.currentOrderType);
+    console.log('Selected Location:', this.selectedLocation);
 
-            // Validate selection
-            if (!this.selectedLocation) {
-                this.showMessage('Please select a location first.', 'error');
-                return;
-            }
-
-            // Store selection in session
-            const orderData = {
-                type: this.currentOrderType,
-                location: this.selectedLocation,
-                timestamp: new Date().toISOString()
-            };
-
-            sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
-
-            // Close popup with success message
-            this.showMessage('Order type selected successfully!', 'success');
-
-            setTimeout(() => {
-                this.closePopup();
-            }, 1500);
+    // Enhanced validation based on order type
+    if (this.currentOrderType === 'delivery') {
+        // For delivery: location must be selected and not empty
+        if (!this.selectedLocation || this.selectedLocation === '') {
+            this.showMessage('Please select your delivery area first.', 'error');
+            this.highlightDropdown(true);
+            return;
         }
+    } else if (this.currentOrderType === 'pickup') {
+        // For pickup: location should always be selected (auto-selected)
+        if (!this.selectedLocation) {
+            this.showMessage('Please select a pickup location.', 'error');
+            this.highlightDropdown(true);
+            return;
+        }
+    }
+
+    // Additional validation: ensure dropdown has a valid selection
+    const dropdownValue = this.elements.dropdown?.value;
+    if (!dropdownValue || dropdownValue === '') {
+        const locationTypeText = this.currentOrderType === 'delivery' ? 'delivery area' : 'pickup location';
+        this.showMessage(`Please select a ${locationTypeText}.`, 'error');
+        this.highlightDropdown(true);
+        return;
+    }
+
+    // Clear any previous error highlighting
+    this.highlightDropdown(false);
+
+    // Store selection in session with user ID and order ID
+    const orderData = {
+        type: this.currentOrderType,
+        location: this.selectedLocation,
+        userId: this.userId,
+        orderId: this.orderId,
+        timestamp: new Date().toISOString()
+    };
+
+    sessionStorage.setItem('orderMethodSelected', JSON.stringify(orderData));
+
+    // Close popup with success message
+    const successMessage = this.currentOrderType === 'delivery'
+        ? `Delivery area selected: ${this.getLocationDisplayName(this.selectedLocation)}`
+        : `Pickup location selected: ${this.getLocationDisplayName(this.selectedLocation)}`;
+
+    this.showMessage(successMessage, 'success');
+
+    setTimeout(() => {
+        this.closePopup();
+    }, 1500);
+}
+
+        getLocationDisplayName(locationId) {
+    const locationNames = {
+        // Delivery areas
+        'dha': 'DHA Phase 2',
+        'gulshan': 'Gulshan-e-Iqbal',
+        'bahadurabad': 'Bahadurabad',
+        'clifton': 'Clifton',
+        'saddar': 'Saddar',
+
+        // Pickup locations
+        'tipu-sultan': 'Alarahi Tipu Sultan',
+        'dha-outlet': 'Alarahi DHA Phase 2'
+    };
+
+    return locationNames[locationId] || locationId;
+}
+
+        highlightDropdown(showError) {
+    if (!this.elements.dropdown) return;
+
+    if (showError) {
+        this.elements.dropdown.style.borderColor = '#ef4444';
+        this.elements.dropdown.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+
+        // Add shake animation
+        this.elements.dropdown.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+            if (this.elements.dropdown) {
+                this.elements.dropdown.style.animation = '';
+            }
+        }, 500);
+    } else {
+        this.elements.dropdown.style.borderColor = '';
+        this.elements.dropdown.style.boxShadow = '';
+    }
+}
 
         /**
          * Show popup with animation
@@ -565,10 +860,47 @@
         }
 
         /**
-         * Manual trigger for popup (for testing)
+         * Manual trigger for popup (for Order Mode link)
          */
         triggerPopup() {
+            // Reset order ID for new orders when reopening popup
+            this.resetOrderId();
             this.showPopup();
+        }
+
+        /**
+         * Get current URL parameters
+         */
+        getCurrentUrlParams() {
+            return new URLSearchParams(window.location.search);
+        }
+
+        /**
+         * Get order type from URL
+         */
+        getOrderTypeFromUrl() {
+            const params = this.getCurrentUrlParams();
+            return params.get(this.config.url.paramName);
+        }
+
+        /**
+         * Get current order type
+         */
+        getCurrentType() {
+            return this.currentOrderType;
+        }
+
+        /**
+         * Get stored order data
+         */
+        getStoredOrderData() {
+            try {
+                const storedData = sessionStorage.getItem('orderMethodSelected');
+                return storedData ? JSON.parse(storedData) : null;
+            } catch (e) {
+                console.error('Error parsing stored order data:', e);
+                return null;
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 /**
  * ================================= CHECKOUT PAGE JAVASCRIPT =================================
- * Complete checkout functionality with form validation, payment handling, and order processing
+ * Complete checkout functionality with Odoo sales order integration
  * File: /website_customizations/static/src/js/components/checkout/checkout.js
  */
 
@@ -13,6 +13,14 @@ class CheckoutManager {
         this.formValid = false;
         this.deliveryFee = 200;
         this.taxRate = 0.15;
+
+        // Order type detection
+        this.orderType = 'delivery'; // default
+        this.isDeliveryOrder = true;
+
+        // User and order IDs from sessionStorage
+        this.userId = null;
+        this.orderId = null;
 
         // Initialize when DOM is ready
         this.init();
@@ -37,8 +45,11 @@ class CheckoutManager {
      * Setup all checkout functionality
      */
     setup() {
+        this.detectOrderType();
+        this.loadStoredIds();
         this.loadCartData();
         this.populateOrderSummary();
+        this.setupOrderTypeUI();
         this.bindEventListeners();
         this.initializeFormValidation();
         this.setupPaymentToggle();
@@ -46,6 +57,161 @@ class CheckoutManager {
         console.log('✅ Checkout Manager initialized successfully');
     }
 
+    /**
+     * Detect order type from URL parameters and sessionStorage
+     */
+    detectOrderType() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderTypeParam = urlParams.get('order_type');
+
+        if (orderTypeParam) {
+            this.orderType = orderTypeParam;
+            this.isDeliveryOrder = orderTypeParam === 'delivery';
+        } else {
+            // Check if order method selector has stored data
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                try {
+                    const parsedData = JSON.parse(storedOrderData);
+                    this.orderType = parsedData.type || 'delivery';
+                    this.isDeliveryOrder = this.orderType === 'delivery';
+                } catch (e) {
+                    console.warn('Failed to parse stored order data:', e);
+                }
+            }
+        }
+
+        console.log('🎯 Order type detected:', this.orderType);
+        console.log('🚚 Is delivery order:', this.isDeliveryOrder);
+    }
+
+    /**
+     * Load user ID and order ID from sessionStorage
+     */
+    loadStoredIds() {
+        try {
+            const storedOrderData = sessionStorage.getItem('orderMethodSelected');
+            if (storedOrderData) {
+                const parsedData = JSON.parse(storedOrderData);
+                this.userId = parsedData.userId || null;
+                this.orderId = parsedData.orderId || null;
+
+                console.log('👤 Loaded stored IDs - User:', this.userId, 'Order:', this.orderId);
+            }
+        } catch (e) {
+            console.warn('Failed to load stored IDs:', e);
+        }
+    }
+
+    /**
+     * Setup UI based on order type
+     */
+    setupOrderTypeUI() {
+        console.log('🎨 Setting up UI for order type:', this.orderType);
+
+        // Hide/show address fields based on order type
+        this.toggleAddressFields();
+
+        // Update payment method text
+        this.updatePaymentMethodText();
+
+        // Update delivery fee based on order type
+        this.updateDeliveryFee();
+
+        // Update order type indicator in UI if exists
+        this.updateOrderTypeIndicator();
+    }
+
+    /**
+     * Update order type indicator in UI
+     */
+    updateOrderTypeIndicator() {
+        const orderTypeIndicator = document.getElementById('order-type-indicator');
+        if (orderTypeIndicator) {
+            orderTypeIndicator.textContent = this.isDeliveryOrder ? 'Delivery Order' : 'Pickup Order';
+        }
+    }
+
+    toggleAddressFields() {
+    const fieldsToToggle = [
+        'customer-country',
+        'customer-state',
+        'customer-zipcode',
+        'customer-address'
+    ];
+
+    fieldsToToggle.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        const formGroup = field?.closest('.form-group');
+        const formRow = field?.closest('.form-row');
+
+        if (!this.isDeliveryOrder) {
+            // Hide field and its container
+            if (formGroup) {
+                formGroup.style.display = 'none';
+                // Remove required attribute for pickup orders
+                if (field) {
+                    field.removeAttribute('required');
+                    field.removeAttribute('data-was-required'); // Clear any previous state
+                }
+            }
+        } else {
+            // Show field for delivery orders
+            if (formGroup) {
+                formGroup.style.display = '';
+                // Add back required attribute for delivery orders
+                if (field) {
+                    field.setAttribute('required', 'required');
+                }
+            }
+        }
+    });
+
+    // Update section titles and descriptions
+    const customerInfoSection = document.querySelector('.customer-info-section .section-title');
+    if (customerInfoSection) {
+        customerInfoSection.textContent = this.isDeliveryOrder
+            ? 'Delivery Information'
+            : 'Pickup Information';
+    }
+
+    console.log(`${this.isDeliveryOrder ? '🚚' : '🏪'} Address fields ${this.isDeliveryOrder ? 'shown' : 'hidden'}`);
+}
+
+    /**
+     * Update payment method text based on order type
+     */
+    updatePaymentMethodText() {
+        const cashPaymentLabel = document.querySelector('label[for="payment-cash"] .payment-text');
+        if (cashPaymentLabel) {
+            cashPaymentLabel.textContent = this.isDeliveryOrder
+                ? 'Cash on Delivery'
+                : 'Pay with Cash on Counter';
+        }
+
+        console.log(`💳 Payment text updated to: ${this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter'}`);
+    }
+
+    /**
+     * Update delivery fee based on order type
+     */
+    updateDeliveryFee() {
+        if (!this.isDeliveryOrder) {
+            this.deliveryFee = 0; // No delivery fee for pickup orders
+
+            // Update the UI label
+            const shippingLabel = document.querySelector('.summary-row .summary-label');
+            if (shippingLabel && shippingLabel.textContent.includes('Shipping')) {
+                shippingLabel.textContent = 'Service Fee';
+            }
+        }
+
+        console.log(`💰 ${this.isDeliveryOrder ? 'Delivery' : 'Service'} fee set to: Rs. ${this.deliveryFee}`);
+    }
+
+    /**
+     * Load cart data from sessionStorage or fallback
+     */
     /**
      * Load cart data from sessionStorage or fallback
      */
@@ -56,6 +222,19 @@ class CheckoutManager {
             if (storedCart) {
                 this.cartData = JSON.parse(storedCart);
                 console.log('📦 Cart data loaded from storage:', this.cartData);
+
+                // Extract order type from cart data if available
+                if (this.cartData.orderType) {
+                    this.orderType = this.cartData.orderType;
+                    this.isDeliveryOrder = this.orderType === 'delivery';
+                    console.log('🎯 Order type from cart data:', this.orderType);
+                }
+
+                // Extract user and order IDs from cart data if available
+                if (this.cartData.userId) this.userId = this.cartData.userId;
+                if (this.cartData.orderId) this.orderId = this.cartData.orderId;
+
+                this.recalculateTotals();
                 return;
             }
 
@@ -67,13 +246,14 @@ class CheckoutManager {
                     subtotal: cartInfo.total,
                     tax: Math.round(cartInfo.total * this.taxRate),
                     deliveryFee: this.deliveryFee,
-                    grandTotal: cartInfo.grandTotal
+                    grandTotal: cartInfo.total + Math.round(cartInfo.total * this.taxRate) + this.deliveryFee
                 };
                 console.log('📦 Cart data loaded from cartManager:', this.cartData);
                 return;
             }
 
             // Final fallback: Demo data
+            const demoSubtotal = 2549;
             this.cartData = {
                 items: [
                     {
@@ -91,18 +271,84 @@ class CheckoutManager {
                         image: '/website_customizations/static/src/images/product_1.jpg'
                     }
                 ],
-                subtotal: 2549,
-                tax: Math.round(2549 * this.taxRate),
+                subtotal: demoSubtotal,
+                tax: Math.round(demoSubtotal * this.taxRate),
                 deliveryFee: this.deliveryFee,
-                grandTotal: 2549 + Math.round(2549 * this.taxRate) + this.deliveryFee
+                grandTotal: demoSubtotal + Math.round(demoSubtotal * this.taxRate) + this.deliveryFee
             };
             console.log('📦 Using demo cart data:', this.cartData);
 
         } catch (error) {
             console.error('Error loading cart data:', error);
-            this.cartData = { items: [], subtotal: 0, tax: 0, deliveryFee: this.deliveryFee, grandTotal: this.deliveryFee };
+            this.cartData = {
+                items: [],
+                subtotal: 0,
+                tax: 0,
+                deliveryFee: this.deliveryFee,
+                grandTotal: this.deliveryFee
+            };
         }
     }
+
+    /**
+ * Collect all form data - ENHANCED FOR ODOO with order type
+ */
+collectOrderData() {
+    this.orderData = {
+        // Customer information
+        customerName: document.getElementById('customer-name')?.value?.trim(),
+        customerPhone: document.getElementById('country-code')?.value + document.getElementById('customer-phone')?.value?.trim(),
+        customerEmail: document.getElementById('customer-email')?.value?.trim(),
+
+        // Order type information (CRITICAL for Odoo integration)
+        orderType: this.orderType,
+        isDeliveryOrder: this.isDeliveryOrder,
+
+        // Address fields - ALWAYS INCLUDE but set defaults for pickup
+        customerCountry: this.isDeliveryOrder ?
+            document.getElementById('customer-country')?.value : 'Pakistan',
+        customerState: this.isDeliveryOrder ?
+            document.getElementById('customer-state')?.value : 'N/A',
+        customerZipcode: this.isDeliveryOrder ?
+            document.getElementById('customer-zipcode')?.value?.trim() : '00000',
+        customerAddress: this.isDeliveryOrder ?
+            document.getElementById('customer-address')?.value?.trim() : 'Pickup Order - No Address Required',
+
+        // Payment information
+        paymentMethod: this.paymentMethod,
+
+        // Order details - IMPORTANT: This is what Odoo needs
+        items: this.cartData.items.map(item => ({
+            name: item.name,
+            price: parseFloat(item.price),
+            quantity: parseInt(item.quantity),
+            image: item.image || '',
+            id: item.id || null
+        })),
+        subtotal: parseFloat(this.cartData.subtotal),
+        tax: parseFloat(this.cartData.tax),
+        deliveryFee: parseFloat(this.cartData.deliveryFee),
+        grandTotal: parseFloat(this.cartData.grandTotal),
+
+        // User and order IDs for tracking
+        userId: this.userId,
+        orderId: this.orderId,
+
+        // Metadata
+        orderDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
+        orderTime: new Date().toTimeString().split(' ')[0], // HH:MM:SS format
+
+        // Card details (if online payment)
+        ...(this.paymentMethod === 'online' && {
+            cardNumber: document.getElementById('card-number')?.value?.replace(/\s/g, ''),
+            cardExpiry: document.getElementById('card-expiry')?.value,
+            cardName: document.getElementById('card-name')?.value?.trim(),
+            selectedBank: document.getElementById('bank-select')?.value
+        })
+    };
+
+    console.log('📦 Order data prepared for Odoo:', this.orderData);
+}
 
     /**
      * Populate order summary with cart data
@@ -196,6 +442,29 @@ class CheckoutManager {
                 this.hideOrderConfirmation();
             }
         });
+    }
+
+    /**
+     * Setup payment method toggle functionality - MISSING METHOD FIXED
+     */
+    setupPaymentToggle() {
+        // Initialize payment method selection
+        const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
+
+        paymentRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                this.handlePaymentMethodChange(e.target.value);
+            });
+        });
+
+        // Set default payment method
+        const defaultPayment = document.getElementById('payment-cash');
+        if (defaultPayment) {
+            defaultPayment.checked = true;
+            this.handlePaymentMethodChange('cash');
+        }
+
+        console.log('💳 Payment toggle setup completed');
     }
 
     /**
@@ -445,43 +714,65 @@ class CheckoutManager {
     }
 
     /**
-     * Validate entire form
-     */
-    validateForm() {
-        const form = document.getElementById('checkout-form');
-        if (!form) return false;
+ * Validate entire form
+ */
+validateForm() {
+    const form = document.getElementById('checkout-form');
+    if (!form) return false;
 
-        let allValid = true;
-        const requiredFields = form.querySelectorAll('[required]');
+    let allValid = true;
+    const requiredFields = form.querySelectorAll('[required]');
 
-        requiredFields.forEach(field => {
-            if (!this.validateField(field)) {
+    requiredFields.forEach(field => {
+        // Skip validation for hidden address fields in pickup mode
+        if (!this.isDeliveryOrder) {
+            const fieldId = field.id;
+            const isAddressField = [
+                'customer-country',
+                'customer-state',
+                'customer-zipcode',
+                'customer-address'
+            ].includes(fieldId);
+
+            if (isAddressField) {
+                return; // Skip validation for this field
+            }
+        }
+
+        if (!this.validateField(field)) {
+            allValid = false;
+        }
+    });
+
+    // Additional validation for online payments
+    if (this.paymentMethod === 'online') {
+        const cardFields = ['card-number', 'card-expiry', 'card-cvv', 'card-name', 'bank-select'];
+        cardFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field && !this.validateField(field)) {
                 allValid = false;
             }
         });
-
-        // Additional validation for online payments
-        if (this.paymentMethod === 'online') {
-            const cardFields = ['card-number', 'card-expiry', 'card-cvv', 'card-name', 'bank-select'];
-            cardFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field && !this.validateField(field)) {
-                    allValid = false;
-                }
-            });
-        }
-
-        this.formValid = allValid;
-        return allValid;
     }
 
+    this.formValid = allValid;
+    return allValid;
+}
+
     /**
-     * Handle place order button click
+     * Enhanced error handling for place order
      */
     async handlePlaceOrder(event) {
         event.preventDefault();
 
-        console.log('📝 Processing order...');
+        console.log('📝 Processing order with Odoo integration...');
+
+        // Test connection first
+        try {
+            await this.testConnection();
+        } catch (error) {
+            console.log('❌ Connection test failed, but continuing...');
+        }
 
         // Validate form
         if (!this.validateForm()) {
@@ -496,93 +787,188 @@ class CheckoutManager {
             // Collect form data
             this.collectOrderData();
 
-            // Simulate API call delay
-            await this.processOrder();
+            // Validate collected data
+            if (!this.orderData.items || this.orderData.items.length === 0) {
+                throw new Error('No items in cart. Please add items before checkout.');
+            }
 
-            // Show success
-            this.showOrderConfirmation();
+            // Send order to Odoo backend
+            console.log('🚀 Submitting order to Odoo...');
+            const result = await this.submitOrderToOdoo(this.orderData);
+
+            if (result && result.success) {
+                // Update order data with response
+                this.orderData.salesOrderId = result.sales_order_id;
+                this.orderData.orderId = result.order_id;
+
+                // Show success
+                this.showOrderConfirmation();
+
+                // Clear cart from session storage
+                sessionStorage.removeItem('checkoutCart');
+
+                console.log('🎉 Order created successfully in Odoo!');
+                console.log('📋 Order Details:', {
+                    orderId: result.order_id,
+                    salesOrderId: result.sales_order_id,
+                    customerId: result.customer_id,
+                    total: result.order_total,
+                    orderType: this.orderType
+                });
+
+                this.showNotification('Order placed successfully!', 'success');
+                return; // Exit successfully
+            } else {
+                throw new Error(result?.error || 'Failed to create order');
+            }
 
         } catch (error) {
-            console.error('Order processing error:', error);
-            this.showNotification('Failed to process order. Please try again.', 'error');
+            console.error('❌ Order processing error:', error);
+
+            // SPECIAL CASE: If error contains 'Unknown server error' but we see order data,
+            // the order might have been created successfully despite JavaScript parsing issues
+            if (error.message.includes('Unknown server error') ||
+                error.message.includes('Invalid server response')) {
+
+                console.log('⚠️ Possible parsing error, but order may have been created');
+                console.log('🔍 Check Sales → Quotations in Odoo to verify order creation');
+
+                // Show a different message
+                this.showNotification('Order may have been placed successfully. Please check Sales → Quotations to verify.', 'warning');
+
+            } else {
+                // Handle other errors normally
+                let errorMessage = 'Failed to process order.';
+
+                if (error.message.includes('HTTP 500')) {
+                    errorMessage = 'Server error. Please check server logs for details.';
+                } else if (error.message.includes('HTTP 404')) {
+                    errorMessage = 'Checkout endpoint not found. Please check your routes.';
+                } else if (error.message.includes('Connection')) {
+                    errorMessage = 'Connection error. Please check your internet connection.';
+                } else {
+                    errorMessage = error.message || 'Unknown error occurred.';
+                }
+
+                this.showNotification(errorMessage, 'error');
+            }
+
+            // Also show in console for debugging
+            console.log('📊 Debug Info:');
+            console.log('- Order Data:', this.orderData);
+            console.log('- Error:', error);
+            console.log('- Error Stack:', error.stack);
+
         } finally {
             this.setPlaceOrderLoading(false);
         }
     }
 
     /**
-     * Collect all form data
-     */
-    collectOrderData() {
-        this.orderData = {
-            // Customer information
-            customerName: document.getElementById('customer-name')?.value?.trim(),
-            customerPhone: document.getElementById('customer-phone')?.value?.trim(),
-            customerEmail: document.getElementById('customer-email')?.value?.trim(),
-            customerCountry: document.getElementById('customer-country')?.value,
-            customerState: document.getElementById('customer-state')?.value,
-            customerZipcode: document.getElementById('customer-zipcode')?.value?.trim(),
-            customerAddress: document.getElementById('customer-address')?.value?.trim(),
+ * Submit order to Odoo backend - FIXED FOR ODOO JSON-RPC
+ */
+async submitOrderToOdoo(orderData) {
+    try {
+        console.log('📤 Sending order to Odoo backend...');
+        console.log('📋 Order data being sent:', JSON.stringify(orderData, null, 2));
 
-            // Payment information
-            paymentMethod: this.paymentMethod,
-
-            // Order details
-            items: this.cartData.items,
-            subtotal: this.cartData.subtotal,
-            tax: this.cartData.tax,
-            deliveryFee: this.cartData.deliveryFee,
-            grandTotal: this.cartData.grandTotal,
-
-            // Metadata
-            orderDate: new Date().toLocaleDateString(),
-            orderTime: new Date().toLocaleTimeString(),
-            orderId: this.generateOrderId(),
-
-            // Card details (if online payment)
-            ...(this.paymentMethod === 'online' && {
-                cardNumber: document.getElementById('card-number')?.value?.replace(/\s/g, ''),
-                cardExpiry: document.getElementById('card-expiry')?.value,
-                cardName: document.getElementById('card-name')?.value?.trim(),
-                selectedBank: document.getElementById('bank-select')?.value
-            })
-        };
-
-        console.log('Order data collected:', this.orderData);
-    }
-
-    /**
-     * Process the order (simulate API call)
-     */
-    async processOrder() {
-        return new Promise((resolve, reject) => {
-            // Simulate processing time
-            setTimeout(() => {
-                // Simulate random success/failure for demo
-                if (Math.random() > 0.1) { // 90% success rate
-                    console.log('Order processed successfully');
-
-                    // Store order in sessionStorage for tracking
-                    sessionStorage.setItem('lastOrder', JSON.stringify(this.orderData));
-
-                    // Clear cart data
-                    sessionStorage.removeItem('checkoutCart');
-
-                    resolve(this.orderData);
-                } else {
-                    reject(new Error('Payment processing failed'));
-                }
-            }, 2000);
+        const response = await fetch('/checkout/process-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(orderData)
         });
+
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response status text:', response.statusText);
+
+        if (!response.ok) {
+            let errorText = `HTTP ${response.status}: ${response.statusText}`;
+            try {
+                const errorBody = await response.text();
+                console.log('❌ Error response body:', errorBody);
+                errorText += ` - ${errorBody}`;
+            } catch (e) {
+                console.log('Could not read error response body');
+            }
+            throw new Error(errorText);
+        }
+
+        const result = await response.json();
+        console.log('📨 Server response:', result);
+
+        // Handle Odoo's JSON-RPC response format
+        let actualResult = result;
+
+        // If it's wrapped in Odoo's JSON-RPC format
+        if (result.jsonrpc && result.result) {
+            actualResult = result.result;
+            console.log('📨 Extracted result from JSON-RPC:', actualResult);
+        }
+
+        // Check for JSON-RPC level errors first
+        if (result.error) {
+            console.error('❌ JSON-RPC error:', result.error);
+            throw new Error(result.error.message || result.error);
+        }
+
+        // Check for application level errors
+        if (actualResult && actualResult.error) {
+            console.error('❌ Server returned error:', actualResult.error);
+            throw new Error(actualResult.error);
+        }
+
+        // Check for success - this should catch your case
+        if (actualResult && actualResult.success === true) {
+            console.log('🎉 Server confirmed success!', actualResult);
+            return actualResult;
+        }
+
+        // If actualResult exists but success is not explicitly true, still return it
+        if (actualResult) {
+            console.log('📊 Returning result even without explicit success flag:', actualResult);
+            return actualResult;
+        }
+
+        // If we get here, something is wrong with the response format
+        console.error('❌ Unexpected response format:', result);
+        throw new Error('Invalid server response format');
+
+    } catch (error) {
+        console.error('❌ Error in submitOrderToOdoo:', error);
+        throw error;
     }
+}
 
     /**
-     * Generate unique order ID
+     * Test connection to server
      */
-    generateOrderId() {
-        const timestamp = Date.now().toString().slice(-6);
-        const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-        return `#${timestamp}${random}`;
+    async testConnection() {
+        try {
+            console.log('🧪 Testing connection to server...');
+
+            const response = await fetch('/checkout/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Connection test successful:', result);
+                return result;
+            } else {
+                throw new Error(`Connection test failed: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('❌ Connection test failed:', error);
+            throw error;
+        }
     }
 
     /**
@@ -592,27 +978,39 @@ class CheckoutManager {
         const button = document.getElementById('place-order-btn');
         if (!button) return;
 
+        const btnText = button.querySelector('.btn-text');
+        const btnLoading = button.querySelector('.btn-loading');
+
         if (loading) {
             button.classList.add('loading');
             button.disabled = true;
+            if (btnText) btnText.style.display = 'none';
+            if (btnLoading) btnLoading.classList.remove('hidden');
         } else {
             button.classList.remove('loading');
             button.disabled = false;
+            if (btnText) btnText.style.display = 'block';
+            if (btnLoading) btnLoading.classList.add('hidden');
         }
     }
 
     /**
-     * Show order confirmation modal
+     * Show order confirmation modal - UPDATED FOR ODOO
      */
     showOrderConfirmation() {
         const modal = document.getElementById('order-confirmation-modal');
         if (!modal) return;
 
         // Populate confirmation details
-        document.getElementById('confirmation-order-id').textContent = this.orderData.orderId;
+        document.getElementById('confirmation-order-id').textContent = this.orderData.orderId || '#12345';
         document.getElementById('confirmation-total').textContent = `Rs. ${this.orderData.grandTotal}`;
-        document.getElementById('confirmation-payment').textContent =
-            this.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Online Payment';
+        document.getElementById('confirmation-payment').textContent = this.getPaymentMethodDisplayText();
+
+        // Add order type to confirmation if available
+        const orderTypeElement = document.getElementById('confirmation-order-type');
+        if (orderTypeElement) {
+            orderTypeElement.textContent = this.isDeliveryOrder ? 'Delivery' : 'Pickup';
+        }
 
         // Calculate estimated delivery time
         const estimatedTime = this.calculateDeliveryTime();
@@ -627,8 +1025,24 @@ class CheckoutManager {
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
 
-        console.log('Order confirmation displayed');
+        console.log('Order confirmation displayed for Odoo order:', this.orderData.salesOrderId);
+
+        // Dispatch order completion event
+const orderCompletedEvent = new CustomEvent('orderCompleted', {
+    detail: { orderData: this.orderData }
+});
+document.dispatchEvent(orderCompletedEvent);
     }
+
+    /**
+ * Get payment method display text
+ */
+getPaymentMethodDisplayText() {
+    if (this.paymentMethod === 'cash') {
+        return this.isDeliveryOrder ? 'Cash on Delivery' : 'Pay with Cash on Counter';
+    }
+    return 'Online Payment';
+}
 
     /**
      * Hide order confirmation modal
@@ -661,17 +1075,26 @@ class CheckoutManager {
         return `${timeString} (35-45 minutes)`;
     }
 
-    /**
-     * Handle view menu button click
-     */
     redirectToMenu() {
-        this.hideOrderConfirmation();
+    this.hideOrderConfirmation();
 
-        // Redirect to homepage or menu section
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 500);
+    // Clear cart completely
+    if (window.cravelyCartManager) {
+        window.cravelyCartManager.clearCartCompletely();
     }
+
+    // Generate new order ID
+    if (window.orderMethodSelector && typeof window.orderMethodSelector.generateNewOrderId === 'function') {
+        window.orderMethodSelector.generateNewOrderId();
+    }
+
+    // Clear checkout storage
+    sessionStorage.removeItem('checkoutCart');
+
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 500);
+}
 
     /**
      * Handle track order button click
@@ -679,8 +1102,12 @@ class CheckoutManager {
     handleTrackOrder() {
         this.hideOrderConfirmation();
 
-        // Show track order functionality
-        this.showNotification('Order tracking will be available soon! We will notify you via SMS.', 'success');
+        // If we have a sales order ID, we could redirect to Odoo's order tracking
+        if (this.orderData.salesOrderId) {
+            this.showNotification(`Your order ${this.orderData.orderId} is being prepared! We will notify you via SMS.`, 'success');
+        } else {
+            this.showNotification('Order tracking will be available soon! We will notify you via SMS.', 'success');
+        }
 
         setTimeout(() => {
             window.location.href = '/';
@@ -736,6 +1163,45 @@ class CheckoutManager {
     }
 
     /**
+     * PUBLIC API: Test order creation (for debugging)
+     */
+    async testOrderCreation() {
+        try {
+            const testData = {
+                customerName: 'Test Customer',
+                customerPhone: '+92300123456',
+                customerEmail: 'test@example.com',
+                customerAddress: '123 Test Street, Test City',
+                customerCountry: 'Pakistan',
+                customerState: 'Sindh',
+                customerZipcode: '12345',
+                paymentMethod: 'cash',
+                items: [
+                    {
+                        name: 'Test Biryani',
+                        price: 500,
+                        quantity: 2
+                    }
+                ],
+                subtotal: 1000,
+                tax: 150,
+                deliveryFee: 200,
+                grandTotal: 1350,
+                orderDate: '2024-12-10',
+                orderTime: '14:30:00'
+            };
+
+            const result = await this.submitOrderToOdoo(testData);
+            console.log('Test order result:', result);
+            return result;
+
+        } catch (error) {
+            console.error('Test order failed:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Public API methods
      */
     getOrderData() {
@@ -759,7 +1225,23 @@ class CheckoutManager {
         });
     }
 
+    /**
+ * Recalculate totals based on order type
+ */
+recalculateTotals() {
+    if (!this.cartData) return;
 
+    this.cartData.deliveryFee = this.deliveryFee;
+    this.cartData.tax = Math.round(this.cartData.subtotal * this.taxRate);
+    this.cartData.grandTotal = this.cartData.subtotal + this.cartData.tax + this.deliveryFee;
+
+    console.log('🔢 Totals recalculated:', {
+        subtotal: this.cartData.subtotal,
+        tax: this.cartData.tax,
+        deliveryFee: this.cartData.deliveryFee,
+        grandTotal: this.cartData.grandTotal
+    });
+}
 }
 
 // Initialize checkout manager when DOM is ready
