@@ -92,6 +92,27 @@ initializeCustomDropdowns() {
 }
 
 /**
+ * Hide cart elements on checkout page to prevent z-index conflicts
+ */
+hideCartElementsOnCheckout() {
+    // Hide cart popup and sidebar when on checkout page
+    const cartPopup = document.getElementById('cravely-cart-view-popup');
+    const cartSidebar = document.getElementById('cravely-cart-sidebar-overlay');
+
+    if (cartPopup) {
+        cartPopup.style.display = 'none';
+        cartPopup.style.visibility = 'hidden';
+    }
+
+    if (cartSidebar) {
+        cartSidebar.style.display = 'none';
+        cartSidebar.style.visibility = 'hidden';
+    }
+
+    console.log('🛒 Cart elements hidden on checkout page');
+}
+
+/**
  * Setup province dropdown options
  */
 setupProvinceDropdown() {
@@ -598,6 +619,8 @@ makeCardFieldsRequired(required) {
     this.initializeCustomDropdowns();
     this.initializePaymentMethods();
     this.fixPlaceholderStyling();
+
+    this.hideCartElementsOnCheckout();
 
     this.bindEventListeners();
     this.initializeFormValidation();
@@ -1208,7 +1231,7 @@ bindEventListeners() {
 
     if (closeConfirmationBtn) {
         closeConfirmationBtn.addEventListener('click', () => {
-            this.hideOrderConfirmation();
+            this.hideOrderConfirmation(true);
         });
     }
 
@@ -1889,19 +1912,25 @@ getPaymentMethodDisplayText() {
     /**
      * Hide order confirmation modal
      */
-    hideOrderConfirmation() {
-        const modal = document.getElementById('order-confirmation-modal');
-        if (!modal) return;
+    hideOrderConfirmation(redirectToHome = false) {
+    const modal = document.getElementById('order-confirmation-modal');
+    if (!modal) return;
 
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 400);
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.classList.add('hidden');
 
-        // Restore body scroll
-        document.body.style.overflow = '';
-    }
+        // NEW: Redirect to homepage if requested
+        if (redirectToHome) {
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 300);
+        }
+    }, 400);
 
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
     /**
      * Calculate estimated delivery time
      */

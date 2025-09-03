@@ -1764,3 +1764,49 @@
     }
 }
 
+/* ================================= Z-INDEX FIXES ================================= */
+/* Fix checkout page z-index conflicts */
+.checkout-page-wrapper {
+    position: relative;
+    z-index: 1; /* Ensure checkout page has proper stacking context */
+}
+
+/* Hide cart popup on checkout page */
+.checkout-page-wrapper ~ #cravely-cart-view-popup,
+.checkout-page-wrapper ~ #cravely-cart-sidebar-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Ensure checkout elements have proper z-index */
+.checkout-main-container {
+    position: relative;
+    z-index: 2;
+}
+
+.checkout-left-column,
+.checkout-right-column {
+    position: relative;
+    z-index: 3;
+}
+
+/* Fix dropdown z-index specifically for checkout */
+.checkout-page-wrapper .custom-dropdown-options {
+    z-index: 1000 !important; /* Higher than other checkout elements */
+}
+
+.checkout-page-wrapper .confirmation-modal {
+    z-index: 10000 !important; /* Higher than everything */
+}
+
+/* Fix payment method cards z-index */
+.checkout-page-wrapper .payment-method-card {
+    position: relative;
+    z-index: 1;
+}
+
+.checkout-page-wrapper .payment-method-card:hover,
+.checkout-page-wrapper .payment-method-card.selected {
+    z-index: 2;
+}
