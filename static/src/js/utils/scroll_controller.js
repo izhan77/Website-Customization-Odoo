@@ -38,6 +38,18 @@ class UnifiedScrollController {
         window.scrollController = this;
     }
 
+    /**
+ * Generate category slug to match backend
+ */
+generateSlug(name) {
+    return name.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/&/g, '')
+        .replace(/[^a-z0-9\-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') + '-section';
+}
+
     init() {
         // Wait for DOM
         if (document.readyState === 'loading') {
@@ -204,16 +216,24 @@ setupActiveTracking() {
  * Update active category based on scroll position
  */
 updateActiveCategoryOnScroll() {
+    if (this.isScrolling) return; // Don't update during manual scrolling
+
     const sections = document.querySelectorAll('section[id]');
-    const scrollTop = window.pageYOffset + 140; // Offset for navbar + strip
+    const scrollTop = window.pageYOffset + this.calculateOffset() + 50; // Better offset
 
     let activeSection = null;
+    let closestDistance = Infinity;
 
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.offsetHeight;
+        const sectionMiddle = sectionTop + (sectionHeight / 2);
 
-        if (scrollTop >= sectionTop && scrollTop < sectionTop + sectionHeight) {
+        // Calculate distance from viewport center
+        const distance = Math.abs(scrollTop - sectionMiddle);
+
+        if (distance < closestDistance && scrollTop >= sectionTop - 100) {
+            closestDistance = distance;
             activeSection = section.id;
         }
     });
@@ -221,6 +241,24 @@ updateActiveCategoryOnScroll() {
     if (activeSection) {
         this.setActiveCategory(activeSection);
     }
+}
+
+setupActiveTracking() {
+    let scrollTimeout;
+    let lastScrollTop = 0;
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset;
+
+        // Only update if scrolled significantly
+        if (Math.abs(scrollTop - lastScrollTop) > 50) {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                this.updateActiveCategoryOnScroll();
+                lastScrollTop = scrollTop;
+            }, 150);
+        }
+    }, { passive: true });
 }
 
 /**
@@ -300,27 +338,30 @@ updateArrowVisibility() {
     /**
      * Handle category click
      */
-    handleCategoryClick(element) {
-        const href = element.getAttribute('href');
-        const dataCategory = element.getAttribute('data-category');
-        const targetId = dataCategory || (href ? href.substring(1) : null);
+handleCategoryClick(element) {
+    const href = element.getAttribute('href');
+    const dataSection = element.getAttribute('data-section');
+    const targetId = dataSection || (href ? href.substring(1) : null);
 
-        if (!targetId) return;
+    console.log('🎯 Category clicked:', { href, dataSection, targetId });
 
-        console.log('🎯 Category clicked:', targetId);
-
-        // Check if on checkout page
-        if (window.location.pathname.includes('/checkout')) {
-            this.handleCheckoutRedirect(targetId);
-            return;
-        }
-
-        // Close any open popups
-        this.closeAllPopups();
-
-        // Scroll to section
-        this.scrollToSection(targetId);
+    if (!targetId) {
+        console.error('❌ No target ID found for category click');
+        return;
     }
+
+    // Check if on checkout page
+    if (window.location.pathname.includes('/checkout')) {
+        this.handleCheckoutRedirect(targetId);
+        return;
+    }
+
+    // Close any open popups
+    this.closeAllPopups();
+
+    // Scroll to section
+    this.scrollToSection(targetId);
+}
 
     /**
      * Main scroll method - SINGLE source of truth
@@ -490,6 +531,27 @@ updateArrowVisibility() {
         requestAnimationFrame(animate);
     }
 
+    smoothScrollStripTo(targetScroll) {
+    const container = document.getElementById('categories-container');
+    const wrapper = document.getElementById('categories-wrapper');
+    const contentWidth = container.scrollWidth;
+    const wrapperWidth = wrapper.offsetWidth;
+
+    // Calculate bounds
+    const maxScroll = Math.max(0, contentWidth - wrapperWidth);
+    const boundedScroll = Math.min(Math.max(-targetScroll, -maxScroll), 0);
+
+    // Smooth animation
+    container.style.transition = 'transform 0.5s ease-in-out';
+    this.currentTransform = boundedScroll;
+    container.style.transform = `translateX(${this.currentTransform}px)`;
+
+    // Update arrows after transition
+    setTimeout(() => {
+        this.updateArrowVisibility();
+    }, 500);
+}
+
     /**
      * Process queued scrolls
      */
@@ -508,6 +570,8 @@ updateArrowVisibility() {
     // Remove all active states
     document.querySelectorAll('.category-item').forEach(item => {
         item.classList.remove('active');
+        item.style.transform = 'scale(1)';
+        item.style.fontWeight = 'normal';
     });
 
     // Find and activate matching category
@@ -515,8 +579,18 @@ updateArrowVisibility() {
     const activeItem = document.querySelector(selector);
 
     if (activeItem) {
+        // Add visual active state
         activeItem.classList.add('active');
+        activeItem.style.transform = 'scale(1.05)';
+        activeItem.style.fontWeight = '600';
+        activeItem.style.transition = 'all 0.3s ease';
+
+        // Scroll to make active item visible with context
         this.scrollCategoryIntoView(activeItem);
+
+        console.log('✅ Active category:', sectionId);
+    } else {
+        console.warn('⚠️ Could not find category item for section:', sectionId);
     }
 }
 
@@ -531,18 +605,26 @@ updateArrowVisibility() {
 
     const itemRect = item.getBoundingClientRect();
     const wrapperRect = wrapper.getBoundingClientRect();
+    const wrapperWidth = wrapper.offsetWidth;
+    const itemWidth = item.offsetWidth;
+    const itemOffsetLeft = item.offsetLeft;
 
-    // Check if item is outside view
-    if (itemRect.left < wrapperRect.left || itemRect.right > wrapperRect.right) {
-        const itemOffsetLeft = item.offsetLeft;
-        const wrapperWidth = wrapper.offsetWidth;
-        const itemWidth = item.offsetWidth;
+    // Calculate visible area boundaries
+    const visibleLeft = Math.abs(this.currentTransform);
+    const visibleRight = visibleLeft + wrapperWidth;
 
-        // Center the active item with some next items visible
-        const targetScroll = itemOffsetLeft - (wrapperWidth / 3);
+    // Check if item is outside view or too close to edges
+    const isLeftEdge = itemOffsetLeft < visibleLeft + (wrapperWidth * 0.2); // 20% from left
+    const isRightEdge = itemOffsetLeft + itemWidth > visibleRight - (wrapperWidth * 0.2); // 20% from right
+    const isOutsideLeft = itemOffsetLeft < visibleLeft;
+    const isOutsideRight = itemOffsetLeft + itemWidth > visibleRight;
 
-        this.currentTransform = -Math.max(0, targetScroll);
-        this.applyStripTransform();
+    if (isOutsideLeft || isOutsideRight || isLeftEdge || isRightEdge) {
+        // Smart positioning: center the item with context (show 2-3 items on each side)
+        const targetScroll = itemOffsetLeft - (wrapperWidth / 2) + (itemWidth / 2);
+
+        // Apply smooth scrolling
+        this.smoothScrollStripTo(targetScroll);
     }
 }
 

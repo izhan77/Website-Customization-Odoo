@@ -140,11 +140,11 @@
 }
 
 .category-arrow-left:hover {
-    transform: translateY(-50%) scale(1.15) translateX(-2px);
+    transform: translateY(-50%) scale(1.15);
 }
 
 .category-arrow-right:hover {
-    transform: translateY(-50%) scale(1.15) translateX(2px);
+    transform: translateY(-50%) scale(1.15);
 }
 
 .category-arrow.disabled,
@@ -264,3 +264,17 @@
         height: 50px !important;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

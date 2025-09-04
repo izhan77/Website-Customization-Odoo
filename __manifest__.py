@@ -6,8 +6,9 @@
     'author': 'eaxeesoft',
     'depends': ['web', 'website'],
     'controllers': [
-        'controllers/checkout_controller.py',
+        'controllers/category_controller.py',
         'controllers/product_controller.py',
+        'controllers/checkout_controller.py',
     ],
     'data': [
         # Core Assets
@@ -64,9 +65,9 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            # CRITICAL: Load scroll utilities FIRST
-            # 'website_customizations/static/src/js/utils/scroll_utils.js',
+
             'website_customizations/static/src/js/utils/scroll_controller.js',
+            'website_customizations/static/src/js/components/product_cards/dynamic_product_loader.js',
 
             # Core CSS and config
             'website_customizations/static/src/css/tailwind_input.css',
@@ -96,8 +97,6 @@
             'website_customizations/static/src/js/components/navbar/menu_popup.js',
             'website_customizations/static/src/js/components/navbar/navbar_mobile.js',
 
-            # IMPORTANT: Category strip loads LAST (depends on scroll utils)
-            # 'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
         ],
     },
     'installable': True,

@@ -1,401 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- ================================= COMPLETE MENU SECTIONS - ALL 12 CATEGORIES ================================= -->
+    <!-- ================================= DYNAMIC MENU SECTIONS - FROM ODOO BACKEND ================================= -->
     <template id="menu_sections_complete" name="Complete Menu Sections">
 
-        <!-- Rice Box Section - WITH LOADING STATES -->
-        <section id="rice-box-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">RICE BOX
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Traditional rice dishes served in convenient boxes
-                    </p>
-                </div>
+        <!-- FETCH CATEGORIES FROM ODOO BACKEND -->
+        <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('website_id', 'in', [False, request.website.id])], order='sequence, name')"/>
 
-                <!-- Product Grid Container -->
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8">
-                    <!-- Static products (will be hidden during loading) -->
-<!--                    <t t-call="website_customizations.single_product_card">-->
-<!--                        <t t-set="product_id" t-value="'rice-box-1'"/>-->
-<!--                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>-->
-<!--                        <t t-set="product_title" t-value="'Chicken Biryani Box'"/>-->
-<!--                        <t t-set="product_description" t-value="'Aromatic basmati rice with tender chicken pieces and traditional spices'"/>-->
-<!--                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>-->
-<!--                        <t t-set="product_discounted_price" t-value="'Rs. 950'"/>-->
-<!--                        <t t-set="product_category" t-value="'rice-box'"/>-->
-<!--                    </t>-->
-<!--                    <t t-call="website_customizations.single_product_card">-->
-<!--                        <t t-set="product_id" t-value="'rice-box-2'"/>-->
-<!--                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>-->
-<!--                        <t t-set="product_title" t-value="'Mutton Pulao Box'"/>-->
-<!--                        <t t-set="product_description" t-value="'Fragrant rice with succulent mutton pieces and aromatic spices'"/>-->
-<!--                        <t t-set="product_original_price" t-value="'Rs. 1500'"/>-->
-<!--                        <t t-set="product_discounted_price" t-value="'Rs. 1250'"/>-->
-<!--                        <t t-set="product_category" t-value="'rice-box'"/>-->
-<!--                    </t>-->
+        <!-- LOOP THROUGH EACH CATEGORY -->
+        <t t-foreach="categories" t-as="category">
+            <!-- Generate section ID from category name -->
+            <t t-set="category_slug" t-value="category.name.lower().replace('&amp;', '-').replace(' ', '-').replace('--', '-').replace('--', '-').strip('-') + '-section'"/>
 
-                    <!-- Skeleton loading will be inserted here by JavaScript -->
-                </div>
+            <!-- Get products for this category -->
+            <t t-set="category_products" t-value="request.env['product.template'].sudo().search([
+                ('public_categ_ids', 'in', [category.id]),
+                ('website_published', '=', True)
+            ], limit=20)"/>
 
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
+            <!-- Only show section if it has products -->
+            <t t-if="category_products">
+                <section t-attf-id="#{category_slug}" class="menu-section py-16 bg-white">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <!-- Fish and Chips Section - WITH LOADING STATES -->
-        <section id="fish-and-chips-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">FISH &amp; CHIPS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Crispy golden fish with perfectly seasoned chips
-                    </p>
-                </div>
+                        <!-- Section Header -->
+                        <div class="text-center mb-12">
+                            <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
+                                class="text-[5rem] md:text-[6rem] text-gray-900">
+                                <t t-out="category.name.upper()"/>
+                            </h2>
+                        </div>
 
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'fish-chips-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Classic Fish &amp; Chips'"/>
-                        <t t-set="product_description" t-value="'Beer-battered cod with golden chips and mushy peas'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 999'"/>
-                        <t t-set="product_category" t-value="'fish-chips'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'fish-chips-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Jumbo Fish Platter'"/>
-                        <t t-set="product_description" t-value="'Large portion fish with extra chips and coleslaw'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1800'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1499'"/>
-                        <t t-set="product_category" t-value="'fish-chips'"/>
-                    </t>
-                </div>
+                        <!-- Products Grid -->
+                        <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8">
+                            <!-- Loop through products in this category -->
+                            <t t-foreach="category_products" t-as="product">
+                                <t t-call="website_customizations.single_product_card">
+                                    <t t-set="product_id" t-value="'product-' + str(product.id)"/>
+                                    <t t-set="product_image" t-value="product.image_1920 and ('/web/image/product.template/%s/image_1920' % product.id) or '/website_customizations/static/src/images/product_1.jpg'"/>
+                                    <t t-set="product_title" t-value="product.name"/>
+                                    <t t-set="product_description" t-value="product.description_sale or product.name"/>
+                                    <t t-set="product_original_price" t-value="'Rs. %.0f' % (product.list_price * 1.2)"/>
+                                    <t t-set="product_discounted_price" t-value="'Rs. %.0f' % product.list_price"/>
+                                    <t t-set="product_category" t-value="category_slug.replace('-section', '')"/>
+                                </t>
+                            </t>
+                        </div>
 
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
+                        <!-- Separator Line -->
+                        <img src="/website_customizations/static/src/images/seperator-line.png"
+                             class="w-full h-[3rem] object-cover mt-5"
+                             alt="Line Seperator"/>
+                    </div>
+                </section>
+            </t>
+        </t>
 
-        <!-- Pasta Section -->
-        <section id="pasta-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">PASTA
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Authentic Italian pasta dishes with rich sauces
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'pasta-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Spaghetti Carbonara'"/>
-                        <t t-set="product_description" t-value="'Creamy pasta with bacon, eggs, and parmesan cheese'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1100'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 899'"/>
-                        <t t-set="product_category" t-value="'pasta'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'pasta-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Chicken Alfredo'"/>
-                        <t t-set="product_description" t-value="'Fettuccine with grilled chicken in rich alfredo sauce'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1300'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1099'"/>
-                        <t t-set="product_category" t-value="'pasta'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Turkish Feast Section -->
-        <section id="turkish-feast-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">TURKISH FEAST
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Authentic Turkish cuisine with traditional flavors
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'turkish-feast-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Turkish Kebab Platter'"/>
-                        <t t-set="product_description" t-value="'Mixed kebabs with rice, salad and authentic Turkish bread'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1900'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1599'"/>
-                        <t t-set="product_category" t-value="'turkish-feast'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'turkish-feast-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Ottoman Special'"/>
-                        <t t-set="product_description" t-value="'Royal Turkish feast with lamb, chicken and traditional sides'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 2600'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 2199'"/>
-                        <t t-set="product_category" t-value="'turkish-feast'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Wraps & Rolls Section -->
-        <section id="wraps-rolls-section" class="menu-section py-12 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">WRAPS &amp; ROLLS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Fresh wraps and rolls packed with flavor
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'wraps-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Chicken Caesar Wrap'"/>
-                        <t t-set="product_description" t-value="'Grilled chicken with caesar dressing, lettuce and parmesan'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 800'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 699'"/>
-                        <t t-set="product_category" t-value="'wraps-rolls'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'wraps-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Beef Shawarma Roll'"/>
-                        <t t-set="product_description" t-value="'Tender beef shawarma with vegetables and garlic sauce'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 900'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 799'"/>
-                        <t t-set="product_category" t-value="'wraps-rolls'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- New Arrivals Section -->
-        <section id="new-arrivals-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">NEW ARRIVALS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Fresh additions to our menu with exciting new flavors
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'new-arrival-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Fusion Delight Box'"/>
-                        <t t-set="product_description" t-value="'Modern twist on traditional flavors with international influences'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1400'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1199'"/>
-                        <t t-set="product_category" t-value="'new-arrivals'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'new-arrival-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Chef Special Innovation'"/>
-                        <t t-set="product_description" t-value="'Latest creation from our head chef combining traditional and modern'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1700'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1399'"/>
-                        <t t-set="product_category" t-value="'new-arrivals'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Soups and Salads Section -->
-        <section id="soups-and-salads-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">SOUPS &amp; SALADS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Fresh and healthy options to start your meal
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'soup-salad-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Mediterranean Salad'"/>
-                        <t t-set="product_description" t-value="'Fresh greens with olives, feta cheese and Mediterranean dressing'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 800'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 650'"/>
-                        <t t-set="product_category" t-value="'soups-salads'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'soup-salad-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Turkish Lentil Soup'"/>
-                        <t t-set="product_description" t-value="'Hearty red lentil soup with traditional Turkish spices'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 600'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 499'"/>
-                        <t t-set="product_category" t-value="'soups-salads'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Cold Drinks Section -->
-        <section id="cold-drinks-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">COLD DRINKS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Refreshing beverages to beat the heat
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'cold-drink-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Fresh Lemonade'"/>
-                        <t t-set="product_description" t-value="'Freshly squeezed lemon with mint and ice'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 300'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 250'"/>
-                        <t t-set="product_category" t-value="'cold-drinks'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'cold-drink-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Mango Smoothie'"/>
-                        <t t-set="product_description" t-value="'Creamy mango smoothie with yogurt and honey'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 450'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 399'"/>
-                        <t t-set="product_category" t-value="'cold-drinks'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Hot Beverages Section -->
-        <section id="hot-beverages-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">HOT BEVERAGES
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Warm beverages to comfort your soul
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'hot-beverage-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Turkish Coffee'"/>
-                        <t t-set="product_description" t-value="'Traditional Turkish coffee with authentic preparation'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 400'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 350'"/>
-                        <t t-set="product_category" t-value="'hot-beverages'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'hot-beverage-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Masala Chai'"/>
-                        <t t-set="product_description" t-value="'Spiced tea with milk and traditional masala blend'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 250'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 199'"/>
-                        <t t-set="product_category" t-value="'hot-beverages'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- Desserts Section -->
-        <section id="desserts-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom: 0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">DESSERTS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Sweet endings to your perfect meal
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'dessert-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Baklava Special'"/>
-                        <t t-set="product_description" t-value="'Traditional layered pastry with nuts and honey syrup'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 600'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 499'"/>
-                        <t t-set="product_category" t-value="'desserts'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'dessert-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Chocolate Brownie'"/>
-                        <t t-set="product_description" t-value="'Rich chocolate brownie with vanilla ice cream'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 500'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 399'"/>
-                        <t t-set="product_category" t-value="'desserts'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png" class="w-full h-[3rem] object-cover mt-5" alt="Line Seperator"/>
-            </div>
-        </section>
-
-        <!-- BBQ Section -->
-         <section id="bbq-section" class="menu-section py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom:0px !important;"
-                        class="text-[5rem] md:text-[6rem] text-gray-900">BBQ SPECIALS
-                    </h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Grilled perfection with smoky flavors
-                    </p>
-                </div>
-                <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'bbq-1'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Chicken Tikka'"/>
-                        <t t-set="product_description" t-value="'Juicy chicken tikka with smoky BBQ flavor'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1200'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 999'"/>
-                        <t t-set="product_category" t-value="'bbq'"/>
-                    </t>
-                    <t t-call="website_customizations.single_product_card">
-                        <t t-set="product_id" t-value="'bbq-2'"/>
-                        <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
-                        <t t-set="product_title" t-value="'Seekh Kebabs'"/>
-                        <t t-set="product_description" t-value="'Spiced minced meat skewers grilled to perfection'"/>
-                        <t t-set="product_original_price" t-value="'Rs. 1400'"/>
-                        <t t-set="product_discounted_price" t-value="'Rs. 1150'"/>
-                        <t t-set="product_category" t-value="'bbq'"/>
-                    </t>
-                </div>
-                <img src="/website_customizations/static/src/images/seperator-line.png"
-                     class="w-full h-[3rem] object-cover mt-5"
-                     alt="Line Seperator"/>
-            </div>
-        </section>
     </template>
 </odoo>

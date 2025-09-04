@@ -4,17 +4,13 @@
 This controller handles fetching products from Odoo backend and serving them to frontend
 File Location: /website_customizations/controllers/product_controller.py
 
-NEW URL STRUCTURE:
-Base URL: http://100.110.83.110:8069
-All endpoints now use: /order-mode/products/...
-
 ENDPOINTS:
 - /order-mode/products/all - Get all products
 - /order-mode/products/category/{name} - Get products by category
 - /order-mode/products/search - Search products
 - /order-mode/products/single/{id} - Get single product
 """
-
+import re
 from odoo import http, fields
 from odoo.http import request
 import json
@@ -31,14 +27,19 @@ class CravelyProductController(http.Controller):
     All routes are prefixed with /order-mode/products/ for your specific URL structure
     """
 
+    def _generate_slug(self, name):
+        """Convert category name to URL-friendly slug for sections"""
+        slug = name.lower()
+        slug = re.sub(r'[&\s]+', '-', slug)
+        slug = re.sub(r'[^a-z0-9\-]', '', slug)
+        slug = re.sub(r'-+', '-', slug)
+        slug = slug.strip('-')
+        return slug + '-section'
+
     @http.route('/order-mode/products/all', type='http', auth='public', website=True, csrf=False, methods=['GET'])
     def get_all_products(self, **kwargs):
         """
         MAIN ENDPOINT: Get all products formatted for frontend
-
-        URL: http://100.110.83.110:8069/order-mode/products/all
-        Method: GET
-        Returns: JSON with all products organized by category
         """
         try:
             _logger.info("🔍 Fetching all products for Cravely frontend...")
@@ -81,7 +82,7 @@ class CravelyProductController(http.Controller):
                     'image_urls': images['all_images'],
                     'category': category_info['name'],
                     'category_id': category_info['id'],
-                    'category_slug': category_info['slug'],
+                    'category_slug': self._generate_slug(category_info['name']),
                     'in_stock': product.qty_available > 0 if hasattr(product, 'qty_available') else True,
                     'stock_quantity': getattr(product, 'qty_available', 999),
                     'is_published': product.is_published,
@@ -95,7 +96,7 @@ class CravelyProductController(http.Controller):
                     categories_data[category_info['name']] = {
                         'id': category_info['id'],
                         'name': category_info['name'],
-                        'slug': category_info['slug'],
+                        'slug': self._generate_slug(category_info['name']),
                         'product_count': 0
                     }
                 categories_data[category_info['name']]['product_count'] += 1
@@ -106,11 +107,7 @@ class CravelyProductController(http.Controller):
                 'products': formatted_products,
                 'categories': list(categories_data.values()),
                 'total_products': len(formatted_products),
-                'message': f'Successfully loaded {len(formatted_products)} products',
-                'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
-                    'endpoint': '/order-mode/products/all'
-                }
+                'message': f'Successfully loaded {len(formatted_products)} products'
             }
 
             _logger.info(f"✅ Successfully formatted {len(formatted_products)} products")
@@ -121,7 +118,7 @@ class CravelyProductController(http.Controller):
                 headers=[
                     ('Content-Type', 'application/json; charset=utf-8'),
                     ('Cache-Control', 'public, max-age=300'),
-                    ('Access-Control-Allow-Origin', '*')  # Allow CORS for your IP
+                    ('Access-Control-Allow-Origin', '*')
                 ]
             )
 
@@ -133,11 +130,7 @@ class CravelyProductController(http.Controller):
                 'products': [],
                 'categories': [],
                 'total_products': 0,
-                'message': 'Failed to load products',
-                'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
-                    'endpoint': '/order-mode/products/all'
-                }
+                'message': 'Failed to load products'
             }
 
             return request.make_response(
@@ -146,90 +139,71 @@ class CravelyProductController(http.Controller):
                 status=500
             )
 
-    @http.route('/order-mode/products/category/<string:category_name>', type='http', auth='public', website=True,
+    @http.route('/order-mode/products/category/<string:category_slug>', type='http', auth='public', website=True,
                 csrf=False, methods=['GET'])
-    def get_products_by_category(self, category_name, **kwargs):
+    def get_products_by_category(self, category_slug, **kwargs):
         """
-        Get products from a specific category (like 'ricebox')
-
-        URL: http://100.110.83.110:8069/order-mode/products/category/ricebox
-        Method: GET
-        Returns: JSON with products from specified category
+        Get products from a specific category using slug - DYNAMIC VERSION
         """
         try:
-            _logger.info(f"🔍 Fetching products from category: {category_name}")
+            _logger.info(f"🔍 Fetching products from category slug: {category_slug}")
 
-            # Map frontend category names to backend category names
-            category_mapping = {
-                'ricebox': 'Rice Box',
-                'rice-box': 'Rice Box',
-                'fish-chips': 'Fish & Chips',
-                'fish-and-chips': 'Fish & Chips',
-                'pasta': 'Pasta',
-                'turkish-feast': 'Turkish Feast',
-                'wraps-rolls': 'Wraps & Rolls',
-                'wraps-and-rolls': 'Wraps & Rolls',
-                'new-arrivals': 'New Arrivals',
-                'soups-salads': 'Soups & Salads',
-                'soups-and-salads': 'Soups & Salads',
-                'cold-drinks': 'Drinks',
-                'hot-beverages': 'Hot Beverages',
-                'desserts': 'Desserts',
-                'bbq': 'BBQ Specials',
-                'bbq-specials': 'BBQ Specials',
-                'fast-food': 'Fast Food'
-            }
+            # ========== DYNAMIC CATEGORY FINDING ==========
+            # Remove '-section' suffix to get the base slug
+            base_slug = category_slug.replace('-section', '')
 
-            # Get the actual category name from mapping
-            actual_category_name = category_mapping.get(category_name.lower(), category_name.replace('-', ' ').title())
+            # Find category by matching generated slugs
+            all_categories = request.env['product.public.category'].sudo().search([])
+            found_category = None
 
-            _logger.info(f"🔍 Mapping '{category_name}' to '{actual_category_name}'")
+            for category in all_categories:
+                # Generate slug for this category using the same method
+                category_slug_test = self._generate_slug(category.name).replace('-section', '')
 
-            # Find the category by name (case insensitive)
-            category = request.env['product.public.category'].sudo().search([
-                ('name', 'ilike', actual_category_name)
-            ], limit=1)
+                if category_slug_test == base_slug:
+                    found_category = category
+                    break
 
-            if not category:
-                # Try to find by website category
-                category = request.env['product.category'].sudo().search([
-                    ('name', 'ilike', actual_category_name)
-                ], limit=1)
+            # If not found in public categories, try internal categories
+            if not found_category:
+                all_internal_categories = request.env['product.category'].sudo().search([])
+                for category in all_internal_categories:
+                    category_slug_test = self._generate_slug(category.name).replace('-section', '')
+                    if category_slug_test == base_slug:
+                        found_category = category
+                        break
+            # ========== END DYNAMIC FINDING ==========
 
-            if not category:
-                _logger.warning(f"⚠️ Category '{actual_category_name}' not found")
+            if not found_category:
+                _logger.warning(f"⚠️ Category with slug '{category_slug}' not found")
                 return request.make_response(
                     json.dumps({
                         'success': False,
-                        'error': f'Category "{actual_category_name}" not found',
+                        'error': f'Category with slug "{category_slug}" not found',
                         'products': [],
-                        'message': f'No category found with name "{actual_category_name}"',
-                        'endpoint_info': {
-                            'base_url': 'http://100.110.83.110:8069',
-                            'endpoint': f'/order-mode/products/category/{category_name}'
-                        }
+                        'message': f'No category found with slug "{category_slug}"'
                     }),
                     headers=[('Content-Type', 'application/json; charset=utf-8')],
                     status=404
                 )
 
-            _logger.info(f"📂 Found category: {category.name} (ID: {category.id})")
+            _logger.info(f"📂 Found category: {found_category.name} (ID: {found_category.id})")
 
             # Get products from this category
-            if hasattr(category, 'product_tmpl_ids'):
+            if hasattr(found_category, 'product_tmpl_ids'):
                 # For product.public.category
-                products = category.product_tmpl_ids.filtered(
+                products = found_category.product_tmpl_ids.filtered(
                     lambda p: p.is_published and p.sale_ok and p.website_published)
             else:
                 # For product.category, search products
                 products = request.env['product.template'].sudo().search([
-                    ('categ_id', '=', category.id),
+                    ('categ_id', '=', found_category.id),
                     ('is_published', '=', True),
                     ('sale_ok', '=', True),
                     ('website_published', '=', True)
                 ])
 
-            _logger.info(f"📦 Found {len(products)} products in category '{category.name}'")
+            _logger.info(f"📦 Found {len(products)} products in category '{found_category.name}'")
 
             # Format products for frontend
             formatted_products = []
@@ -254,9 +228,9 @@ class CravelyProductController(http.Controller):
                     'currency': pricing['currency'],
                     'image': images['main_image'],
                     'image_urls': images['all_images'],
-                    'category': category.name,
-                    'category_id': category.id,
-                    'category_slug': category_name.lower().replace(' ', '-'),
+                    'category': found_category.name,
+                    'category_id': found_category.id,
+                    'category_slug': self._generate_slug(found_category.name),
                     'in_stock': product.qty_available > 0 if hasattr(product, 'qty_available') else True,
                     'stock_quantity': getattr(product, 'qty_available', 999),
                     'is_published': product.is_published,
@@ -269,20 +243,16 @@ class CravelyProductController(http.Controller):
             response_data = {
                 'success': True,
                 'category': {
-                    'id': category.id,
-                    'name': category.name,
-                    'slug': category_name.lower().replace(' ', '-')
+                    'id': found_category.id,
+                    'name': found_category.name,
+                    'slug': self._generate_slug(found_category.name)
                 },
                 'products': formatted_products,
                 'total_products': len(formatted_products),
-                'message': f'Successfully loaded {len(formatted_products)} products from {category.name}',
-                'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
-                    'endpoint': f'/order-mode/products/category/{category_name}'
-                }
+                'message': f'Successfully loaded {len(formatted_products)} products from {found_category.name}'
             }
 
-            _logger.info(f"✅ Successfully returned {len(formatted_products)} products from '{category.name}'")
+            _logger.info(f"✅ Successfully returned {len(formatted_products)} products from '{found_category.name}'")
 
             return request.make_response(
                 json.dumps(response_data, ensure_ascii=False, indent=2),
@@ -294,16 +264,12 @@ class CravelyProductController(http.Controller):
             )
 
         except Exception as e:
-            _logger.error(f"❌ Error fetching products from category '{category_name}': {str(e)}")
+            _logger.error(f"❌ Error fetching products from category '{category_slug}': {str(e)}")
             error_response = {
                 'success': False,
                 'error': str(e),
                 'products': [],
-                'message': f'Failed to load products from category "{category_name}"',
-                'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
-                    'endpoint': f'/order-mode/products/category/{category_name}'
-                }
+                'message': f'Failed to load products from category "{category_slug}"'
             }
 
             return request.make_response(
@@ -316,8 +282,6 @@ class CravelyProductController(http.Controller):
     def search_products(self, q='', category='', limit=50, **kwargs):
         """
         Search products by name, description, or category
-
-        URL: http://100.110.83.110:8069/order-mode/products/search?q=beef&category=ricebox&limit=10
         Method: GET
         """
         try:
@@ -396,7 +360,6 @@ class CravelyProductController(http.Controller):
                 'total_results': len(formatted_products),
                 'message': f'Found {len(formatted_products)} products',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
                     'endpoint': f'/order-mode/products/search'
                 }
             }
@@ -418,7 +381,6 @@ class CravelyProductController(http.Controller):
                     'products': [],
                     'message': 'Search failed',
                     'endpoint_info': {
-                        'base_url': 'http://100.110.83.110:8069',
                         'endpoint': '/order-mode/products/search'
                     }
                 }),
@@ -431,8 +393,6 @@ class CravelyProductController(http.Controller):
     def get_single_product(self, product_id, **kwargs):
         """
         Get detailed information for a single product
-
-        URL: http://100.110.83.110:8069/order-mode/products/single/123
         Method: GET
         """
         try:
@@ -448,7 +408,6 @@ class CravelyProductController(http.Controller):
                         'error': 'Product not found or not published',
                         'message': f'Product with ID {product_id} not found',
                         'endpoint_info': {
-                            'base_url': 'http://100.110.83.110:8069',
                             'endpoint': f'/order-mode/products/single/{product_id}'
                         }
                     }),
@@ -499,7 +458,6 @@ class CravelyProductController(http.Controller):
                     'updated_date': product.write_date.isoformat() if product.write_date else None
                 },
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
                     'endpoint': f'/order-mode/products/single/{product_id}'
                 }
             }
@@ -522,7 +480,6 @@ class CravelyProductController(http.Controller):
                     'error': str(e),
                     'message': f'Failed to load product {product_id}',
                     'endpoint_info': {
-                        'base_url': 'http://100.110.83.110:8069',
                         'endpoint': f'/order-mode/products/single/{product_id}'
                     }
                 }),
@@ -541,7 +498,7 @@ class CravelyProductController(http.Controller):
                 return {
                     'id': category.id,
                     'name': category.name,
-                    'slug': category.name.lower().replace(' ', '-')
+                    'slug': self._generate_slug(category.name)
                 }
 
             # Fall back to internal category
@@ -550,38 +507,36 @@ class CravelyProductController(http.Controller):
                 return {
                     'id': category.id,
                     'name': category.name,
-                    'slug': category.name.lower().replace(' ', '-')
+                    'slug': self._generate_slug(category.name)
                 }
 
             # Default category
             return {
                 'id': 0,
                 'name': 'General',
-                'slug': 'general'
+                'slug': 'general-section'
             }
 
         except Exception as e:
             _logger.warning(f"Error getting category for product {product.id}: {str(e)}")
-            return {'id': 0, 'name': 'General', 'slug': 'general'}
+            return {'id': 0, 'name': 'General', 'slug': 'general-section'}
 
     def _get_product_images(self, product):
-        """Get product images with fallback"""
+        """Get product images with fallback - uses relative paths"""
         try:
-            base_url = 'http://100.110.83.110:8069'  # Use your specific IP
-
             main_image = '/website_customizations/static/src/images/product_1.jpg'  # Default fallback
             all_images = []
 
             # Get main product image
             if product.image_1920:
-                main_image = f'{base_url}/web/image/product.template/{product.id}/image_1920'
+                main_image = f'/web/image/product.template/{product.id}/image_1920'
                 all_images.append(main_image)
 
             # Get additional product images
             if hasattr(product, 'product_template_image_ids'):
                 for image_record in product.product_template_image_ids:
                     if image_record.image_1920:
-                        img_url = f'{base_url}/web/image/product.image/{image_record.id}/image_1920'
+                        img_url = f'/web/image/product.image/{image_record.id}/image_1920'
                         all_images.append(img_url)
 
             # If no images found, use default

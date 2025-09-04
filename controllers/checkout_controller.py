@@ -1,3 +1,4 @@
+from ..services.sms_service import SMSService
 from odoo import http
 from odoo.http import request
 import json
@@ -156,6 +157,20 @@ class CheckoutController(http.Controller):
             _logger.info(f"   Customer: {partner.name}")
             _logger.info(f"   Total: {sales_order.amount_total}")
 
+            # ✅ Send SMS confirmation after successful order
+
+            sms_response = SMSService.send_sms(
+                partner.phone,
+                f"Dear {partner.name}, your order {sales_order.name} has been placed. Total: {sales_order.amount_total}"
+            )
+
+            if sms_response.get("success"):
+                _logger.info(f"📲 SMS sent successfully. SID: {sms_response.get('sid')}")
+            else:
+                _logger.warning(f"⚠️ SMS failed: {sms_response.get('error')}")
+
+            _logger.info(f"   Sms response: {sms_response}")
+
             # Return success response
             return {
                 'success': True,
@@ -164,7 +179,8 @@ class CheckoutController(http.Controller):
                 'message': 'Order placed successfully!',
                 'estimated_delivery': '35-45 minutes',
                 'customer_id': partner.id,
-                'order_total': sales_order.amount_total
+                'order_total': sales_order.amount_total,
+                'sms': sms_response,
             }
 
         except Exception as e:

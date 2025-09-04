@@ -1,12 +1,6 @@
 /**
- * ================================= FIXED DYNAMIC PRODUCT LOADER =================================
- * File: /website_customizations/static/src/js/components/product_cards/dynamic_product_loader.js
- *
- * FIXES:
- * 1. Longer skeleton animation (4-5 seconds)
- * 2. Proper backend product loading
- * 3. Better error handling
- * 4. Smooth transitions
+ * ================================= DYNAMIC PRODUCT LOADER =================================
+ * Updated to work with dynamic categories and no hardcoded URLs
  */
 
 class DynamicProductLoader {
@@ -15,9 +9,8 @@ class DynamicProductLoader {
         this.isLoading = false;
         this.initialized = false;
 
-        // Updated API endpoints with new structure
+        // Use relative paths for API endpoints
         this.apiConfig = {
-            baseUrl: 'http://100.110.83.110:8069',
             endpoints: {
                 allProducts: '/order-mode/products/all',
                 categoryProducts: '/order-mode/products/category/',
@@ -26,26 +19,11 @@ class DynamicProductLoader {
             }
         };
 
-        // Category mapping - maps section IDs to backend category names
-        this.categoryMapping = {
-            'rice-box-section': 'ricebox',
-            'fish-and-chips-section': 'fish-chips',
-            'pasta-section': 'pasta',
-            'turkish-feast-section': 'turkish-feast',
-            'wraps-rolls-section': 'wraps-rolls',
-            'new-arrivals-section': 'new-arrivals',
-            'soups-and-salads-section': 'soups-salads',
-            'cold-drinks-section': 'cold-drinks',
-            'hot-beverages-section': 'hot-beverages',
-            'desserts-section': 'desserts',
-            'bbq-section': 'bbq'
-        };
-
         this.init();
     }
 
     init() {
-        console.log('🔄 Initializing Fixed Dynamic Product Loader...');
+        console.log('🔄 Initializing Dynamic Product Loader...');
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
@@ -58,8 +36,6 @@ class DynamicProductLoader {
         if (this.initialized) return;
 
         try {
-            console.log(`🌐 Using base URL: ${this.apiConfig.baseUrl}`);
-
             // STEP 1: IMMEDIATELY show skeleton loading for ALL sections at once
             this.showAllSkeletonLoaders();
 
@@ -88,14 +64,14 @@ class DynamicProductLoader {
     }
 
     showAllSkeletonLoaders() {
-    console.log('💀 Showing skeleton loaders for all sections immediately...');
+        console.log('💀 Showing skeleton loaders for all sections immediately...');
 
-    // Use requestAnimationFrame for smoother initial rendering
-    requestAnimationFrame(() => {
-        // Find all product grids and show skeleton loading
-        Object.keys(this.categoryMapping).forEach(sectionId => {
-            const section = document.getElementById(sectionId);
-            if (section) {
+        // Use requestAnimationFrame for smoother initial rendering
+        requestAnimationFrame(() => {
+            // Find all product grids and show skeleton loading
+            const sections = document.querySelectorAll('section[id]');
+
+            sections.forEach(section => {
                 const productGrid = section.querySelector('.product-grid');
                 if (productGrid) {
                     // FIRST: Hide all static cards immediately
@@ -111,28 +87,26 @@ class DynamicProductLoader {
                     skeletonContainer.innerHTML = skeletonHTML;
                     productGrid.appendChild(skeletonContainer);
 
-                    console.log(`💀 Added skeleton loader to ${sectionId}`);
+                    console.log(`💀 Added skeleton loader to ${section.id}`);
                 }
-            }
+            });
         });
-    });
-}
+    }
 
-// In your hideAllSkeletonLoaders method, add smooth transition:
-hideAllSkeletonLoaders() {
-    console.log('✅ Hiding all skeleton loaders...');
+    hideAllSkeletonLoaders() {
+        console.log('✅ Hiding all skeleton loaders...');
 
-    // Add fade-out animation before removal
-    document.querySelectorAll('.skeleton-cards-container').forEach(container => {
-        container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        container.style.opacity = '0';
-        container.style.transform = 'translateY(-10px)';
+        // Add fade-out animation before removal
+        document.querySelectorAll('.skeleton-cards-container').forEach(container => {
+            container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(-10px)';
 
-        setTimeout(() => {
-            container.remove();
-        }, 300);
-    });
-}
+            setTimeout(() => {
+                container.remove();
+            }, 300);
+        });
+    }
 
     showStaticContent() {
         console.log('📦 Showing static content as fallback...');
@@ -159,18 +133,22 @@ hideAllSkeletonLoaders() {
     async loadAllCategoriesSimultaneously() {
         console.log('🚀 Loading ALL categories simultaneously...');
 
-        // Create promises for all categories at once
-        const loadingPromises = Object.entries(this.categoryMapping).map(async ([sectionId, categoryName]) => {
+        // Get all sections with IDs
+        const sections = document.querySelectorAll('section[id]');
+
+        // Create promises for all sections at once
+        const loadingPromises = Array.from(sections).map(async (section) => {
             try {
-                const section = document.getElementById(sectionId);
-                if (!section) {
-                    console.log(`Section ${sectionId} not found, skipping...`);
-                    return { sectionId, success: false, reason: 'section_not_found' };
+                const sectionId = section.id;
+
+                // Skip sections that don't look like category sections
+                if (!sectionId.includes('-section')) {
+                    return { sectionId, success: false, reason: 'not_a_category_section' };
                 }
 
-                // Fetch products from backend
-                const fullUrl = `${this.apiConfig.baseUrl}${this.apiConfig.endpoints.categoryProducts}${categoryName}`;
-                console.log(`🔗 Fetching ${categoryName}: ${fullUrl}`);
+                // Fetch products from backend using section ID as category slug
+                const fullUrl = `${this.apiConfig.endpoints.categoryProducts}${sectionId}`;
+                console.log(`🔗 Fetching ${sectionId}: ${fullUrl}`);
 
                 const response = await fetch(fullUrl, {
                     method: 'GET',
@@ -182,22 +160,22 @@ hideAllSkeletonLoaders() {
                 });
 
                 if (!response.ok) {
-                    console.log(`❌ Failed to fetch ${categoryName} (Status: ${response.status})`);
+                    console.log(`❌ Failed to fetch ${sectionId} (Status: ${response.status})`);
                     return { sectionId, success: false, reason: 'fetch_failed', status: response.status };
                 }
 
                 const data = await response.json();
 
                 if (data.success && data.products && data.products.length > 0) {
-                    console.log(`✅ Loaded ${data.products.length} products for ${categoryName}`);
-                    return { sectionId, success: true, products: data.products, categoryName };
+                    console.log(`✅ Loaded ${data.products.length} products for ${sectionId}`);
+                    return { sectionId, success: true, products: data.products };
                 } else {
-                    console.log(`📭 No products returned for ${categoryName}`);
+                    console.log(`📭 No products returned for ${sectionId}`);
                     return { sectionId, success: false, reason: 'no_products' };
                 }
 
             } catch (error) {
-                console.error(`❌ Error loading ${categoryName}:`, error);
+                console.error(`❌ Error loading section:`, error);
                 return { sectionId, success: false, reason: 'network_error', error: error.message };
             }
         });
@@ -215,6 +193,8 @@ hideAllSkeletonLoaders() {
         console.log('🎨 Showing all loaded content...');
 
         this.loadingResults.forEach((result, index) => {
+            if (!result || !result.sectionId) return;
+
             const section = document.getElementById(result.sectionId);
             if (!section) return;
 
@@ -232,80 +212,6 @@ hideAllSkeletonLoaders() {
                 console.log(`📦 Showing static content for ${result.sectionId} (Reason: ${result.reason})`);
             }
         });
-    }
-
-    async loadCategorySection(sectionId, categoryName) {
-        const section = document.getElementById(sectionId);
-        if (!section) {
-            console.log(`Section ${sectionId} not found, skipping...`);
-            return;
-        }
-
-        console.log(`📡 Loading products for ${categoryName} in section ${sectionId}`);
-
-        try {
-            // IMPORTANT: Extended delay for skeleton animation (4-5 seconds)
-            console.log(`⏰ Showing skeleton animation for ${categoryName} (4-5 seconds)...`);
-            await this.delay(4500); // 4.5 seconds skeleton animation
-
-            // Fetch products from backend
-            const fullUrl = `${this.apiConfig.baseUrl}${this.apiConfig.endpoints.categoryProducts}${categoryName}`;
-            console.log(`🔗 Fetching from: ${fullUrl}`);
-
-            const response = await fetch(fullUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                // Add timeout
-                signal: AbortSignal.timeout(10000) // 10 second timeout
-            });
-
-            if (!response.ok) {
-                console.log(`❌ No products found for ${categoryName} (Status: ${response.status})`);
-                this.showStaticContentForSection(sectionId);
-                return;
-            }
-
-            const data = await response.json();
-
-            if (data.success && data.products && data.products.length > 0) {
-                console.log(`✅ Found ${data.products.length} products for ${categoryName}`);
-
-                // Hide skeleton and show backend products
-                this.hideSkeletonLoadingForSection(section);
-                await this.delay(300); // Small delay for smooth transition
-                this.showBackendProducts(section, data.products);
-
-            } else {
-                console.log(`📦 No products in response for ${categoryName}, showing static content`);
-                this.showStaticContentForSection(sectionId);
-            }
-
-        } catch (error) {
-            console.error(`❌ Error fetching products for ${categoryName}:`, error);
-            // Always show static content on error
-            this.showStaticContentForSection(sectionId);
-        }
-    }
-
-    hideSkeletonLoadingForSection(section) {
-        const productGrid = section.querySelector('.product-grid');
-        if (!productGrid) return;
-
-        // Remove skeleton loading for this section with fade-out
-        const skeletonContainer = productGrid.querySelector('.skeleton-cards-container');
-        if (skeletonContainer) {
-            skeletonContainer.style.transition = 'opacity 0.3s ease';
-            skeletonContainer.style.opacity = '0';
-
-            setTimeout(() => {
-                skeletonContainer.remove();
-            }, 300);
-        }
-
-        console.log(`✅ Hidden skeleton loading for section`);
     }
 
     showBackendProducts(section, products) {
@@ -354,7 +260,15 @@ hideAllSkeletonLoaders() {
         console.log(`📦 Showing static content for ${sectionId}`);
 
         // Hide skeleton for this section
-        this.hideSkeletonLoadingForSection(section);
+        const skeletonContainer = productGrid.querySelector('.skeleton-cards-container');
+        if (skeletonContainer) {
+            skeletonContainer.style.transition = 'opacity 0.3s ease';
+            skeletonContainer.style.opacity = '0';
+
+            setTimeout(() => {
+                skeletonContainer.remove();
+            }, 300);
+        }
 
         // Wait for skeleton to fade out, then show static cards
         setTimeout(() => {
@@ -496,7 +410,7 @@ hideAllSkeletonLoaders() {
         console.log('🧪 Testing backend connection...');
 
         try {
-            const testUrl = `${this.apiConfig.baseUrl}${this.apiConfig.endpoints.allProducts}`;
+            const testUrl = `${this.apiConfig.endpoints.allProducts}`;
             const response = await fetch(testUrl, {
                 method: 'GET',
                 headers: {
@@ -540,53 +454,21 @@ hideAllSkeletonLoaders() {
         // Reload everything
         await this.setup();
     }
-
-    // Debug method to test connection
-    async testConnection() {
-        console.log('🧪 Testing backend connection...');
-
-        try {
-            const testUrl = `${this.apiConfig.baseUrl}${this.apiConfig.endpoints.allProducts}`;
-            const response = await fetch(testUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            console.log(`🔗 Test URL: ${testUrl}`);
-            console.log(`📊 Response Status: ${response.status}`);
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('✅ Backend connection successful:', data);
-                return true;
-            } else {
-                console.log('❌ Backend connection failed:', response.statusText);
-                return false;
-            }
-        } catch (error) {
-            console.error('❌ Backend connection error:', error);
-            return false;
-        }
-    }
 }
 
-// Initialize IMMEDIATELY when script loads - no delays
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeProductLoader();
-    });
-} else {
-    initializeProductLoader();
-}
-
+// Initialize the product loader
 function initializeProductLoader() {
     if (!window.dynamicProductLoader) {
         console.log('🚀 Initializing Product Loader immediately...');
         window.dynamicProductLoader = new DynamicProductLoader();
     }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeProductLoader);
+} else {
+    initializeProductLoader();
 }
 
 // Make it globally available for debugging
@@ -604,14 +486,6 @@ window.testProductEndpoints = function() {
 window.reloadAllProducts = function() {
     if (window.dynamicProductLoader) {
         window.dynamicProductLoader.forceReloadAll();
-    } else {
-        console.error('Dynamic Product Loader not initialized');
-    }
-};
-
-window.reloadCategory = function(categoryName) {
-    if (window.dynamicProductLoader) {
-        window.dynamicProductLoader.reloadCategory(categoryName);
     } else {
         console.error('Dynamic Product Loader not initialized');
     }
