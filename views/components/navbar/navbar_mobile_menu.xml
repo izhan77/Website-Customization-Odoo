@@ -24,12 +24,12 @@
                             <span>Menu</span>
                         </a>
 
-                        <a  class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
+                        <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2"
                            onclick="if (window.orderMethodSelector) { window.orderMethodSelector.triggerPopup(); } return false;">
                             <span>Order Mode</span>
                         </a>
 
-                        <a  class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2">
+                        <a class="relative group transition-all duration-300 text-white hover:text-gray-200 active:text-gray-400 focus:outline-none focus:ring-0 py-2">
                             <span>Contact Us</span>
                         </a>
                     </div>
@@ -39,7 +39,7 @@
 
         <!-- Mobile Categories Popup - SIMPLIFIED -->
         <div id="mobile-categories-popup" class="fixed inset-0 z-[1001] hidden">
-            <div  class="mobile-categories-container">
+            <div class="mobile-categories-container">
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-gray-900">Categories</h2>
@@ -57,137 +57,38 @@
                 <div class="overflow-y-auto p-6">
                     <div class="mobile-categories-grid grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
 
-                        <!-- Rice Box -->
-                        <a href="#rice-box-section" class="mobile-category-item block text-decoration-none"
-                           data-category="rice-box-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="RICE BOX">
-                                    <img src="/website_customizations/static/src/images/category-rice-box.png"
-                                         alt="Rice Box" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
+                        <!-- DYNAMIC CATEGORIES FROM ODOO BACKEND -->
+                        <t t-set="categories"
+                           t-value="request.env['product.public.category'].sudo().search([('website_id', 'in', [False, request.website.id])], order='sequence, name')"/>
 
-                        <!-- Fish & Chips -->
-                        <a href="#fish-and-chips-section" class="mobile-category-item block text-decoration-none"
-                           data-category="fish-and-chips-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="FISH &amp; CHIPS">
-                                    <img src="/website_customizations/static/src/images/category-fish-and-chips.png"
-                                         alt="Fish &amp; Chips" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
+                        <t t-foreach="categories" t-as="category">
+                            <!-- Generate consistent slug -->
+                            <t t-set="category_slug"
+                               t-value="category.name.lower().replace('&amp;', 'and').replace(' ', '-').replace('--', '-').strip('-') + '-section'"/>
 
-                        <!-- Pasta -->
-                        <a href="#pasta-section" class="mobile-category-item block text-decoration-none"
-                           data-category="pasta-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="PASTA">
-                                    <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta"
-                                         class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
+                            <!-- FIXED: Use proper Odoo QWeb syntax -->
+                            <t t-if="category.image_1920">
+                                <t t-set="category_image"
+                                   t-value="'/web/image/product.public.category/' + str(category.id) + '/image_1920'"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="category_image"
+                                   t-value="'/website_customizations/static/src/images/category-rice-box.png'"/>
+                            </t>
 
-                        <!-- Turkish Feast -->
-                        <a href="#turkish-feast-section" class="mobile-category-item block text-decoration-none"
-                           data-category="turkish-feast-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="TURKISH FEAST">
-                                    <img src="/website_customizations/static/src/images/category-turkish-foods.png"
-                                         alt="Turkish Feast" class="w-12 h-12 object-contain"/>
+                            <a t-attf-href="#{category_slug}"
+                               class="mobile-category-item block text-decoration-none"
+                               t-attf-data-category="#{category_slug}">
+                                <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
+                                    <div class="flex justify-end" t-attf-data-title="#{category.name.upper()}">
+                                        <img t-att-src="category_image"
+                                             t-att-alt="category.name"
+                                             class="w-12 h-12 object-cover rounded-full"
+                                             style="object-fit: cover;"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-
-                        <!-- Wraps & Rolls -->
-                        <a href="#wraps-rolls-section" class="mobile-category-item block text-decoration-none"
-                           data-category="wraps-rolls-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="WRAPS &amp; ROLLS">
-                                    <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
-                                         alt="Wraps &amp; Rolls" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- New Arrivals -->
-                        <a href="#new-arrivals-section" class="mobile-category-item block text-decoration-none"
-                           data-category="new-arrivals-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="NEW ARRIVALS">
-                                    <img src="/website_customizations/static/src/images/category-new-arrivals.png"
-                                         alt="New Arrivals" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Soups & Salads -->
-                        <a href="#soups-and-salads-section" class="mobile-category-item block text-decoration-none"
-                           data-category="soups-and-salads-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="SOUPS &amp; SALADS">
-                                    <img src="/website_customizations/static/src/images/category-soups-salads.png"
-                                         alt="Soups &amp; Salads" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Cold Drinks -->
-                        <a href="#cold-drinks-section" class="mobile-category-item block text-decoration-none"
-                           data-category="cold-drinks-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="COLD DRINKS">
-                                    <img src="/website_customizations/static/src/images/category-cold-drinks.png"
-                                         alt="Cold Drinks" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Hot Beverages -->
-                        <a href="#hot-beverages-section" class="mobile-category-item block text-decoration-none"
-                           data-category="hot-beverages-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="HOT BEVERAGES">
-                                    <img src="/website_customizations/static/src/images/category-hot-beverages.png"
-                                         alt="Hot Beverages" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Desserts -->
-                        <a href="#desserts-section" class="mobile-category-item block text-decoration-none"
-                           data-category="desserts-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="DESSERTS">
-                                    <img src="/website_customizations/static/src/images/category-desert.png"
-                                         alt="Desserts" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- BBQ Specials -->
-                        <a href="#bbq-section" class="mobile-category-item block text-decoration-none"
-                           data-category="bbq-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="BBQ SPECIALS">
-                                    <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
-                                         class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
-
-                        <!-- Fast Food -->
-                        <a href="#fast-food-section" class="mobile-category-item block text-decoration-none"
-                           data-category="fast-food-section">
-                            <div class="mobile-category-card bg-white border-2 border-gray-200 rounded-2xl p-4 h-32 flex flex-col justify-between transition-all duration-300 hover:border-gray-300 hover:shadow-lg">
-                                <div class="flex justify-end" data-title="FAST FOOD">
-                                    <img src="/website_customizations/static/src/images/category-burger.png"
-                                         alt="Fast Food" class="w-12 h-12 object-contain"/>
-                                </div>
-                            </div>
-                        </a>
+                            </a>
+                        </t>
 
                     </div>
                 </div>

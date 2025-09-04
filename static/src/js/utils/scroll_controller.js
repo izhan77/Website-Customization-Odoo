@@ -323,40 +323,42 @@ updateArrowVisibility() {
      * Attach all event handlers ONCE
      */
     attachEventHandlers() {
-        // Use event delegation for ALL category clicks
-        document.addEventListener('click', (e) => {
-            const target = e.target.closest('.category-item, .menu-popup-item, .mobile-category-item');
-            if (target) {
-                e.preventDefault();
-                this.handleCategoryClick(target);
-            }
-        });
+    console.log('🎯 Attaching event handlers for ALL category types...');
 
-        console.log('🎯 Event handlers attached via delegation');
-    }
+    // Use event delegation for ALL category clicks from ANY source
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest(
+            '.category-item, .menu-popup-item, .mobile-category-item, [data-category], [data-section]'
+        );
+
+        if (target) {
+            e.preventDefault();
+            this.handleCategoryClick(target);
+        }
+    });
+
+    console.log('✅ Event handlers attached via delegation');
+}
 
     /**
      * Handle category click
      */
-handleCategoryClick(element) {
+    handleCategoryClick(element) {
     const href = element.getAttribute('href');
+    const dataCategory = element.getAttribute('data-category');
     const dataSection = element.getAttribute('data-section');
-    const targetId = dataSection || (href ? href.substring(1) : null);
 
-    console.log('🎯 Category clicked:', { href, dataSection, targetId });
+    // Get target ID from any possible attribute
+    const targetId = dataCategory || dataSection || (href ? href.substring(1) : null);
+
+    console.log('🎯 Category clicked:', { href, dataCategory, dataSection, targetId });
 
     if (!targetId) {
         console.error('❌ No target ID found for category click');
         return;
     }
 
-    // Check if on checkout page
-    if (window.location.pathname.includes('/checkout')) {
-        this.handleCheckoutRedirect(targetId);
-        return;
-    }
-
-    // Close any open popups
+    // Close all popups when clicking any category
     this.closeAllPopups();
 
     // Scroll to section

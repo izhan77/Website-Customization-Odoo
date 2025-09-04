@@ -11,156 +11,43 @@
 
                 <div class="menu-popup-grid">
 
-                    <!-- Rice Box - MATCHING MENU SECTIONS IDS -->
-                    <a href="#rice-box-section" class="menu-popup-item group" data-category="rice-box-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-rice-box.png"
-                                     alt="Rice Box"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">RICE BOX</h3>
-                        </div>
-                    </a>
+                    <!-- DYNAMIC CATEGORIES FROM ODOO BACKEND -->
+                    <t t-set="categories"
+                       t-value="request.env['product.public.category'].sudo().search([('website_id', 'in', [False, request.website.id])], order='sequence, name')"/>
 
-                    <!-- Fish and Chips - FIXED ID MATCHING -->
-                    <a href="#fish-and-chips-section" class="menu-popup-item group" data-category="fish-and-chips-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-fish-and-chips.png"
-                                     alt="Fish and Chips"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">FISH &amp; CHIPS</h3>
-                        </div>
-                    </a>
+                    <t t-foreach="categories" t-as="category">
+                        <!-- Generate consistent slug -->
+                        <t t-set="category_slug"
+                           t-value="category.name.lower().replace('&amp;', 'and').replace(' ', '-').replace('--', '-').strip('-') + '-section'"/>
 
-                    <!-- Pasta - FIXED ID MATCHING -->
-                    <a href="#pasta-section" class="menu-popup-item group" data-category="pasta-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-pasta.png" alt="Pasta"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">PASTA</h3>
-                        </div>
-                    </a>
+                        <!-- FIXED: Use proper Odoo QWeb syntax for conditional image -->
+                        <t t-if="category.image_1920">
+                            <t t-set="category_image"
+                               t-value="'/web/image/product.public.category/' + str(category.id) + '/image_1920'"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="category_image"
+                               t-value="'/website_customizations/static/src/images/category-rice-box.png'"/>
+                        </t>
 
-                    <!-- Turkish Feast - FIXED ID MATCHING -->
-                    <a href="#turkish-feast-section" class="menu-popup-item group" data-category="turkish-feast-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-turkish-foods.png"
-                                     alt="Turkish Feast"
-                                     class="menu-popup-image"/>
+                        <a t-attf-href="#{category_slug}"
+                           class="menu-popup-item group"
+                           t-attf-data-category="#{category_slug}"
+                           onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                            <div class="menu-popup-card">
+                                <div class="menu-popup-img-circle">
+                                    <!-- Use Odoo category image -->
+                                    <img t-att-src="category_image"
+                                         t-att-alt="category.name"
+                                         class="menu-popup-image"
+                                         style="object-fit: cover; width: 100%; height: 100%;"/>
+                                </div>
+                                <h3 class="menu-popup-title">
+                                    <t t-out="category.name.upper()"/>
+                                </h3>
                             </div>
-                            <h3 class="menu-popup-title">TURKISH FEAST</h3>
-                        </div>
-                    </a>
-
-                    <!-- Wraps & Rolls - FIXED ID MATCHING -->
-                    <a href="#wraps-rolls-section" class="menu-popup-item group" data-category="wraps-rolls-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-wraps-and-rolls.png"
-                                     alt="Wraps and Rolls"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">WRAPS &amp; ROLLS</h3>
-                        </div>
-                    </a>
-
-                    <!-- New Arrivals - FIXED ID MATCHING -->
-                    <a href="#new-arrivals-section" class="menu-popup-item group" data-category="new-arrivals-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-new-arrivals.png"
-                                     alt="New Arrivals"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">NEW ARRIVALS</h3>
-                        </div>
-                    </a>
-
-                    <!-- Soups And Salads - FIXED ID MATCHING -->
-                    <a href="#soups-and-salads-section" class="menu-popup-item group" data-category="soups-and-salads-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-soups-salads.png"
-                                     alt="Soups and Salads" class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">SOUPS &amp; SALADS</h3>
-                        </div>
-                    </a>
-
-                    <!-- Cold Drinks - FIXED ID MATCHING -->
-                    <a href="#cold-drinks-section" class="menu-popup-item group" data-category="cold-drinks-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-cold-drinks.png"
-                                     alt="Cold Drinks"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">COLD DRINKS</h3>
-                        </div>
-                    </a>
-
-                    <!-- Hot Beverages - FIXED ID MATCHING -->
-                    <a href="#hot-beverages-section" class="menu-popup-item group" data-category="hot-beverages-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-hot-beverages.png"
-                                     alt="Hot Beverages"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">HOT BEVERAGES</h3>
-                        </div>
-                    </a>
-
-                    <!-- Desserts - FIXED ID MATCHING -->
-                    <a href="#desserts-section" class="menu-popup-item group" data-category="desserts-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-desert.png" alt="Desserts"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">DESSERTS</h3>
-                        </div>
-                    </a>
-
-                    <!-- BBQ - FIXED ID MATCHING -->
-                    <a href="#bbq-section" class="menu-popup-item group" data-category="bbq-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-bbq.png" alt="BBQ"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">BBQ SPECIALS</h3>
-                        </div>
-                    </a>
-
-                    <!-- Fast Food - ADDED TO MATCH YOUR CATEGORY STRIP -->
-                    <a href="#fast-food-section" class="menu-popup-item group" data-category="fast-food-section"
-                       onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
-                        <div class="menu-popup-card">
-                            <div class="menu-popup-img-circle">
-                                <img src="/website_customizations/static/src/images/category-burger.png" alt="Fast Food"
-                                     class="menu-popup-image"/>
-                            </div>
-                            <h3 class="menu-popup-title">FAST FOOD</h3>
-                        </div>
-                    </a>
+                        </a>
+                    </t>
 
                 </div>
             </div>
