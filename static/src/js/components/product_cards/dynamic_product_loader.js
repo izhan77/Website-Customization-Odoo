@@ -16,30 +16,19 @@ class DynamicProductLoader {
         this.initialized = false;
 
         // Updated API endpoints with new structure
-        this.apiConfig = {
-            baseUrl: 'http://100.110.83.110:8069',
-            endpoints: {
-                allProducts: '/order-mode/products/all',
-                categoryProducts: '/order-mode/products/category/',
-                singleProduct: '/order-mode/products/single/',
-                searchProducts: '/order-mode/products/search'
-            }
-        };
+        // Update the apiConfig section
+this.apiConfig = {
+    baseUrl: window.location.origin, // This will automatically use current domain
+    endpoints: {
+        allProducts: '/order-mode/products/all',
+        categoryProducts: '/order-mode/products/category/',
+        singleProduct: '/order-mode/products/single/',
+        searchProducts: '/order-mode/products/search'
+    }
+};
 
         // Category mapping - maps section IDs to backend category names
-        this.categoryMapping = {
-            'rice-box-section': 'ricebox',
-            'fish-and-chips-section': 'fish-chips',
-            'pasta-section': 'pasta',
-            'turkish-feast-section': 'turkish-feast',
-            'wraps-rolls-section': 'wraps-rolls',
-            'new-arrivals-section': 'new-arrivals',
-            'soups-and-salads-section': 'soups-salads',
-            'cold-drinks-section': 'cold-drinks',
-            'hot-beverages-section': 'hot-beverages',
-            'desserts-section': 'desserts',
-            'bbq-section': 'bbq'
-        };
+        this.categoryMapping = {};
 
         this.init();
     }
@@ -158,6 +147,15 @@ hideAllSkeletonLoaders() {
 
     async loadAllCategoriesSimultaneously() {
         console.log('🚀 Loading ALL categories simultaneously...');
+
+        // Get dynamic category mapping from menu loader if available
+    if (window.dynamicMenuLoader && window.dynamicMenuLoader.categories) {
+    window.dynamicMenuLoader.categories.forEach(category => {
+        // Create section ID from category slug
+        const sectionId = `${category.slug}-section`;
+        this.categoryMapping[sectionId] = category.slug;
+    });
+}
 
         // Create promises for all categories at once
         const loadingPromises = Object.entries(this.categoryMapping).map(async ([sectionId, categoryName]) => {

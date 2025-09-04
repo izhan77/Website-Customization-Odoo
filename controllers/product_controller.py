@@ -152,60 +152,41 @@ class CravelyProductController(http.Controller):
         """
         Get products from a specific category (like 'ricebox')
 
-        URL: http://100.110.83.110:8069/order-mode/products/category/ricebox
+        URL: /order-mode/products/category/ricebox
         Method: GET
         Returns: JSON with products from specified category
         """
         try:
             _logger.info(f"🔍 Fetching products from category: {category_name}")
 
-            # Map frontend category names to backend category names
-            category_mapping = {
-                'ricebox': 'Rice Box',
-                'rice-box': 'Rice Box',
-                'fish-chips': 'Fish & Chips',
-                'fish-and-chips': 'Fish & Chips',
-                'pasta': 'Pasta',
-                'turkish-feast': 'Turkish Feast',
-                'wraps-rolls': 'Wraps & Rolls',
-                'wraps-and-rolls': 'Wraps & Rolls',
-                'new-arrivals': 'New Arrivals',
-                'soups-salads': 'Soups & Salads',
-                'soups-and-salads': 'Soups & Salads',
-                'cold-drinks': 'Drinks',
-                'hot-beverages': 'Hot Beverages',
-                'desserts': 'Desserts',
-                'bbq': 'BBQ Specials',
-                'bbq-specials': 'BBQ Specials',
-                'fast-food': 'Fast Food'
-            }
+            # Remove hardcoded mapping - use the category name directly
+            # Convert URL-friendly name to display name (replace hyphens with spaces, title case)
+            display_category_name = category_name.replace('-', ' ').title()
 
-            # Get the actual category name from mapping
-            actual_category_name = category_mapping.get(category_name.lower(), category_name.replace('-', ' ').title())
-
-            _logger.info(f"🔍 Mapping '{category_name}' to '{actual_category_name}'")
+            _logger.info(f"🔍 Using category name: '{display_category_name}'")
 
             # Find the category by name (case insensitive)
+            # Try public categories first
             category = request.env['product.public.category'].sudo().search([
-                ('name', 'ilike', actual_category_name)
+                ('name', 'ilike', display_category_name)
             ], limit=1)
 
             if not category:
-                # Try to find by website category
+                # Try internal categories if not found in public categories
                 category = request.env['product.category'].sudo().search([
-                    ('name', 'ilike', actual_category_name)
+                    ('name', 'ilike', display_category_name)
                 ], limit=1)
 
             if not category:
-                _logger.warning(f"⚠️ Category '{actual_category_name}' not found")
+                _logger.warning(f"⚠️ Category '{display_category_name}' not found")
                 return request.make_response(
                     json.dumps({
                         'success': False,
-                        'error': f'Category "{actual_category_name}" not found',
+                        'error': f'Category "{display_category_name}" not found',
                         'products': [],
-                        'message': f'No category found with name "{actual_category_name}"',
+                        'message': f'No category found with name "{display_category_name}"',
                         'endpoint_info': {
-                            'base_url': 'http://100.110.83.110:8069',
+                            'base_url': self._get_base_url(),  # Use dynamic base URL
                             'endpoint': f'/order-mode/products/category/{category_name}'
                         }
                     }),
@@ -219,14 +200,17 @@ class CravelyProductController(http.Controller):
             if hasattr(category, 'product_tmpl_ids'):
                 # For product.public.category
                 products = category.product_tmpl_ids.filtered(
-                    lambda p: p.is_published and p.sale_ok and p.website_published)
+                    lambda p: p.is_published and p.sale_ok and p.website_published and
+                              (p.qty_available > 0 if hasattr(p, 'qty_available') else True))
             else:
                 # For product.category, search products
                 products = request.env['product.template'].sudo().search([
                     ('categ_id', '=', category.id),
                     ('is_published', '=', True),
                     ('sale_ok', '=', True),
-                    ('website_published', '=', True)
+                    ('website_published', '=', True),
+                    ('qty_available', '>', 0) if hasattr(request.env['product.template'], 'qty_available') else (1, '=',
+                                                                                                                 1)
                 ])
 
             _logger.info(f"📦 Found {len(products)} products in category '{category.name}'")
@@ -277,7 +261,7 @@ class CravelyProductController(http.Controller):
                 'total_products': len(formatted_products),
                 'message': f'Successfully loaded {len(formatted_products)} products from {category.name}',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': self._get_base_url(),  # Use dynamic base URL
                     'endpoint': f'/order-mode/products/category/{category_name}'
                 }
             }
@@ -301,7 +285,7 @@ class CravelyProductController(http.Controller):
                 'products': [],
                 'message': f'Failed to load products from category "{category_name}"',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': self._get_base_url(),  # Use dynamic base URL
                     'endpoint': f'/order-mode/products/category/{category_name}'
                 }
             }
@@ -311,6 +295,10 @@ class CravelyProductController(http.Controller):
                 headers=[('Content-Type', 'application/json; charset=utf-8')],
                 status=500
             )
+
+    def _get_base_url(self):
+        """Get dynamic base URL from request"""
+        return request.httprequest.host_url.rstrip('/')
 
     @http.route('/order-mode/products/search', type='http', auth='public', website=True, csrf=False, methods=['GET'])
     def search_products(self, q='', category='', limit=50, **kwargs):
@@ -567,7 +555,7 @@ class CravelyProductController(http.Controller):
     def _get_product_images(self, product):
         """Get product images with fallback"""
         try:
-            base_url = 'http://100.110.83.110:8069'  # Use your specific IP
+            base_url = self._get_base_url()  # Use dynamic base URL
 
             main_image = '/website_customizations/static/src/images/product_1.jpg'  # Default fallback
             all_images = []
@@ -586,8 +574,8 @@ class CravelyProductController(http.Controller):
 
             # If no images found, use default
             if not all_images:
-                all_images = ['/website_customizations/static/src/images/product_1.jpg']
-                main_image = '/website_customizations/static/src/images/product_1.jpg'
+                all_images = [f'{base_url}/website_customizations/static/src/images/product_1.jpg']
+                main_image = f'{base_url}/website_customizations/static/src/images/product_1.jpg'
 
             return {
                 'main_image': main_image,
@@ -596,9 +584,10 @@ class CravelyProductController(http.Controller):
 
         except Exception as e:
             _logger.warning(f"Error getting images for product {product.id}: {str(e)}")
+            base_url = self._get_base_url()
             return {
-                'main_image': '/website_customizations/static/src/images/product_1.jpg',
-                'all_images': ['/website_customizations/static/src/images/product_1.jpg']
+                'main_image': f'{base_url}/website_customizations/static/src/images/product_1.jpg',
+                'all_images': [f'{base_url}/website_customizations/static/src/images/product_1.jpg']
             }
 
     def _get_product_pricing(self, product):

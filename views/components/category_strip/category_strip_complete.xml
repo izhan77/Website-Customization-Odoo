@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Complete Category Strip Template - ALL CATEGORIES -->
+    <!-- Dynamic Category Strip Template -->
     <template id="category_strip_complete" name="Category Strip Complete">
         <!-- Category Strip Container -->
-        <div id="" class="category-strip-container">
+        <div id="category-strip-wrapper" class="category-strip-container">
             <div class="category-strip-inner">
                 <div class="flex items-center justify-center relative">
 
@@ -16,71 +16,9 @@
 
                     <!-- Categories Wrapper with Overflow Hidden -->
                     <div id="categories-wrapper" class="flex-1 overflow-hidden relative">
-                        <!-- Categories Container - This will slide left/right -->
+                        <!-- Categories Container - This will be populated dynamically -->
                         <div id="categories-container" class="flex gap-3 transition-transform duration-500 ease-in-out">
-
-                            <!-- Category Items - ALL FROM YOUR DOCUMENT -->
-
-                            <!-- Rice Box -->
-                            <a href="#rice-box-section" class="category-item" data-section="rice-box-section">
-                                Rice Box
-                            </a>
-
-                            <!-- Fish and Chips -->
-                            <a href="#fish-and-chips-section" class="category-item" data-section="fish-and-chips-section">
-                                Fish &amp; Chips
-                            </a>
-
-                            <!-- Pasta -->
-                            <a href="#pasta-section" class="category-item" data-section="pasta-section">
-                                Pasta
-                            </a>
-
-                            <!-- Turkish Feast -->
-                            <a href="#turkish-feast-section" class="category-item" data-section="turkish-feast-section">
-                                Turkish Feast
-                            </a>
-
-                            <!-- Wraps & Rolls -->
-                            <a href="#wraps-rolls-section" class="category-item" data-section="wraps-rolls-section">
-                                Wraps &amp; Rolls
-                            </a>
-
-                            <!-- New Arrivals -->
-                            <a href="#new-arrivals-section" class="category-item" data-section="new-arrivals-section">
-                                New Arrivals
-                            </a>
-
-                            <!-- Soups And Salads -->
-                            <a href="#soups-and-salads-section" class="category-item" data-section="soups-and-salads-section">
-                                Soups &amp; Salads
-                            </a>
-
-                            <!-- Cold Drinks -->
-                            <a href="#cold-drinks-section" class="category-item" data-section="cold-drinks-section">
-                                Cold Drinks
-                            </a>
-
-                            <!-- Hot Beverages -->
-                            <a href="#hot-beverages-section" class="category-item" data-section="hot-beverages-section">
-                                Hot Beverages
-                            </a>
-
-                            <!-- Desserts -->
-                            <a href="#desserts-section" class="category-item" data-section="desserts-section">
-                                Desserts
-                            </a>
-
-                            <!-- BBQ -->
-                            <a href="#bbq-section" class="category-item" data-section="bbq-section">
-                                BBQ Specials
-                            </a>
-
-                            <!-- Fast Food -->
-                            <a href="#fast-food-section" class="category-item" data-section="fast-food-section">
-                                Fast Food
-                            </a>
-
+                            <!-- Dynamic content will be inserted here by JavaScript -->
                         </div>
                     </div>
 
@@ -96,6 +34,6 @@
         </div>
 
         <!-- Placeholder for sticky positioning -->
-        <!-- <div class="category-strip-placeholder"></div> -->
+        <div class="category-strip-placeholder"></div>
     </template>
 </odoo>

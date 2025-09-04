@@ -6,8 +6,9 @@
     'author': 'eaxeesoft',
     'depends': ['web', 'website'],
     'controllers': [
-        'controllers/checkout_controller.py',
+        'controllers/category_controller.py',
         'controllers/product_controller.py',
+        'controllers/checkout_controller.py',
     ],
     'data': [
         # Core Assets
@@ -64,9 +65,9 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            # CRITICAL: Load scroll utilities FIRST
-            # 'website_customizations/static/src/js/utils/scroll_utils.js',
+
             'website_customizations/static/src/js/utils/scroll_controller.js',
+            'website_customizations/static/src/js/utils/realtime_updates.js',
 
             # Core CSS and config
             'website_customizations/static/src/css/tailwind_input.css',
@@ -83,6 +84,7 @@
             'website_customizations/static/src/css/components/hero_section/hero_carousel_indicators.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_controls.css',
             'website_customizations/static/src/css/components/hero_section/hero_carousel_responsive.css',
+            'website_customizations/static/src/css/components/menu_sections/skeleton_loading.css',
             'website_customizations/static/src/css/components/category_strip/category_strip.css',
             'website_customizations/static/src/css/components/product_cards/skeleton_loading.css',
             'website_customizations/static/src/css/components/product_cards/single_product_card.css',
@@ -96,8 +98,9 @@
             'website_customizations/static/src/js/components/navbar/menu_popup.js',
             'website_customizations/static/src/js/components/navbar/navbar_mobile.js',
 
-            # IMPORTANT: Category strip loads LAST (depends on scroll utils)
-            # 'website_customizations/static/src/js/components/category_strip/category_strip_main.js',
+            # DYNAMIC LOADER
+            'website_customizations/static/src/js/components/menu_sections/dynamic_menu_loader.js',
+            'website_customizations/static/src/js/components/product_cards/dynamic_product_loader.js',
         ],
     },
     'installable': True,
