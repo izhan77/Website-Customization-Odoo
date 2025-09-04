@@ -17,7 +17,7 @@ class DynamicProductLoader {
 
         // Updated API endpoints with new structure
         this.apiConfig = {
-            baseUrl: 'http://100.110.83.110:8069',
+            baseUrl: 'http://localhost:8069',
             endpoints: {
                 allProducts: '/order-mode/products/all',
                 categoryProducts: '/order-mode/products/category/',
@@ -38,7 +38,8 @@ class DynamicProductLoader {
             'cold-drinks-section': 'cold-drinks',
             'hot-beverages-section': 'hot-beverages',
             'desserts-section': 'desserts',
-            'bbq-section': 'bbq'
+            'bbq-section': 'bbq',
+            'fast-food-section': 'Fast Food'
         };
 
         this.init();

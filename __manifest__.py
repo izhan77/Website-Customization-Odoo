@@ -4,7 +4,7 @@
     'summary': 'Custom CSS and JS for website',
     'category': 'Website',
     'author': 'eaxeesoft',
-    'depends': ['web', 'website'],
+    'depends': ['web', 'website', 'sale','sale_management'],
     'controllers': [
         'controllers/checkout_controller.py',
         'controllers/product_controller.py',

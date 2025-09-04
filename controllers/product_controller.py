@@ -108,7 +108,7 @@ class CravelyProductController(http.Controller):
                 'total_products': len(formatted_products),
                 'message': f'Successfully loaded {len(formatted_products)} products',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': '/order-mode/products/all'
                 }
             }
@@ -135,7 +135,7 @@ class CravelyProductController(http.Controller):
                 'total_products': 0,
                 'message': 'Failed to load products',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': '/order-mode/products/all'
                 }
             }
@@ -177,7 +177,7 @@ class CravelyProductController(http.Controller):
                 'desserts': 'Desserts',
                 'bbq': 'BBQ Specials',
                 'bbq-specials': 'BBQ Specials',
-                'fast-food': 'Fast Food'
+                'fast-food-section': 'Fast Food'
             }
 
             # Get the actual category name from mapping
@@ -205,7 +205,7 @@ class CravelyProductController(http.Controller):
                         'products': [],
                         'message': f'No category found with name "{actual_category_name}"',
                         'endpoint_info': {
-                            'base_url': 'http://100.110.83.110:8069',
+                            'base_url': 'http://localhost:8069',
                             'endpoint': f'/order-mode/products/category/{category_name}'
                         }
                     }),
@@ -277,7 +277,7 @@ class CravelyProductController(http.Controller):
                 'total_products': len(formatted_products),
                 'message': f'Successfully loaded {len(formatted_products)} products from {category.name}',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': f'/order-mode/products/category/{category_name}'
                 }
             }
@@ -301,7 +301,7 @@ class CravelyProductController(http.Controller):
                 'products': [],
                 'message': f'Failed to load products from category "{category_name}"',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': f'/order-mode/products/category/{category_name}'
                 }
             }
@@ -396,7 +396,7 @@ class CravelyProductController(http.Controller):
                 'total_results': len(formatted_products),
                 'message': f'Found {len(formatted_products)} products',
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': f'/order-mode/products/search'
                 }
             }
@@ -418,7 +418,7 @@ class CravelyProductController(http.Controller):
                     'products': [],
                     'message': 'Search failed',
                     'endpoint_info': {
-                        'base_url': 'http://100.110.83.110:8069',
+                        'base_url': 'http://localhost:8069',
                         'endpoint': '/order-mode/products/search'
                     }
                 }),
@@ -448,7 +448,7 @@ class CravelyProductController(http.Controller):
                         'error': 'Product not found or not published',
                         'message': f'Product with ID {product_id} not found',
                         'endpoint_info': {
-                            'base_url': 'http://100.110.83.110:8069',
+                            'base_url': 'http://localhost:8069',
                             'endpoint': f'/order-mode/products/single/{product_id}'
                         }
                     }),
@@ -499,7 +499,7 @@ class CravelyProductController(http.Controller):
                     'updated_date': product.write_date.isoformat() if product.write_date else None
                 },
                 'endpoint_info': {
-                    'base_url': 'http://100.110.83.110:8069',
+                    'base_url': 'http://localhost:8069',
                     'endpoint': f'/order-mode/products/single/{product_id}'
                 }
             }
@@ -522,7 +522,7 @@ class CravelyProductController(http.Controller):
                     'error': str(e),
                     'message': f'Failed to load product {product_id}',
                     'endpoint_info': {
-                        'base_url': 'http://100.110.83.110:8069',
+                        'base_url': 'http://localhost:8069',
                         'endpoint': f'/order-mode/products/single/{product_id}'
                     }
                 }),
@@ -567,7 +567,7 @@ class CravelyProductController(http.Controller):
     def _get_product_images(self, product):
         """Get product images with fallback"""
         try:
-            base_url = 'http://100.110.83.110:8069'  # Use your specific IP
+            base_url = 'http://localhost:8069'  # Use your specific IP
 
             main_image = '/website_customizations/static/src/images/product_1.jpg'  # Default fallback
             all_images = []

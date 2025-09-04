@@ -397,5 +397,47 @@
                      alt="Line Seperator"/>
             </div>
         </section>
+
+        
+        <!-- Fast Food Section -->
+<section id="fast-food-section" class="menu-section py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 style="font-family: 'Roboto Condensed' !important; letter-spacing: -0.065em; margin-bottom:0px !important;"
+                class="text-[5rem] md:text-[6rem] text-gray-900">
+                FAST FOOD
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Quick bites packed with flavor
+            </p>
+        </div>
+
+        <div class="product-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- <t t-call="website_customizations.single_product_card">
+                <t t-set="product_id" t-value="'fast-1'"/>
+                 <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                <t t-set="product_title" t-value="'Cheese Burger'"/>
+                <t t-set="product_description" t-value="'Juicy grilled beef burger with melted cheese'"/>
+                <t t-set="product_original_price" t-value="'Rs. 800'"/>
+                <t t-set="product_discounted_price" t-value="'Rs. 650'"/>
+                <t t-set="product_category" t-value="'fast-food'"/>
+            </t>
+            <t t-call="website_customizations.single_product_card">
+                <t t-set="product_id" t-value="'fast-2'"/>
+                  <t t-set="product_image" t-value="'/website_customizations/static/src/images/product_1.jpg'"/>
+                <t t-set="product_title" t-value="'Crispy Fried Chicken'"/>
+                <t t-set="product_description" t-value="'Golden, crunchy, and juicy fried chicken with perfect seasoning'"/>
+                <t t-set="product_original_price" t-value="'Rs. 600'"/>
+                <t t-set="product_discounted_price" t-value="'Rs. 499'"/>
+                <t t-set="product_category" t-value="'fast-food'"/>
+            </t> -->
+
+        </div>
+
+        <img src="/website_customizations/static/src/images/seperator-line.png"
+             class="w-full h-[3rem] object-cover mt-5"
+             alt="Line Seperator"/>
+    </div>
+    </section>
     </template>
 </odoo>
