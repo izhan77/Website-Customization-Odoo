@@ -24,12 +24,28 @@ class CategoryController(http.Controller):
         return category_data
 
     def _generate_slug(self, name):
-        """Convert category name to URL-friendly slug for sections"""
+        """Convert category name to URL-friendly slug for sections - STANDARDIZED"""
         import re
-        # Convert to lowercase, replace spaces and & with hyphens
+
+        if not name:
+            return 'general-section'
+
         slug = name.lower()
-        slug = re.sub(r'[&\s]+', '-', slug)
+
+        # Handle ampersand first
+        slug = slug.replace('&', 'and')
+        slug = slug.replace('&amp;', 'and')
+
+        # Replace spaces and special chars with hyphens
+        slug = re.sub(r'[\s\-_]+', '-', slug)
+
+        # Remove non-alphanumeric chars except hyphens
         slug = re.sub(r'[^a-z0-9\-]', '', slug)
+
+        # Clean up multiple hyphens
         slug = re.sub(r'-+', '-', slug)
+
+        # Remove leading/trailing hyphens
         slug = slug.strip('-')
+
         return slug + '-section'

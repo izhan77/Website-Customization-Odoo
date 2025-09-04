@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- FIXED MOBILE MENU TEMPLATE -->
     <template id="navbar_mobile_menu" name="Navbar Mobile Menu">
         <!-- Dark Overlay Background -->
         <div id="mobile-menu"
@@ -37,7 +38,7 @@
             </div>
         </div>
 
-        <!-- Mobile Categories Popup - SIMPLIFIED -->
+        <!-- Mobile Categories Popup - FIXED SLUGS -->
         <div id="mobile-categories-popup" class="fixed inset-0 z-[1001] hidden">
             <div class="mobile-categories-container">
                 <!-- Header -->
@@ -57,16 +58,21 @@
                 <div class="overflow-y-auto p-6">
                     <div class="mobile-categories-grid grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
 
-                        <!-- DYNAMIC CATEGORIES FROM ODOO BACKEND -->
+                        <!-- DYNAMIC CATEGORIES FROM ODOO BACKEND - FIXED SLUG GENERATION -->
                         <t t-set="categories"
                            t-value="request.env['product.public.category'].sudo().search([('website_id', 'in', [False, request.website.id])], order='sequence, name')"/>
 
                         <t t-foreach="categories" t-as="category">
-                            <!-- Generate consistent slug -->
-                            <t t-set="category_slug"
-                               t-value="category.name.lower().replace('&amp;', 'and').replace(' ', '-').replace('--', '-').strip('-') + '-section'"/>
+                            <!-- STANDARDIZED SLUG GENERATION TO MATCH BACKEND -->
+                            <t t-set="category_name_clean" t-value="category.name.lower()"/>
+                            <t t-set="category_name_clean" t-value="category_name_clean.replace('&amp;', 'and').replace('&amp;', 'and')"/>
+                            <t t-set="category_name_clean" t-value="category_name_clean.replace(' ', '-').replace('_', '-')"/>
+                            <!-- Remove special characters except hyphens -->
+                            <t t-set="category_slug_base" t-value="''.join([c for c in category_name_clean if c.isalnum() or c == '-'])"/>
+                            <!-- Clean up multiple hyphens and add section suffix -->
+                            <t t-set="category_slug" t-value="category_slug_base.replace('--', '-').strip('-') + '-section'"/>
 
-                            <!-- FIXED: Use proper Odoo QWeb syntax -->
+                            <!-- Get category image -->
                             <t t-if="category.image_1920">
                                 <t t-set="category_image"
                                    t-value="'/web/image/product.public.category/' + str(category.id) + '/image_1920'"/>
@@ -96,5 +102,58 @@
             </div>
         </div>
 
+    </template>
+
+    <!-- FIXED MENU POPUP TEMPLATE -->
+    <template id="navbar_menu_popup" name="Navbar Menu Popup">
+        <!-- Menu Categories Popup (Hidden by default) - POSITIONED BELOW NAVBAR -->
+        <div id="menu-categories-popup" class="menu-categories-popup">
+            <div class="menu-popup-content-wrapper">
+                <div class="menu-popup-header">
+                    <h1>Categories</h1>
+                </div>
+                <div class="menu-popup-grid">
+                    <!-- DYNAMIC CATEGORIES FROM ODOO BACKEND - FIXED SLUG GENERATION -->
+                    <t t-set="categories" t-value="request.env['product.public.category'].sudo().search([('website_id', 'in', [False, request.website.id])], order='sequence, name')"/>
+
+                    <t t-foreach="categories" t-as="category">
+                        <!-- STANDARDIZED SLUG GENERATION TO MATCH BACKEND -->
+                        <t t-set="category_name_clean" t-value="category.name.lower()"/>
+                        <t t-set="category_name_clean" t-value="category_name_clean.replace('&amp;', 'and').replace('&amp;', 'and')"/>
+                        <t t-set="category_name_clean" t-value="category_name_clean.replace(' ', '-').replace('_', '-')"/>
+                        <!-- Remove special characters except hyphens -->
+                        <t t-set="category_slug_base" t-value="''.join([c for c in category_name_clean if c.isalnum() or c == '-'])"/>
+                        <!-- Clean up multiple hyphens and add section suffix -->
+                        <t t-set="category_slug" t-value="category_slug_base.replace('--', '-').strip('-') + '-section'"/>
+
+                        <!-- Get category image -->
+                        <t t-if="category.image_1920">
+                            <t t-set="category_image" t-value="'/web/image/product.public.category/' + str(category.id) + '/image_1920'"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="category_image" t-value="'/website_customizations/static/src/images/category-rice-box.png'"/>
+                        </t>
+
+                        <a t-attf-href="#{category_slug}"
+                           class="menu-popup-item group"
+                           t-attf-data-category="#{category_slug}"
+                           onmouseover="this.style.setProperty('background-color', 'transparent', 'important');">
+                            <div class="menu-popup-card">
+                                <div class="menu-popup-img-circle">
+                                    <!-- Use Odoo category image -->
+                                    <img t-att-src="category_image"
+                                         t-att-alt="category.name"
+                                         class="menu-popup-image"
+                                         style="object-fit: cover; width: 100%; height: 100%;"/>
+                                </div>
+                                <h3 class="menu-popup-title">
+                                    <t t-out="category.name.upper()"/>
+                                </h3>
+                            </div>
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </div>
     </template>
 </odoo>
