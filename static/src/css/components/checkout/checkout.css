@@ -1810,3 +1810,91 @@
 .checkout-page-wrapper .payment-method-card.selected {
     z-index: 2;
 }
+
+/* ================================= MOBILE DROPDOWN OVERLAP FIX ================================= */
+
+/* Comprehensive fix for all dropdown overlapping issues on mobile */
+@media (max-width: 968px) {
+    /* Reset z-index hierarchy for all form elements */
+    .checkout-page-wrapper .form-group {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .checkout-page-wrapper .form-row {
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Ensure dropdown containers have higher z-index when closed */
+    .checkout-page-wrapper .custom-dropdown {
+        position: relative;
+        z-index: 10;
+    }
+    
+    /* CRITICAL: When any dropdown is open, it gets highest priority */
+    .checkout-page-wrapper .custom-dropdown.open {
+        z-index: 1000 !important;
+        position: relative;
+    }
+    
+    /* Parent form group gets elevated z-index when dropdown is open */
+    .checkout-page-wrapper .form-group:has(.custom-dropdown.open) {
+        z-index: 1000 !important;
+        position: relative;
+    }
+    
+    /* Dropdown options get maximum z-index */
+    .checkout-page-wrapper .custom-dropdown-options {
+        z-index: 10001 !important;
+        position: absolute;
+    }
+    
+    /* IMPORTANT: All other form elements get lower z-index when ANY dropdown is open */
+    .checkout-page-wrapper .checkout-form:has(.custom-dropdown.open) .form-group:not(:has(.custom-dropdown.open)) {
+        z-index: 0 !important;
+    }
+    
+    .checkout-page-wrapper .checkout-form:has(.custom-dropdown.open) .form-row:not(:has(.custom-dropdown.open)) {
+        z-index: 0 !important;
+    }
+    
+    /* Alternative fallback for browsers without :has() support */
+    .checkout-page-wrapper .checkout-form.dropdown-active .form-group:not(.active-dropdown-parent) {
+        z-index: 0 !important;
+    }
+    
+    .checkout-page-wrapper .checkout-form.dropdown-active .form-row:not(.active-dropdown-parent) {
+        z-index: 0 !important;
+    }
+}
+
+/* Additional mobile-specific fixes */
+@media (max-width: 768px) {
+    /* Create more space between form rows to prevent visual overlap */
+    .checkout-page-wrapper .form-row {
+        margin-bottom: 30px; /* Increased from 25px */
+    }
+    
+    .checkout-page-wrapper .form-group {
+        margin-bottom: 30px; /* Increased from 25px */
+    }
+    
+    /* Ensure dropdown has enough space */
+    .checkout-page-wrapper .custom-dropdown-options {
+        margin-top: 2px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important; /* Stronger shadow for visibility */
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 480px) {
+    .checkout-page-wrapper .form-row {
+        margin-bottom: 35px; /* Even more space on small screens */
+    }
+    
+    .checkout-page-wrapper .form-group {
+        margin-bottom: 35px;
+    }
+}
+
