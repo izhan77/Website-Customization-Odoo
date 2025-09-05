@@ -1,4 +1,4 @@
-from ..services.sms_service import SMSService
+# from ..services.sms_service import SMSService
 from odoo import http
 from odoo.http import request
 import json
@@ -159,17 +159,17 @@ class CheckoutController(http.Controller):
 
             # ✅ Send SMS confirmation after successful order
 
-            sms_response = SMSService.send_sms(
-                partner.phone,
-                f"Dear {partner.name}, your order {sales_order.name} has been placed. Total: {sales_order.amount_total}"
-            )
+            # sms_response = SMSService.send_sms(
+            #     partner.phone,
+            #     f"Dear {partner.name}, your order {sales_order.name} has been placed. Total: {sales_order.amount_total}"
+            # )
 
-            if sms_response.get("success"):
-                _logger.info(f"📲 SMS sent successfully. SID: {sms_response.get('sid')}")
-            else:
-                _logger.warning(f"⚠️ SMS failed: {sms_response.get('error')}")
+            # if sms_response.get("success"):
+            #     _logger.info(f"📲 SMS sent successfully. SID: {sms_response.get('sid')}")
+            # else:
+            #     _logger.warning(f"⚠️ SMS failed: {sms_response.get('error')}")
 
-            _logger.info(f"   Sms response: {sms_response}")
+            # _logger.info(f"   Sms response: {sms_response}")
 
             # Return success response
             return {
@@ -180,7 +180,7 @@ class CheckoutController(http.Controller):
                 'estimated_delivery': '35-45 minutes',
                 'customer_id': partner.id,
                 'order_total': sales_order.amount_total,
-                'sms': sms_response,
+                # 'sms': sms_response,
             }
 
         except Exception as e:

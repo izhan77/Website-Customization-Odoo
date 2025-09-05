@@ -772,7 +772,10 @@ handlePopularItemAdd(event) {
     /**
      * Update cart summary section
      */
-    updateCartSummary() {
+    /**
+ * Update cart summary section
+ */
+updateCartSummary() {
     const subtotalEl = document.getElementById('cravely-subtotal-amount');
     const taxEl = document.getElementById('cravely-tax-amount');
     const grandTotalEl = document.getElementById('cravely-grand-total-amount');
@@ -796,9 +799,10 @@ handlePopularItemAdd(event) {
     // Calculate grand total based on order type
     let grandTotal;
     if (orderType === 'pickup') {
-        const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
-        grandTotal = this.cartTotal + tax - pickupDiscount;
+        // For pickup: subtotal + tax (no delivery fee, no discount)
+        grandTotal = this.cartTotal + tax;
     } else {
+        // For delivery: subtotal + tax + delivery fee
         grandTotal = this.cartTotal + tax + this.deliveryFee;
     }
 
@@ -822,6 +826,9 @@ handlePopularItemAdd(event) {
 }
 
     /**
+ * Create or update the dynamic row (delivery fee or pickup discount)
+ */
+/**
  * Create or update the dynamic row (delivery fee or pickup discount)
  */
 createOrUpdateDynamicRow(orderType) {
@@ -848,18 +855,10 @@ createOrUpdateDynamicRow(orderType) {
 
     // Update the dynamic row content based on order type
     if (orderType === 'pickup') {
-        const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
-        dynamicRow.innerHTML = `
-            <span class="cravely-summary-label">Pickup Discount (5%)</span>
-            <span class="cravely-summary-value" style="color: #10b981; font-weight: 600;">-Rs. ${pickupDiscount}</span>
-        `;
-        dynamicRow.style.display = 'flex';
-        dynamicRow.style.opacity = '0';
-        setTimeout(() => {
-            dynamicRow.style.transition = 'opacity 0.3s ease';
-            dynamicRow.style.opacity = '1';
-        }, 50);
+        // No delivery fee for pickup
+        dynamicRow.style.display = 'none';
     } else {
+        // Show delivery fee for delivery
         dynamicRow.innerHTML = `
             <span class="cravely-summary-label">Delivery Fee</span>
             <span class="cravely-summary-value">Rs. ${this.deliveryFee}</span>
@@ -1102,10 +1101,10 @@ updateCartPopupDisplay() {
         const tax = Math.round(this.cartTotal * this.taxRate);
         const orderType = this.getCurrentOrderType();
 
-        let grandTotal;
+       let grandTotal;
         if (orderType === 'pickup') {
-            const pickupDiscount = Math.round(this.cartTotal * 0.05); // 5% discount
-            grandTotal = this.cartTotal + tax - pickupDiscount;
+            // No discount for pickup
+            grandTotal = this.cartTotal + tax;
         } else {
             grandTotal = this.cartTotal + tax + this.deliveryFee;
         }

@@ -818,19 +818,33 @@ updateSectionTitle() {
     /**
      * Update delivery fee based on order type
      */
-    updateDeliveryFee() {
-        if (!this.isDeliveryOrder) {
-            this.deliveryFee = 0; // No delivery fee for pickup orders
+    /**
+ * Update delivery fee based on order type
+ */
+updateDeliveryFee() {
+    if (!this.isDeliveryOrder) {
+        this.deliveryFee = 0; // No delivery fee for pickup orders
 
-            // Update the UI label
-            const shippingLabel = document.querySelector('.summary-row .summary-label');
-            if (shippingLabel && shippingLabel.textContent.includes('Shipping')) {
-                shippingLabel.textContent = 'Service Fee';
-            }
+        // Update the UI label
+        const shippingLabel = document.querySelector('.summary-row .summary-label');
+        if (shippingLabel && shippingLabel.textContent.includes('Shipping')) {
+            shippingLabel.textContent = 'Service Fee';
         }
+    } else {
+        this.deliveryFee = 200; // Restore delivery fee for delivery orders
 
-        console.log(`💰 ${this.isDeliveryOrder ? 'Delivery' : 'Service'} fee set to: Rs. ${this.deliveryFee}`);
+        // Update the UI label back to Shipping
+        const shippingLabel = document.querySelector('.summary-row .summary-label');
+        if (shippingLabel && shippingLabel.textContent.includes('Service')) {
+            shippingLabel.textContent = 'Shipping';
+        }
     }
+
+    // Recalculate totals whenever delivery fee changes
+    this.recalculateTotals();
+    
+    console.log(`💰 ${this.isDeliveryOrder ? 'Delivery' : 'Service'} fee set to: Rs. ${this.deliveryFee}`);
+}
 
     /**
      * Load cart data from sessionStorage or fallback
@@ -1134,9 +1148,8 @@ applyOrderTypeChangeWithAnimation() {
 
     // Update all UI elements
     this.setupOrderTypeUI();
-    this.updateDeliveryFee();
-    this.recalculateTotals();
-    this.populateOrderSummary();
+    this.updateDeliveryFee(); // This will now recalculate totals
+    this.populateOrderSummary(); // Ensure UI is updated
 
     // Reset form fields for pickup mode
     if (!this.isDeliveryOrder) {
@@ -2247,6 +2260,9 @@ async getNextOdooOrderId() {
     /**
  * Recalculate totals based on order type
  */
+/**
+ * Recalculate totals based on order type
+ */
 recalculateTotals() {
     if (!this.cartData) return;
 
@@ -2254,6 +2270,9 @@ recalculateTotals() {
     this.cartData.tax = Math.round(this.cartData.subtotal * this.taxRate);
     this.cartData.grandTotal = this.cartData.subtotal + this.cartData.tax + this.deliveryFee;
 
+    // Update the UI immediately
+    this.populateOrderSummary();
+    
     console.log('🔢 Totals recalculated:', {
         subtotal: this.cartData.subtotal,
         tax: this.cartData.tax,
